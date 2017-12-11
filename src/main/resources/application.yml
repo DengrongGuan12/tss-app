@@ -1,135 +1,135 @@
-
-############################# Redis config #############################
-
-  # enable redis
-redis:
-    pool:
-      max-idle: 15
-      max-total: 30
-      max-wait: 6000
-      minIdle: 1
-      block-when-exhausted: false
-      min-idle: 5
-
-    host: 192.168.1.100
-    port: 6378
-    password:
-    timeout: 2000
-    database: 0
-    ssl: false
-
-aliyun:
-    oss:
-      private:
-        bucket: mkpri
-        host: http://mkpri.oss-cn-hangzhou.aliyuncs.com
-      public:
-        bucket: mkpub
-        host: http://mkpub.oss-cn-hangzhou.aliyuncs.com
-
-
-
-
-
-####################### stream Config & Datasource Config###########################
-druid:
-  datasource:
-    url: jdbc:mysql://116.62.146.35:3306/menkor_dev?autoReconnect=true&rewriteBatchedStatements=true&socketTimeout=30000&connectTimeout=3000
-    username: menkor_dev
-    password: Superid123
-    #初始化连接数量，最大最小连接数
-    initialSize: 5
-    maxActive: 10
-    minIdle: 3
-    #获取连接等待超时的时间
-    maxWait: 600000
-    #超过时间限制是否回收
-    removeAbandoned: true
-    #超过时间限制多长
-    removeAbandonedTimeout: 180
-    #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-    timeBetweenEvictionRunsMillis: 600000
-    #配置一个连接在池中最小生存的时间，单位是毫秒
-    minEvictableIdleTimeMillis: 300000
-    #用来检测连接是否有效的sql，要求是一个查询语句
-    #申请连接的时候检测
-    testWhileIdle: true
-    #申请连接时执行validationQuery检测连接是否有效，配置为true会降低性能
-    testOnBorrow: false
-    #归还连接时执行validationQuery检测连接是否有效，配置为true会降低性能
-    testOnReturn: false
-    #打开PSCache，并且指定每个连接上PSCache的大小
-    poolPreparedStatements: true
-    maxPoolPreparedStatementPerConnectionSize: 50
-    #属性类型是字符串，通过别名的方式配置扩展插件，常用的插件有：
-    #监控统计用的filter:stat 日志用的filter:log4j 防御SQL注入的filter:wall
-    filters: stat
-
-################# rabbitmq Config ###################
-spring:
-  cloud:
-    stream:
-      bindings:
-        msg-output:
-          content-type: application/proto;type=cn.superid.common.notification.dto.CommonMessage
-          destination: msg-proto
-          binder: rabbit1
-      default-binder: zipkin
-      binders:
-        rabbit1:
-          type: rabbit     #可以是其它，比如kafka
-          environment:
-            spring:
-              rabbitmq:
-                host: 192.168.1.200
-                port: 5672          #rabbitMQ服务器端口
-                username: stream
-                password: stream
-                virtual-host: /sc
-        zipkin:
-          type: rabbit     #可以是其它，比如kafka
-          environment:
-            spring:
-              rabbitmq:
-                host: ${ZIPKIN_ADDR:116.62.19.66}
-                port: ${ZIPKIN_PORT:5672}
-                username: guest
-                password: guest
-
-
-
-
-################# flyway Config ###################
-
-flyway:
-  base-line-on-migrate: true
-  table: flyway_version
-  base-line-version: 1.0
-  skip-default-resolvers: false
-  locations: classpath:db.migration
-  is-enable-flyway-migration: true
-  out-of-order: false
-  repair: false
-################# ribbon & hystrix Config ###################
-
-ribbon:
-  ReadTimeout: 10000
-
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          strategy: THREAD
-          thread:
-            timeoutInMilliseconds: 10000
----
-spring:
-  profiles: default
-
-
-logging:
-  file: ./tss-server.log
-  #config: classpath:logback.xml
-logging.level.org.springframework.web: INFO
-logging.level.cn.superid.notice.dao.mapper: DEBUG
+#
+############################## Redis config #############################
+#
+#  # enable redis
+#redis:
+#    pool:
+#      max-idle: 15
+#      max-total: 30
+#      max-wait: 6000
+#      minIdle: 1
+#      block-when-exhausted: false
+#      min-idle: 5
+#
+#    host: 192.168.1.100
+#    port: 6378
+#    password:
+#    timeout: 2000
+#    database: 0
+#    ssl: false
+#
+#aliyun:
+#    oss:
+#      private:
+#        bucket: mkpri
+#        host: http://mkpri.oss-cn-hangzhou.aliyuncs.com
+#      public:
+#        bucket: mkpub
+#        host: http://mkpub.oss-cn-hangzhou.aliyuncs.com
+#
+#
+#
+#
+#
+######################## stream Config & Datasource Config###########################
+#druid:
+#  datasource:
+#    url: jdbc:mysql://116.62.146.35:3306/menkor_dev?autoReconnect=true&rewriteBatchedStatements=true&socketTimeout=30000&connectTimeout=3000
+#    username: menkor_dev
+#    password: Superid123
+#    #初始化连接数量，最大最小连接数
+#    initialSize: 5
+#    maxActive: 10
+#    minIdle: 3
+#    #获取连接等待超时的时间
+#    maxWait: 600000
+#    #超过时间限制是否回收
+#    removeAbandoned: true
+#    #超过时间限制多长
+#    removeAbandonedTimeout: 180
+#    #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+#    timeBetweenEvictionRunsMillis: 600000
+#    #配置一个连接在池中最小生存的时间，单位是毫秒
+#    minEvictableIdleTimeMillis: 300000
+#    #用来检测连接是否有效的sql，要求是一个查询语句
+#    #申请连接的时候检测
+#    testWhileIdle: true
+#    #申请连接时执行validationQuery检测连接是否有效，配置为true会降低性能
+#    testOnBorrow: false
+#    #归还连接时执行validationQuery检测连接是否有效，配置为true会降低性能
+#    testOnReturn: false
+#    #打开PSCache，并且指定每个连接上PSCache的大小
+#    poolPreparedStatements: true
+#    maxPoolPreparedStatementPerConnectionSize: 50
+#    #属性类型是字符串，通过别名的方式配置扩展插件，常用的插件有：
+#    #监控统计用的filter:stat 日志用的filter:log4j 防御SQL注入的filter:wall
+#    filters: stat
+#
+################## rabbitmq Config ###################
+#spring:
+#  cloud:
+#    stream:
+#      bindings:
+#        msg-output:
+#          content-type: application/proto;type=cn.superid.common.notification.dto.CommonMessage
+#          destination: msg-proto
+#          binder: rabbit1
+#      default-binder: zipkin
+#      binders:
+#        rabbit1:
+#          type: rabbit     #可以是其它，比如kafka
+#          environment:
+#            spring:
+#              rabbitmq:
+#                host: 192.168.1.200
+#                port: 5672          #rabbitMQ服务器端口
+#                username: stream
+#                password: stream
+#                virtual-host: /sc
+#        zipkin:
+#          type: rabbit     #可以是其它，比如kafka
+#          environment:
+#            spring:
+#              rabbitmq:
+#                host: ${ZIPKIN_ADDR:116.62.19.66}
+#                port: ${ZIPKIN_PORT:5672}
+#                username: guest
+#                password: guest
+#
+#
+#
+#
+################## flyway Config ###################
+#
+#flyway:
+#  base-line-on-migrate: true
+#  table: flyway_version
+#  base-line-version: 1.0
+#  skip-default-resolvers: false
+#  locations: classpath:db.migration
+#  is-enable-flyway-migration: true
+#  out-of-order: false
+#  repair: false
+################## ribbon & hystrix Config ###################
+#
+#ribbon:
+#  ReadTimeout: 10000
+#
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          strategy: THREAD
+#          thread:
+#            timeoutInMilliseconds: 10000
+#---
+#spring:
+#  profiles: default
+#
+#
+#logging:
+#  file: ./tss-server.log
+#  #config: classpath:logback.xml
+#logging.level.org.springframework.web: INFO
+#logging.level.cn.superid.notice.dao.mapper: DEBUG
