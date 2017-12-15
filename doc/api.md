@@ -9,12 +9,13 @@ account: 手机号
 username: username和realname
 
 ### 登录,参考目前的登录  
-1. 登录 http://192.168.1.100:1212/#/login-controller/loginUsingPOST
+1. 登录 http://192.168.1.100:1212/#/login-controller/loginUsingPOST     
 2. 获取token http://superid.cn:18000/login/oauth/token?grant_type=password
 
 ### 个人中心
 1. 获取个人信息（学号，院系年级？？）
 http://192.168.1.100:1212/#/user-controller/getUserInfoUsingGET  
+http://superid.org:18000/#/user-controller/getUserInfoUsingGET  
 男：1 女：2 保密：0
 2. 修改性别  
 http://192.168.1.100:1212/#/user-controller/editBaseUsingPOST 只传gender就行
