@@ -26,15 +26,12 @@ public class MySwaggerConfig {
             .apiInfo(apiInfo())
             .useDefaultResponseMessages(false)
             .select()
-            .apis(new Predicate<RequestHandler>() {
-              @Override
-              public boolean apply(RequestHandler input) {
+            .apis((input)->{
                 Class<?> declaringClass = input.declaringClass();
                 if(declaringClass.isAnnotationPresent(RestController.class)){
-                  return true;
+                    return true;
                 }
                 return false;
-              }
             }).build();
   }
 
