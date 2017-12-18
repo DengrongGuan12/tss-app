@@ -1,8 +1,11 @@
 package cn.superid.tss.config;
 
+import com.google.common.base.Predicate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
@@ -20,7 +23,19 @@ public class MySwaggerConfig {
   @Bean
   public Docket customDocket() {
     return new Docket(DocumentationType.SWAGGER_2)
-            .apiInfo(apiInfo());
+            .apiInfo(apiInfo())
+            .useDefaultResponseMessages(false)
+            .select()
+            .apis(new Predicate<RequestHandler>() {
+              @Override
+              public boolean apply(RequestHandler input) {
+                Class<?> declaringClass = input.declaringClass();
+                if(declaringClass.isAnnotationPresent(RestController.class)){
+                  return true;
+                }
+                return false;
+              }
+            }).build();
   }
 
   private ApiInfo apiInfo() {
