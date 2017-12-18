@@ -1,5 +1,4 @@
 # tss 后端接口定义及问题记录
-需要修改的
 swagger 地址：http://superid.org:18000/   
 ## 用户服务 user@2.0
 ### 注册  
