@@ -33,5 +33,5 @@ http://superid.org:18000/#/user-controller/changePwdUsingPOST
 ## 课程相关 tss@2.0  
 ### 获取我的课程列表(我的课程)  
 http://superid.org:18000/#/course-controller/getMyCoursesUsingGET  
-返回值为Map<String,Map<String,CourseSimple>>类型，可直接调用接口查看。
+返回值为 Map<String,Map<String,CourseSimple>> 类型，可直接调用接口查看。
 
