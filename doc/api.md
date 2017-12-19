@@ -29,3 +29,9 @@ http://superid.org:18000/#/user-controller/changePwdUsingPOST
     - 获取上传头像token: http://superid.org:18000/#/file-controller/userAvatarTokenUsingPOST  
     - 上传头像到OSS
     - 压缩头像: http://superid.org:18000/#/file-controller/condenseUserAvatarUsingPOST  
+
+## 课程相关 tss@2.0  
+### 获取我的课程列表(我的课程)  
+http://superid.org:18000/#/course-controller/getMyCoursesUsingGET  
+返回值为Map<String,Map<String,CourseSimple>>类型，可直接调用接口查看。
+
