@@ -2,6 +2,7 @@ package cn.superid.tss.controller;
 
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.tss.constant.RequestHeaders;
+import cn.superid.tss.vo.PersonInfoPublic;
 import cn.superid.tss.vo.StudentInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +26,10 @@ public class UserController {
         studentInfo.setGrade("2017级");
         studentInfo.setStuNumber("MF1632020");
         studentInfo.setRealName("管登荣");
+        studentInfo.setAvatar("http://mkpub.oss-cn-hangzhou.aliyuncs.com/user/1000103/small_sdfhYhsdb.png");
+        studentInfo.setOriginAvatar("http://mkpub.oss-cn-hangzhou.aliyuncs.com/user/1000103/sdfhYhsdb.png");
+        studentInfo.setMobile("15950570277");
+        studentInfo.setPersonInfoPublic(PersonInfoPublic.setFalse());
         return SimpleResponse.ok(studentInfo);
     }
 

@@ -25,3 +25,7 @@ http://superid.org:18000/#/user-controller/changePwdUsingPOST
 5. 修改手机号绑定  
     - 获取验证码：http://superid.org:18000/#/verify-code-controller/getTokenChangeVerifyCodeUsingGET
     - 修改手机号：http://superid.org:18000/#/user-controller/changeMobileOrEmailUsingPOST
+6. 修改头像(file@2.0)
+    - 获取上传头像token: http://superid.org:18000/#/file-controller/userAvatarTokenUsingPOST  
+    - 上传头像到OSS
+    - 压缩头像: http://superid.org:18000/#/file-controller/condenseUserAvatarUsingPOST  
