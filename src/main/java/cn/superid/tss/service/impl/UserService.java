@@ -10,7 +10,7 @@ import cn.superid.tss.vo.StudentInfo;
 public class UserService implements IUserService{
     @Override
     public StudentInfo getStudentInfo(long userId) {
-        //获取软件学院事务id
+        //获取南京大学盟下的软件学院事务id
 
         //获取该用户在软件学院事务下的角色内容
 
