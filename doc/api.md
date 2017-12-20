@@ -4,8 +4,8 @@ swagger 地址：http://superid.org:18000/
 ### 注册  
 1. 发送注册验证码： http://superid.org:18000/#/verify-code-controller/getRegisterVerifyCodeUsingGET
 2. 注册： http://superid.org:18000/#/user-controller/registerUsingPOST  
-account: 手机号  
-username: username和realname
+  account: 手机号  
+  username: username和realname
 
 ### 登录,参考目前的登录  
 1. 登录 http://superid.org:18000/#/login-controller/loginUsingPOST     
@@ -13,15 +13,24 @@ username: username和realname
 
 ### 个人中心
 1. 获取个人信息  
-~~原接口(user@2.0): http://superid.org:18000/#/user-controller/getUserInfoUsingGET~~  
-现接口(tss@2.0): http://superid.org:18000/#/user-controller/getUserInfoUsingGET  
-男：1 女：2 保密：0
+  ~~原接口(user@2.0): http://superid.org:18000/#/user-controller/getUserInfoUsingGET~~  
+  现接口(tss@2.0): http://superid.org:18000/#/user-controller/getUserInfoUsingGET  
+  男：1 女：2 保密：0  
+  版本信息  
+
+  | 接口名   | 参数 | 返回值 | 修改人  | 修改日期 |
+  | :--- | -- | -- |:--: | :--: |
+  |  不变 | 不变 |  增加type字段; ~~stuNumber~~ 改为 number   |   管登荣   | 2017.12.20|
+
+  ​
+
+
 2. 修改性别  
-http://superid.org:18000/#/user-controller/editBaseUsingPOST 只传gender就行
+  http://superid.org:18000/#/user-controller/editBaseUsingPOST 只传gender就行
 3. 修改信息公开性  
-http://superid.org:18000/#/user-controller/changePublicTypeUsingPOST
+  http://superid.org:18000/#/user-controller/changePublicTypeUsingPOST
 4. 修改密码  
-http://superid.org:18000/#/user-controller/changePwdUsingPOST
+  http://superid.org:18000/#/user-controller/changePwdUsingPOST
 5. 修改手机号绑定  
     - 获取验证码：http://superid.org:18000/#/verify-code-controller/getTokenChangeVerifyCodeUsingGET
     - 修改手机号：http://superid.org:18000/#/user-controller/changeMobileOrEmailUsingPOST
