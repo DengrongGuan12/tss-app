@@ -1,5 +1,6 @@
 package cn.superid.tss;
 
+import cn.superid.common.rest.client.EnableCommonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @create 2017-12-07 上午10:57
  **/
 @SpringBootApplication
-@EnableFeignClients
+@EnableCommonClient
 @EnableHystrix
 @EnableHystrixDashboard
 @EnableDiscoveryClient
