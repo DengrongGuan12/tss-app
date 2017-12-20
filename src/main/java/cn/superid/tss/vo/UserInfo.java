@@ -11,5 +11,97 @@ import io.swagger.annotations.ApiModelProperty;
 public class UserInfo {
     @ApiModelProperty(value = "类型:teacher,student,dean")
     private String type;
+    private String number;
+    private String department;
+    @ApiModelProperty(value = "年级如:2017级")
+    private String grade;
+    @ApiModelProperty(value = "学历如:本科")
+    private String degree;
+    private int gender;
+    private String realName;
+    @ApiModelProperty(value = "头像")
+    private String avatar;
+    @ApiModelProperty(value = "手机号")
+    private String mobile;
+    private PersonInfoPublic personInfoPublic;
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public String getDegree() {
+        return degree;
+    }
+
+    public void setDegree(String degree) {
+        this.degree = degree;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public PersonInfoPublic getPersonInfoPublic() {
+        return personInfoPublic;
+    }
+
+    public void setPersonInfoPublic(PersonInfoPublic personInfoPublic) {
+        this.personInfoPublic = personInfoPublic;
+    }
 }

@@ -1,6 +1,7 @@
 package cn.superid.tss.dao;
 
 import cn.superid.common.rest.dto.UserInfoDTO;
+import cn.superid.tss.model.UserEntity;
 
 import java.util.Map;
 

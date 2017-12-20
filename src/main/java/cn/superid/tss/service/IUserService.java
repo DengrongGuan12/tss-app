@@ -1,6 +1,5 @@
 package cn.superid.tss.service;
 
-import cn.superid.tss.vo.StudentInfo;
 import cn.superid.tss.vo.UserInfo;
 
 /**

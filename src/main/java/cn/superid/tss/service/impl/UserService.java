@@ -2,21 +2,18 @@ package cn.superid.tss.service.impl;
 
 import cn.superid.common.rest.client.UserClient;
 import cn.superid.common.rest.dto.UserInfoDTO;
-import cn.superid.common.rest.forms.UserListForm;
+import cn.superid.common.utils.BitMapUtil;
 import cn.superid.tss.service.IUserService;
-import cn.superid.tss.vo.StudentInfo;
+import cn.superid.tss.vo.PersonInfoPublic;
 import cn.superid.tss.vo.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.Map;
+import org.springframework.stereotype.Service;
 
 /**
  * @author DengrongGuan
  * @create 2017-12-18 下午1:24
  **/
-@Component
+@Service
 public class UserService implements IUserService{
     @Autowired
     UserClient userClient;
@@ -24,9 +21,16 @@ public class UserService implements IUserService{
     @Override
     public UserInfo getUserInfo(long userId) {
         // 获取用户通用信息
-        UserInfoDTO userInfoDTO = userClient.findById(userId,UserInfoDTO.REALNAME,UserInfoDTO.GENDER,UserInfoDTO.AVATAR);
+        UserInfoDTO userInfoDTO = userClient.findById(userId,UserInfoDTO.REALNAME,UserInfoDTO.GENDER,UserInfoDTO.AVATAR,UserInfoDTO.MOBILE,UserInfoDTO.PERSON_INFO_PUBLIC);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setAvatar(userInfoDTO.getAvatar());
+        userInfo.setGender(userInfoDTO.getGender());
+        userInfo.setMobile(userInfoDTO.getMobile());
+        userInfo.setRealName(userInfoDTO.getRealname());
+        userInfo.setPersonInfoPublic(BitMapUtil.fillDTO(userInfoDTO.getPersonInfoPublic(), PersonInfoPublic.class));
+        
 
-        return null;
+        return userInfo;
     }
 
 }
