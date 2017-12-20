@@ -1,5 +1,6 @@
 package cn.superid.tss.model;
 
+import org.exemodel.annotation.PartitionId;
 import org.exemodel.orm.ExecutableModel;
 
 import javax.persistence.GeneratedValue;
@@ -21,6 +22,7 @@ public class UserEntity extends ExecutableModel{
     private int degree;
     private int type;
 
+    @PartitionId
     public long getId() {
         return id;
     }
