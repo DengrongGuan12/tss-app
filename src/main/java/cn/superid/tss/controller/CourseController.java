@@ -2,7 +2,7 @@ package cn.superid.tss.controller;
 
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.tss.constant.RequestHeaders;
-import cn.superid.tss.constant.RoleType;
+import cn.superid.tss.constant.UserType;
 import cn.superid.tss.vo.CourseDetail;
 import cn.superid.tss.vo.CourseSimple;
 import cn.superid.tss.vo.GroupSimple;
@@ -30,7 +30,7 @@ public class CourseController {
         CourseSimple courseSimple1 = new CourseSimple();
         courseSimple1.setGrade("大一");
         courseSimple1.setName("计算系统基础");
-        courseSimple1.setRoleType(RoleType.STUDENT);
+        courseSimple1.setRoleType(UserType.STUDENT);
         courseSimple1.setTerm("2017");
         List<GroupSimple> groupSimpleList = new ArrayList<>();
         for (int i = 1;i<20;i++){
@@ -44,7 +44,7 @@ public class CourseController {
         CourseSimple courseSimple2 = new CourseSimple();
         courseSimple2.setGrade("大二");
         courseSimple2.setName("操作系统");
-        courseSimple2.setRoleType(RoleType.TUTOR);
+        courseSimple2.setRoleType(UserType.TUTOR);
         courseSimple2.setTerm("2017");
         List<GroupSimple> groupSimpleList2 = new ArrayList<>();
         for (int i = 1;i<20;i++){
