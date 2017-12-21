@@ -1,9 +1,11 @@
 package cn.superid.tss.model;
 
+import org.exemodel.annotation.CacheOrder;
+import org.exemodel.annotation.Cacheable;
 import org.exemodel.annotation.PartitionId;
 import org.exemodel.orm.ExecutableModel;
 
-import javax.persistence.GeneratedValue;
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -12,18 +14,28 @@ import javax.persistence.Table;
  * @create 2017-12-20 下午4:25
  **/
 @Table(name = "user")
+@Cacheable(key = "user")
 public class UserEntity extends ExecutableModel{
-    @Id
     private long id;
+    @CacheOrder(0)
     private String number;
+    @CacheOrder(1)
     private String department;
+    @CacheOrder(2)
     private long departmentId;
+    @CacheOrder(3)
     private long schoolId;
+    @CacheOrder(4)
     private String year;// 入学年份
+    @CacheOrder(5)
     private String grade;// 年级
+    @CacheOrder(6)
     private int degree;
+    @CacheOrder(7)
     private int type;
 
+    @Id
+    @Column(name = "id")
     @PartitionId
     public long getId() {
         return id;

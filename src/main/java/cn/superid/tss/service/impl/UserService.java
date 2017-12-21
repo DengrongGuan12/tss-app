@@ -10,6 +10,8 @@ import cn.superid.tss.service.IUserService;
 import cn.superid.tss.util.DStatement;
 import cn.superid.tss.vo.PersonInfoPublic;
 import cn.superid.tss.vo.UserInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,18 +21,14 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class UserService implements IUserService{
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
     UserClient userClient;
 
     @Override
     public UserInfo getUserInfo(long userId) {
         // 获取用户通用信息
-        UserInfoDTO userInfoDTO = null;
-        try{
-             userInfoDTO = userClient.findById(userId,UserInfoDTO.REALNAME,UserInfoDTO.GENDER,UserInfoDTO.AVATAR,UserInfoDTO.MOBILE,UserInfoDTO.PERSON_INFO_PUBLIC);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        UserInfoDTO userInfoDTO = userClient.findById(userId,UserInfoDTO.REALNAME,UserInfoDTO.GENDER,UserInfoDTO.AVATAR,UserInfoDTO.MOBILE,UserInfoDTO.PERSON_INFO_PUBLIC);
         UserInfo userInfo = new UserInfo();
         userInfo.setAvatar(userInfoDTO.getAvatar());
         userInfo.setGender(userInfoDTO.getGender());
@@ -38,7 +36,7 @@ public class UserService implements IUserService{
         userInfo.setRealName(userInfoDTO.getRealname());
         userInfo.setPersonInfoPublic(BitMapUtil.fillDTO(userInfoDTO.getPersonInfoPublic(), PersonInfoPublic.class));
 
-        UserEntity userEntity = DStatement.build(UserEntity.class).id(userId).selectOne();
+        UserEntity userEntity = DStatement.build(UserEntity.class).partitionId(userId).id(userId).selectOne();
         if (userEntity != null){
             userInfo.setType(UserType.getName(userEntity.getType()));
             userInfo.setDegree(DegreeType.getName(userEntity.getDegree()));
