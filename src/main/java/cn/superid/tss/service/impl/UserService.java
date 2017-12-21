@@ -25,7 +25,12 @@ public class UserService implements IUserService{
     @Override
     public UserInfo getUserInfo(long userId) {
         // 获取用户通用信息
-        UserInfoDTO userInfoDTO = userClient.findById(userId,UserInfoDTO.REALNAME,UserInfoDTO.GENDER,UserInfoDTO.AVATAR,UserInfoDTO.MOBILE,UserInfoDTO.PERSON_INFO_PUBLIC);
+        UserInfoDTO userInfoDTO = null;
+        try{
+             userInfoDTO = userClient.findById(userId,UserInfoDTO.REALNAME,UserInfoDTO.GENDER,UserInfoDTO.AVATAR,UserInfoDTO.MOBILE,UserInfoDTO.PERSON_INFO_PUBLIC);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         UserInfo userInfo = new UserInfo();
         userInfo.setAvatar(userInfoDTO.getAvatar());
         userInfo.setGender(userInfoDTO.getGender());
@@ -34,9 +39,13 @@ public class UserService implements IUserService{
         userInfo.setPersonInfoPublic(BitMapUtil.fillDTO(userInfoDTO.getPersonInfoPublic(), PersonInfoPublic.class));
 
         UserEntity userEntity = DStatement.build(UserEntity.class).id(userId).selectOne();
-        userInfo.setType(UserType.getName(userEntity.getType()));
-        userInfo.setDegree(DegreeType.getName(userEntity.getDegree()));
-        userInfo.setNumber(userEntity.getNumber());
+        if (userEntity != null){
+            userInfo.setType(UserType.getName(userEntity.getType()));
+            userInfo.setDegree(DegreeType.getName(userEntity.getDegree()));
+            userInfo.setNumber(userEntity.getNumber());
+            userInfo.setGrade(userEntity.getGrade()+"级");
+            userInfo.setDepartment(userEntity.getDepartment());
+        }
         return userInfo;
     }
 

@@ -17,6 +17,8 @@ public class UserEntity extends ExecutableModel{
     private long id;
     private String number;
     private String department;
+    private long departmentId;
+    private long schoolId;
     private String year;// 入学年份
     private String grade;// 年级
     private int degree;
@@ -77,5 +79,21 @@ public class UserEntity extends ExecutableModel{
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public long getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(long departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public long getSchoolId() {
+        return schoolId;
+    }
+
+    public void setSchoolId(long schoolId) {
+        this.schoolId = schoolId;
     }
 }

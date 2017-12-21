@@ -20,7 +20,7 @@ public class UserServiceTest {
 
     @Test
     public void testGetUserInfo() {
-        UserInfo userInfo = userService.getUserInfo(20208L);
+        UserInfo userInfo = userService.getUserInfo(0L);
         System.out.println(userInfo.getAvatar());
     }
 

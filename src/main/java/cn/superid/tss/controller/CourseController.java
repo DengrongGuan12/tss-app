@@ -28,6 +28,7 @@ public class CourseController {
         Map<String,Map> result = new LinkedHashMap<>();
         Map<String,List> courseSimpleMap = new LinkedHashMap<>();
         CourseSimple courseSimple1 = new CourseSimple();
+        courseSimple1.setId(1);
         courseSimple1.setGrade("大一");
         courseSimple1.setName("计算系统基础");
         courseSimple1.setRoleType(UserType.getName(0));
@@ -41,6 +42,7 @@ public class CourseController {
         }
         courseSimple1.setGroupSimpleList(groupSimpleList);
         CourseSimple courseSimple2 = new CourseSimple();
+        courseSimple2.setId(2);
         courseSimple2.setGrade("大一");
         courseSimple2.setName("离散数学");
         courseSimple2.setRoleType(UserType.getName(0));
@@ -59,6 +61,7 @@ public class CourseController {
         courseSimpleMap.put("大一",courseSimples);
 
         CourseSimple courseSimple3 = new CourseSimple();
+        courseSimple3.setId(3);
         courseSimple3.setGrade("大二");
         courseSimple3.setName("操作系统");
         courseSimple3.setRoleType(UserType.getName(1));
@@ -84,7 +87,7 @@ public class CourseController {
     public SimpleResponse getCourseDetail(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                           @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                           @RequestParam(value = "courseId") long courseId){
-        return SimpleResponse.ok(new CourseDetail());
+        return SimpleResponse.ok(CourseDetail.mockCourseDetail());
     }
 
     @ApiOperation(value = "获取所有课程", response = CourseSimple.class)

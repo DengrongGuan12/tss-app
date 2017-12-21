@@ -5,6 +5,7 @@ package cn.superid.tss.constant;
  * @create 2017-12-19 上午9:51
  **/
 public enum UserType {
+    NULL("null",-1),
     STUDENT("student",0),
     TEACHER("teacher",1),
     DEAN("dean",2),

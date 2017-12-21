@@ -104,4 +104,19 @@ public class UserInfo {
     public void setPersonInfoPublic(PersonInfoPublic personInfoPublic) {
         this.personInfoPublic = personInfoPublic;
     }
+
+    public static UserInfo mockUserInfo(){
+        UserInfo userInfo = new UserInfo();
+        userInfo.setDegree("本科");
+        userInfo.setDepartment("软件学院");
+        userInfo.setGender(0);
+        userInfo.setGrade("2017级");
+        userInfo.setNumber("MF1632020");
+        userInfo.setRealName("管登荣");
+        userInfo.setAvatar("http://mkpub.oss-cn-hangzhou.aliyuncs.com/user/1000103/small_sdfhYhsdb.png");
+        userInfo.setMobile("15950570277");
+        userInfo.setPersonInfoPublic(PersonInfoPublic.setFalse());
+        userInfo.setType("student");
+        return userInfo;
+    }
 }

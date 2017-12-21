@@ -10,11 +10,12 @@ import java.util.List;
  **/
 @ApiModel
 public class CourseSimple {
+    private long id;
     @ApiModelProperty(value = "学期比如：2017Fall")
     private String term;
     private String grade;
     private String name;
-    @ApiModelProperty(value = "我扮演的角色:teacher,student,tutor")
+    @ApiModelProperty(value = "我扮演的角色:teacher,student,tutor,null")
     private String roleType;
     @ApiModelProperty(value = "小组列表")
     private List<GroupSimple> groupSimpleList;
@@ -57,5 +58,13 @@ public class CourseSimple {
 
     public void setGroupSimpleList(List<GroupSimple> groupSimpleList) {
         this.groupSimpleList = groupSimpleList;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

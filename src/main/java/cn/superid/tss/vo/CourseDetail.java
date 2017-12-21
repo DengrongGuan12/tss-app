@@ -18,8 +18,34 @@ public class CourseDetail {
     private String startDate;
     private String endDate;
     private int credit;
-    @ApiModelProperty(value = "课程类型")
+    @ApiModelProperty(value = "课程类型:required,optional")
     private String courseType;
+    @ApiModelProperty(value = "我扮演的角色:teacher,student,tutor,null")
+    private String roleType;
+
+    public CourseDetail(){}
+
+    public CourseDetail(long id,String name,String number,String description,String term,String grade,String startDate,String endDate,int credit, String courseType,String roleType){
+        this.id = id;
+        this.name = name;
+        this.number = number;
+        this.description = description;
+        this.term = term;
+        this.grade = grade;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.credit = credit;
+        this.courseType = courseType;
+        this.roleType = roleType;
+    }
+
+    public String getRoleType() {
+        return roleType;
+    }
+
+    public void setRoleType(String roleType) {
+        this.roleType = roleType;
+    }
 
     public long getId() {
         return id;
@@ -99,5 +125,9 @@ public class CourseDetail {
 
     public void setCourseType(String courseType) {
         this.courseType = courseType;
+    }
+
+    public static CourseDetail mockCourseDetail(){
+        return new CourseDetail(1,"计算系统基础","834258","计算机入门","2017 Fall","大一","2017年9月1日","2018年6月1日",2,"Optional","student");
     }
 }
