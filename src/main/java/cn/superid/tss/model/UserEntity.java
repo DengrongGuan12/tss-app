@@ -36,7 +36,6 @@ public class UserEntity extends ExecutableModel{
 
     @Id
     @Column(name = "id")
-    @PartitionId
     public long getId() {
         return id;
     }

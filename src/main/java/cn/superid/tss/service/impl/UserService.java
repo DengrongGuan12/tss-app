@@ -36,7 +36,7 @@ public class UserService implements IUserService{
         userInfo.setRealName(userInfoDTO.getRealname());
         userInfo.setPersonInfoPublic(BitMapUtil.fillDTO(userInfoDTO.getPersonInfoPublic(), PersonInfoPublic.class));
 
-        UserEntity userEntity = DStatement.build(UserEntity.class).partitionId(userId).id(userId).selectOne();
+        UserEntity userEntity = DStatement.build(UserEntity.class).id(userId).selectOne();
         if (userEntity != null){
             userInfo.setType(UserType.getName(userEntity.getType()));
             userInfo.setDegree(DegreeType.getName(userEntity.getDegree()));
