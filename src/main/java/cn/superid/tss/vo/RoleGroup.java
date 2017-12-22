@@ -55,7 +55,7 @@ public class RoleGroup {
     }
 
     public static RoleGroup mockStudentGroup(){
-        RoleGroup rg = new RoleGroup("教师",null);
+        RoleGroup rg = new RoleGroup("学生",null);
         rg.addRole(Role.MockStudent());
         rg.addRole(Role.MockStudent());
         rg.addRole(Role.MockStudent());

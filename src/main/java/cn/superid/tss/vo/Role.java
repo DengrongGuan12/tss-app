@@ -21,6 +21,8 @@ public class Role {
 
     private int gender;
 
+
+
     public Role(long id, String title, String username, String number, String avatar, int gender) {
         this.id = id;
         this.title = title;
