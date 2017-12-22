@@ -7,12 +7,12 @@ import cn.superid.tss.annotation.ApiTypeItem;
  * 四位数字
  */
 @ApiType("返回码类型")
+public class ResponseCode {
+
+  @ApiTypeItem("正常")
+  public static final int OK = 0;
   @ApiTypeItem("出错")
   public static final int Error = -1;
-  public class ResponseCode {
-
-    @ApiTypeItem("正常")
-  public static final int OK = 0;
 
   // 捕获的异常 2
   @ApiTypeItem("普通异常")

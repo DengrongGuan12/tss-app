@@ -2,7 +2,6 @@ package cn.superid.tss.model;
 
 import org.exemodel.annotation.CacheOrder;
 import org.exemodel.annotation.Cacheable;
-import org.exemodel.annotation.PartitionId;
 import org.exemodel.orm.ExecutableModel;
 
 import javax.persistence.Column;
@@ -26,12 +25,10 @@ public class UserEntity extends ExecutableModel{
     @CacheOrder(3)
     private long schoolId;
     @CacheOrder(4)
-    private String year;// 入学年份
-    @CacheOrder(5)
     private String grade;// 年级
-    @CacheOrder(6)
+    @CacheOrder(5)
     private int degree;
-    @CacheOrder(7)
+    @CacheOrder(6)
     private int type;
 
     @Id
@@ -58,14 +55,6 @@ public class UserEntity extends ExecutableModel{
 
     public void setDepartment(String department) {
         this.department = department;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
     }
 
     public String getGrade() {
