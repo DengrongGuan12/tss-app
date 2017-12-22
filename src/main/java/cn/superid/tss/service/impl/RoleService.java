@@ -41,7 +41,7 @@ public class RoleService implements IRoleService{
             TODO
             调用superID里的在事务中创建角色，为角色分配用户的接口
          */
-        return 0;
+        return 10001l;
     }
 
     @Override
