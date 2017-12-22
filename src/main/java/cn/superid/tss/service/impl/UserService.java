@@ -41,7 +41,7 @@ public class UserService implements IUserService{
             userInfo.setType(UserType.getName(userEntity.getType()));
             userInfo.setDegree(DegreeType.getName(userEntity.getDegree()));
             userInfo.setNumber(userEntity.getNumber());
-            userInfo.setGrade(userEntity.getGrade()+"级");
+            userInfo.setGrade(userEntity.getYear()+"级");
             userInfo.setDepartment(userEntity.getDepartment());
         }
         return userInfo;

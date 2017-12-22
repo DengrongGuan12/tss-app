@@ -36,6 +36,7 @@ public class ResponseCode {
 
   // 用户 1
   // 课程 7
+  public static final int COURSE_NOT_EXIST = 7000;// 课程不存在
   // 小组 3
   // 文件 4
   // 发布（教学，作业，考试） 5

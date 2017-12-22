@@ -25,7 +25,7 @@ public class UserEntity extends ExecutableModel{
     @CacheOrder(3)
     private long schoolId;
     @CacheOrder(4)
-    private String grade;// 年级
+    private String year;// 入学年份
     @CacheOrder(5)
     private int degree;
     @CacheOrder(6)
@@ -55,14 +55,6 @@ public class UserEntity extends ExecutableModel{
 
     public void setDepartment(String department) {
         this.department = department;
-    }
-
-    public String getGrade() {
-        return grade;
-    }
-
-    public void setGrade(String grade) {
-        this.grade = grade;
     }
 
     public int getDegree() {
@@ -95,5 +87,13 @@ public class UserEntity extends ExecutableModel{
 
     public void setSchoolId(long schoolId) {
         this.schoolId = schoolId;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 }
