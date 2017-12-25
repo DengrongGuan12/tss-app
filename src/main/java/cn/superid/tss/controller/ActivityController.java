@@ -23,6 +23,8 @@ public class ActivityController {
 
     @RequestMapping(value = "/getActivities",method = RequestMethod.GET)
     public SimpleResponse getAllActivities(@RequestParam(value = "courseId") long courseId){
+        List<Activity> activities = activityService.getAllActivites(1234567l);
+        return SimpleResponse.ok(activities);
 
     }
 

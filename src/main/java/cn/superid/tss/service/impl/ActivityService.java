@@ -20,6 +20,8 @@ public class ActivityService implements IActivityService{
         activities.add(Activity.mockActivity("第一次作业","根据第一次课程内容完成以下作业要求",
                 ActivityType.Homework.name()));
 
+        activities.add(Activity.mockActivity("第一次课程","软件工程导论:软件工程的定义；软件工程的历史",
+                ActivityType.Teaching.name()));
 
         return null;
     }
