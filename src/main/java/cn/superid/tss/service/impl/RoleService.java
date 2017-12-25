@@ -1,10 +1,12 @@
 package cn.superid.tss.service.impl;
 
 import cn.superid.tss.service.IRoleService;
+import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,6 +55,15 @@ public class RoleService implements IRoleService{
         调用superID里的在事务中创建角色，为角色分配用户的接口
          */
         return 0;
+    }
+
+    @Override
+    public List<Role> getTeachersOfDepartment(long departmentId) {
+        List<Role> roles = new ArrayList<>();
+        for (int i = 0;i<10;i++){
+            roles.add(Role.MockTeacher());
+        }
+        return roles;
     }
 
 }

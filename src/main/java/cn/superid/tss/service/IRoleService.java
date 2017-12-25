@@ -1,9 +1,8 @@
 package cn.superid.tss.service;
 
+import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public interface IRoleService {
@@ -21,6 +20,14 @@ public interface IRoleService {
         通过邀请码加入课程
      */
     long joinCourseByCode(long userId,long couseId,String code);
+
+    /**
+     * 获取一个课程
+     * @param departmentId
+     * @return
+     */
+
+    List<Role> getTeachersOfDepartment(long departmentId);
 
 
 }
