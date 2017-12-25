@@ -25,7 +25,7 @@ public class UserController {
     }
     @ApiOperation(value = "获取某学院的所有老师", response = Role.class)
     @RequestMapping(value = "/getTeachersOfDepartment", method = RequestMethod.GET)
-    public SimpleResponse getTeachers(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId){
+    public SimpleResponse getTeachersOfDepartment(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId){
         return null;
     }
 
