@@ -1,5 +1,6 @@
 package cn.superid.tss.vo;
 
+import cn.superid.tss.constant.ActivityType;
 import io.swagger.annotations.ApiModel;
 
 import java.sql.Timestamp;
@@ -15,6 +16,8 @@ public class Activity {
 
     private String title;
 
+    private String content;
+
     private long creatorRoleId;
 
     private long createUserId;
@@ -29,12 +32,16 @@ public class Activity {
 
     private String type;
 
-    public Activity(long id, String title,
+
+
+    public Activity(long id, String title, String content,
                     long creatorRoleId, long createUserId,
                     String createRoleTitle, String creatorUserName,
                     Timestamp createTime, String avator, String type) {
         this.id = id;
         this.title = title;
+        this.content = content;
+
         this.creatorRoleId = creatorRoleId;
         this.createUserId = createUserId;
         this.createRoleTitle = createRoleTitle;
@@ -58,6 +65,14 @@ public class Activity {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public long getCreatorRoleId() {
@@ -114,5 +129,13 @@ public class Activity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+
+    public static Activity mockActivity(String title, String content,String type){
+        return new Activity(1234,title,content,1234567l,1234,
+                "教师","刘钦",
+                new Timestamp(System.currentTimeMillis()),"http://mkpub.oss-cn-hangzhou.aliyuncs.com/user/1000103/small_sdfhYhsdb.png",
+                type);
     }
 }
