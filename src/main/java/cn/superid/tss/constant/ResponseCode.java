@@ -35,6 +35,8 @@ public class ResponseCode {
   public static final int UNSUPPORTED_OPERATION_EXCEPTION = 2508;// 不支持的操作异常
 
   // 用户 1
+  public static final int USER_NOT_EXIST = 1000;// 用户不存在
+
   // 课程 7
   public static final int COURSE_NOT_EXIST = 7000;// 课程不存在
   // 小组 3

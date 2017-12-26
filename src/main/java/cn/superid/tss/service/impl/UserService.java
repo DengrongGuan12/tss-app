@@ -4,12 +4,15 @@ import cn.superid.common.rest.client.UserClient;
 import cn.superid.common.rest.dto.UserInfoDTO;
 import cn.superid.common.utils.BitMapUtil;
 import cn.superid.tss.constant.DegreeType;
+import cn.superid.tss.constant.ResponseCode;
 import cn.superid.tss.constant.UserType;
+import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.model.UserEntity;
 import cn.superid.tss.service.IUserService;
 import cn.superid.tss.util.DStatement;
 import cn.superid.tss.vo.PersonInfoPublic;
 import cn.superid.tss.vo.UserInfo;
+import org.apache.log4j.spi.ErrorCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +48,15 @@ public class UserService implements IUserService{
             userInfo.setDepartment(userEntity.getDepartment());
         }
         return userInfo;
+    }
+
+    @Override
+    public long getDepartmentIdOfUser(long userId) {
+        UserEntity userEntity = DStatement.build(UserEntity.class).id(userId).selectOne("departmentId");
+        if (userEntity == null){
+            throw new ErrorCodeException(ResponseCode.USER_NOT_EXIST,"用户不存在");
+        }
+        return userEntity.getDepartmentId();
     }
 
 }
