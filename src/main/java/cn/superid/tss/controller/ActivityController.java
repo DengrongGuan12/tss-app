@@ -10,6 +10,7 @@ import cn.superid.tss.forms.AddTeachingForm;
 import cn.superid.tss.service.IActivityService;
 import cn.superid.tss.service.impl.ActivityService;
 import cn.superid.tss.vo.Activity;
+import cn.superid.tss.vo.Homework;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,27 @@ public class ActivityController {
         List<Activity> activities = activityService.getAllActivites(1234567l);
         return SimpleResponse.ok(activities);
     }
+
+    @ApiOperation(value = "获得活动详情",response = Activity.class)
+    @RequestMapping(value = "/getActivityDetail",method = RequestMethod.GET)
+    public SimpleResponse getActivity(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+                                      @RequestParam(value = "activityId")long activityId){
+        Activity activity =  activityService.getActivity(activityId);
+        return SimpleResponse.ok(activity);
+    }
+
+    @ApiOperation(value = "获得作业详情",response = Homework.class)
+    @RequestMapping(value = "/getHomeworkDetail",method = RequestMethod.GET)
+    public SimpleResponse getHomework(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+                                      @RequestParam(value = "activityId")long activityId){
+        Activity activity =  activityService.getActivity(activityId);
+        return SimpleResponse.ok(activity);
+    }
+
 
 
     @ApiOperation(value = "创建教学",response = Long.class)

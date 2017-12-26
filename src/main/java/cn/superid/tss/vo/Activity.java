@@ -38,7 +38,9 @@ public class Activity {
             "    Project(\"项目活动\",4);")
     private int type;
 
+    public Activity(){
 
+    }
 
     public Activity(long id, String title, String content,
                     long creatorRoleId, long createUserId,
