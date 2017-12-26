@@ -1,7 +1,7 @@
 package cn.superid.tss.vo;
 
-import cn.superid.tss.constant.ActivityType;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.sql.Timestamp;
 
@@ -28,16 +28,22 @@ public class Activity {
 
     private Timestamp createTime;
 
-    private String avator;
 
-    private String type;
+    private String creatorAvatar;
+
+    @ApiModelProperty(value = " Teaching(\"教学\",0),\n" +
+            "    Homework(\"作业\",1),\n" +
+            "    Exam(\"考试\",2),\n" +
+            "    other(\"其他\",3),\n" +
+            "    Project(\"项目活动\",4);")
+    private int type;
 
 
 
     public Activity(long id, String title, String content,
                     long creatorRoleId, long createUserId,
                     String createRoleTitle, String creatorUserName,
-                    Timestamp createTime, String avator, String type) {
+                    Timestamp createTime, String avator, int type) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -47,7 +53,7 @@ public class Activity {
         this.createRoleTitle = createRoleTitle;
         this.creatorUserName = creatorUserName;
         this.createTime = createTime;
-        this.avator = avator;
+        this.creatorAvatar = avator;
         this.type = type;
     }
 
@@ -115,24 +121,24 @@ public class Activity {
         this.createTime = createTime;
     }
 
-    public String getAvator() {
-        return avator;
+    public String getCreatorAvatar() {
+        return creatorAvatar;
     }
 
-    public void setAvator(String avator) {
-        this.avator = avator;
+    public void setCreatorAvatar(String creatorAvatar) {
+        this.creatorAvatar = creatorAvatar;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
 
-    public static Activity mockActivity(String title, String content,String type){
+    public static Activity mockActivity(String title, String content,int type){
         return new Activity(1234,title,content,1234567l,1234,
                 "教师","刘钦",
                 new Timestamp(System.currentTimeMillis()),"http://mkpub.oss-cn-hangzhou.aliyuncs.com/user/1000103/small_sdfhYhsdb.png",

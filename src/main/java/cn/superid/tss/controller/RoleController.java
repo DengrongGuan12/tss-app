@@ -1,5 +1,6 @@
 package cn.superid.tss.controller;
 
+import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.constant.UserType;
@@ -29,6 +30,7 @@ public class RoleController {
     @RequestMapping(value = "/getCourseRole",method = RequestMethod.GET)
     public SimpleResponse getCourseRoleList(@RequestParam(value = "courseId")long courseId){
         logger.info("courseid=" + courseId);
+
         List<RoleGroup> groups = roleService.getRoleByCourseId(courseId);
 
         return SimpleResponse.ok(groups);

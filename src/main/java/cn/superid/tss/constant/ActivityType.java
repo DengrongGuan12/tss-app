@@ -18,4 +18,14 @@ public enum ActivityType {
         this.index = index;
     }
 
+    public String getName(){
+        return this.name;
+    }
+
+    public int getIndex(){
+        return this.index;
+    }
+
+
+
 }
