@@ -21,10 +21,8 @@ public class AddActivityForm {
 
   @NotBlank(message = "发布内容不能为空")
   private String content;
-  @ApiModelProperty(value = "附件地址，多个附件地址以逗号分隔")
-  private String attachmentUrl;
-
-
+  @ApiModelProperty(value = "附件列表")
+  private List<AttachmentForm> attachments;
 
 
   public String getTitle() {
@@ -36,7 +34,6 @@ public class AddActivityForm {
   }
 
 
-
   public String getContent() {
     return content;
   }
@@ -45,15 +42,14 @@ public class AddActivityForm {
     this.content = content;
   }
 
-  public String getAttachmentUrl() {
-    return attachmentUrl;
+
+  public List<AttachmentForm> getAttachments() {
+    return attachments;
   }
 
-  public void setAttachmentUrl(String attachmentUrl) {
-    this.attachmentUrl = attachmentUrl;
+  public void setAttachments(List<AttachmentForm> attachments) {
+    this.attachments = attachments;
   }
-
-
 }
 
 
