@@ -13,6 +13,12 @@ public class ObjectUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(ObjectUtil.class);
 
+    /**
+     * 仅仅用于复制子类信息到父类，之后有需求再加
+     * @param fromObject
+     * @param toClass
+     * @return
+     */
     public static Object deepCopy(Object fromObject,Class toClass){
         Object o = null;
         try {

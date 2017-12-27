@@ -41,7 +41,7 @@ public class UserService implements IUserService{
 
         UserEntity userEntity = DStatement.build(UserEntity.class).id(userId).selectOne();
         if (userEntity != null){
-            userInfo.setType(UserType.getName(userEntity.getType()));
+            userInfo.setType(userEntity.getType());
             userInfo.setDegree(DegreeType.getName(userEntity.getDegree()));
             userInfo.setNumber(userEntity.getNumber());
             userInfo.setGrade(userEntity.getYear()+"级");

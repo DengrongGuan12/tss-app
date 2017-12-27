@@ -33,6 +33,7 @@ public class ResponseCode {
   public static final int SECURITY_EXCEPTION = 2507;// 安全异常
   @ApiTypeItem("不支持的操作异常")
   public static final int UNSUPPORTED_OPERATION_EXCEPTION = 2508;// 不支持的操作异常
+  public static final int PARAM_ERROR = 2509;// 参数错误
 
   // 用户 1
   public static final int USER_NOT_EXIST = 1000;// 用户不存在

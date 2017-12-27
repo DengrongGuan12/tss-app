@@ -1,7 +1,10 @@
 package cn.superid.tss.vo;
 
 
+import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import io.swagger.annotations.ApiModel;
+
+import javax.management.relation.RoleInfo;
 
 /**
  * @author liushao
@@ -23,6 +26,8 @@ public class Role {
 
     private int gender;
 
+    public Role(){}
+
     public Role(long id, long userId, String title, String realName, String number, String avatar, int gender) {
         this.id = id;
         this.userId = userId;
@@ -31,6 +36,15 @@ public class Role {
         this.number = number;
         this.avatar = avatar;
         this.gender = gender;
+    }
+
+    public Role(RoleInfoDTO roleInfoDTO){
+        this.id = roleInfoDTO.getRoleId();
+        this.userId = roleInfoDTO.getUserId();
+        this.title = roleInfoDTO.getRoleTitle();
+        this.realName = roleInfoDTO.getUsername();
+        this.avatar = roleInfoDTO.getAvatar();
+
     }
 
     public long getUserId() {

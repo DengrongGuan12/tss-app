@@ -22,12 +22,20 @@ public interface IRoleService {
     long joinCourseByCode(long userId,long couseId,String code);
 
     /**
-     * 获取一个课程
+     * 获取一个院系下所有的老师
      * @param departmentId
      * @return
      */
 
     List<Role> getTeachersOfDepartment(long departmentId);
+
+    /**
+     * 获取用户在课程中的角色，没有则返回null
+     * @param courseId
+     * @param userId
+     * @return
+     */
+    Role getRoleInCourse(long courseId, long userId);
 
 
 }

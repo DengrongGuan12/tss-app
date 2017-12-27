@@ -62,5 +62,19 @@ public class RoleGroup {
 
         return rg;
     }
+
+    public static RoleGroup mockGroupMember(){
+        RoleGroup rg = new RoleGroup("组员",null);
+        rg.addRole(Role.MockStudent());
+        rg.addRole(Role.MockStudent());
+        rg.addRole(Role.MockStudent());
+        return rg;
+    }
+
+    public static RoleGroup mockGroupLeader(){
+        RoleGroup rg = new RoleGroup("组长",null);
+        rg.addRole(Role.MockStudent());
+        return rg;
+    }
 }
 

@@ -12,6 +12,7 @@ import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboar
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
+ * service 状态： 1 mock 2 已经向本体提接口但本体尚未提供 3 本体完成接口但尚未实际使用
  * @author DengrongGuan
  * @create 2017-12-07 上午10:57
  **/

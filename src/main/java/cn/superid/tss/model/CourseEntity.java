@@ -25,7 +25,7 @@ public class CourseEntity extends ExecutableModel{
     private String year;
     @ApiModelProperty(value = "Spring,Summer,Fall,Winter", required = true)
     private String season;
-    @ApiModelProperty(required = true)
+    @ApiModelProperty(required = true, value = "大一,大二,.....")
     private String grade;
     @ApiModelProperty(required = true)
     private Date startDate;

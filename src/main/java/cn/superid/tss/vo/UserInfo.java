@@ -9,8 +9,8 @@ import io.swagger.annotations.ApiModelProperty;
  **/
 @ApiModel
 public class UserInfo {
-    @ApiModelProperty(value = "类型:teacher,student,dean")
-    private String type;
+    @ApiModelProperty(value = "类型:teacher(1),student(0),dean(2)")
+    private int type;
     private String number;
     private String department;
     @ApiModelProperty(value = "年级如:2017级")
@@ -25,11 +25,11 @@ public class UserInfo {
     private String mobile;
     private PersonInfoPublic personInfoPublic;
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
@@ -116,7 +116,7 @@ public class UserInfo {
         userInfo.setAvatar("http://mkpub.oss-cn-hangzhou.aliyuncs.com/user/1000103/small_sdfhYhsdb.png");
         userInfo.setMobile("15950570277");
         userInfo.setPersonInfoPublic(PersonInfoPublic.setFalse());
-        userInfo.setType("student");
+        userInfo.setType(0);
         return userInfo;
     }
 }

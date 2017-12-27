@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
  **/
 @ApiModel
 public class GroupSimple {
+    private long id;
     private String name;
     @ApiModelProperty(value = "我是否在这个小组里")
     private boolean isMine;
@@ -27,5 +28,28 @@ public class GroupSimple {
 
     public void setMine(boolean mine) {
         isMine = mine;
+    }
+
+    public GroupSimple(){}
+    public GroupSimple(long id, String name, boolean isMine) {
+        this.id = id;
+        this.name = name;
+        this.isMine = isMine;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public static GroupSimple mockMyGroup(){
+        return new GroupSimple(1,"tss小组",true);
+    }
+
+    public static GroupSimple mockOtherGroup(){
+        return new GroupSimple(1,"小组",false);
     }
 }

@@ -24,5 +24,8 @@ public enum UserType {
         }
         return null;
     }
+    public int getIndex(){
+        return this.index;
+    }
 
 }

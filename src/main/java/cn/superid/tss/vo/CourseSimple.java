@@ -15,8 +15,8 @@ public class CourseSimple {
     private String term;
     private String grade;
     private String name;
-    @ApiModelProperty(value = "我扮演的角色:teacher,student,tutor,null")
-    private String roleType;
+    @ApiModelProperty(value = "我扮演的角色:teacher(1),student(0),tutor(3),null(-1)")
+    private int roleType;
     @ApiModelProperty(value = "小组列表")
     private List<GroupSimple> groupSimpleList;
 
@@ -44,11 +44,11 @@ public class CourseSimple {
         this.name = name;
     }
 
-    public String getRoleType() {
+    public int getRoleType() {
         return roleType;
     }
 
-    public void setRoleType(String roleType) {
+    public void setRoleType(int roleType) {
         this.roleType = roleType;
     }
 

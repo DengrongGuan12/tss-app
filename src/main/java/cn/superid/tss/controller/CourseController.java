@@ -32,60 +32,7 @@ public class CourseController {
     @RequestMapping(value = "/getMyCourses", method = RequestMethod.GET)
     public SimpleResponse getMyCourses(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                        @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId){
-        Map<String,Map> result = new LinkedHashMap<>();
-        Map<String,List> courseSimpleMap = new LinkedHashMap<>();
-        CourseSimple courseSimple1 = new CourseSimple();
-        courseSimple1.setId(1);
-        courseSimple1.setGrade("大一");
-        courseSimple1.setName("计算系统基础");
-        courseSimple1.setRoleType(UserType.getName(0));
-        courseSimple1.setTerm("2017");
-        List<GroupSimple> groupSimpleList = new ArrayList<>();
-        for (int i = 1;i<20;i++){
-            GroupSimple groupSimple = new GroupSimple();
-            groupSimple.setMine(false);
-            groupSimple.setName("小组"+i);
-            groupSimpleList.add(groupSimple);
-        }
-        courseSimple1.setGroupSimpleList(groupSimpleList);
-        CourseSimple courseSimple2 = new CourseSimple();
-        courseSimple2.setId(2);
-        courseSimple2.setGrade("大一");
-        courseSimple2.setName("离散数学");
-        courseSimple2.setRoleType(UserType.getName(0));
-        courseSimple2.setTerm("2017");
-        List<GroupSimple> groupSimpleList2 = new ArrayList<>();
-        for (int i = 1;i<20;i++){
-            GroupSimple groupSimple = new GroupSimple();
-            groupSimple.setMine(false);
-            groupSimple.setName("小组"+i);
-            groupSimpleList2.add(groupSimple);
-        }
-        courseSimple2.setGroupSimpleList(groupSimpleList2);
-        List<CourseSimple> courseSimples = new ArrayList<>();
-        courseSimples.add(courseSimple1);
-        courseSimples.add(courseSimple2);
-        courseSimpleMap.put("大一",courseSimples);
-
-        CourseSimple courseSimple3 = new CourseSimple();
-        courseSimple3.setId(3);
-        courseSimple3.setGrade("大二");
-        courseSimple3.setName("操作系统");
-        courseSimple3.setRoleType(UserType.getName(1));
-        courseSimple3.setTerm("2017");
-        List<GroupSimple> groupSimpleList3 = new ArrayList<>();
-        for (int i = 1;i<20;i++){
-            GroupSimple groupSimple = new GroupSimple();
-            groupSimple.setMine(false);
-            groupSimple.setName("小组"+i);
-            groupSimpleList3.add(groupSimple);
-        }
-        courseSimple3.setGroupSimpleList(groupSimpleList3);
-        List<CourseSimple> courseSimples1 = new ArrayList<>();
-        courseSimples1.add(courseSimple3);
-        courseSimpleMap.put("大二",courseSimples1);
-        result.put("2017 FALL",courseSimpleMap);
-        result.put("2017 SUMMER",courseSimpleMap);
+        Map result = courseService.getUserCourses(userId);
         return SimpleResponse.ok(result);
     }
 
@@ -104,23 +51,26 @@ public class CourseController {
         Map<String,Map> result = new LinkedHashMap<>();
         Map<String,List> courseSimpleMap = new LinkedHashMap<>();
         CourseSimple courseSimple1 = new CourseSimple();
+        courseSimple1.setId(1);
         courseSimple1.setGrade("大一");
         courseSimple1.setName("计算系统基础");
-        courseSimple1.setRoleType(UserType.getName(0));
+        courseSimple1.setRoleType(0);
         courseSimple1.setTerm("2017");
         CourseSimple courseSimple2 = new CourseSimple();
+        courseSimple2.setId(2);
         courseSimple2.setGrade("大一");
         courseSimple2.setName("离散数学");
-        courseSimple2.setRoleType(UserType.getName(0));
+        courseSimple2.setRoleType(0);
         courseSimple2.setTerm("2017");
         List<CourseSimple> courseSimples = new ArrayList<>();
         courseSimples.add(courseSimple1);
         courseSimples.add(courseSimple2);
         courseSimpleMap.put("大一",courseSimples);
         CourseSimple courseSimple3 = new CourseSimple();
+        courseSimple3.setId(3);
         courseSimple3.setGrade("大二");
         courseSimple3.setName("操作系统");
-        courseSimple3.setRoleType(UserType.getName(1));
+        courseSimple3.setRoleType(1);
         courseSimple3.setTerm("2017");
         List<CourseSimple> courseSimples1 = new ArrayList<>();
         courseSimples1.add(courseSimple3);
@@ -143,6 +93,7 @@ public class CourseController {
     @RequestMapping(value = "/modifyCourse", method = RequestMethod.POST)
     public SimpleResponse modifyCourse(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                        @RequestBody CourseForm course){
+        //TODO 教务员权限
         courseService.modifyCourse(course);
         return SimpleResponse.ok(null);
     }
