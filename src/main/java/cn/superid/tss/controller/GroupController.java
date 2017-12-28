@@ -33,7 +33,8 @@ public class GroupController {
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                       @RequestParam("name")String name,
                                       @RequestParam("description")String description){
-        // 仅该课程的学生能创建小组，其他不做限制
+        //TODO 仅该课程的学生能创建小组，其他不做限制
+        groupService.createGroup(userId,roleId,courseId,name,description);
         return SimpleResponse.ok(null);
     }
 
