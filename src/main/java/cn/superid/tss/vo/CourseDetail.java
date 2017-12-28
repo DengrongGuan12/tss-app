@@ -1,5 +1,6 @@
 package cn.superid.tss.vo;
 
+import cn.superid.tss.constant.GradeType;
 import cn.superid.tss.model.CourseEntity;
 import cn.superid.tss.util.TimeUtil;
 import io.swagger.annotations.ApiModel;
@@ -54,7 +55,7 @@ public class CourseDetail {
         this.id = courseEntity.getId();
         this.number = courseEntity.getNumber();
         this.term = courseEntity.getYear() + " " + courseEntity.getSeason();
-        this.grade = courseEntity.getGrade();
+        this.grade = GradeType.getName(courseEntity.getGrade());
         this.startDate = TimeUtil.dateToString(courseEntity.getStartDate());
         this.endDate = TimeUtil.dateToString(courseEntity.getEndDate());
         this.credit = courseEntity.getCredit();

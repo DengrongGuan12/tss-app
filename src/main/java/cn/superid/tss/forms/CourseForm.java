@@ -24,7 +24,7 @@ public class CourseForm extends CourseEntity{
     private String description;
     public CourseForm(){}
 
-    public CourseForm(long id, String number, String year, String season, String grade, Date startDate, Date endDate, int credit, String inviteCode, int type, String name, List<Long> teacherList, String description) {
+    public CourseForm(long id, String number, String year, int season, int grade, Date startDate, Date endDate, int credit, String inviteCode, int type, String name, List<Long> teacherList, String description) {
         super(id, number, year, season, grade, startDate, endDate, credit, inviteCode, type);
         this.name = name;
         this.teacherList = teacherList;
@@ -56,7 +56,7 @@ public class CourseForm extends CourseEntity{
     }
 
     public static CourseForm mock(long id){
-        return new CourseForm(id,"124","2015","Fall","大一",new Date(),new Date(),4,null,0,"软件工程",null,null);
+        return new CourseForm(id,"124","2015",2,0,new Date(),new Date(),4,null,0,"软件工程",null,null);
     }
 
 

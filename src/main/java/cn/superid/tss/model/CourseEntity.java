@@ -24,9 +24,9 @@ public class CourseEntity extends ExecutableModel{
     @ApiModelProperty(value = "2017", required = true)
     private String year;
     @ApiModelProperty(value = "Spring,Summer,Fall,Winter", required = true)
-    private String season;
+    private int season;
     @ApiModelProperty(required = true, value = "大一,大二,.....")
-    private String grade;
+    private int grade;
     @ApiModelProperty(required = true)
     private Date startDate;
     @ApiModelProperty(required = true)
@@ -40,10 +40,10 @@ public class CourseEntity extends ExecutableModel{
     public CourseEntity(){}
 
     public static CourseEntity mock(long id){
-        return new CourseEntity(id,"124","2015","Fall","大一",new Date(),new Date(),4,null,0);
+        return new CourseEntity(id,"124","2015",2,0,new Date(),new Date(),4,null,0);
     }
 
-    public CourseEntity(long id, String number, String year, String season, String grade, Date startDate, Date endDate, int credit, String inviteCode, int type) {
+    public CourseEntity(long id, String number, String year, int season, int grade, Date startDate, Date endDate, int credit, String inviteCode, int type) {
         this.id = id;
         this.number = number;
         this.year = year;
@@ -80,19 +80,19 @@ public class CourseEntity extends ExecutableModel{
         this.year = year;
     }
 
-    public String getSeason() {
+    public int getSeason() {
         return season;
     }
 
-    public void setSeason(String season) {
+    public void setSeason(int season) {
         this.season = season;
     }
 
-    public String getGrade() {
+    public int getGrade() {
         return grade;
     }
 
-    public void setGrade(String grade) {
+    public void setGrade(int grade) {
         this.grade = grade;
     }
 

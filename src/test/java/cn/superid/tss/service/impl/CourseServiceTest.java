@@ -17,7 +17,7 @@ public class CourseServiceTest extends BaseTest{
 
     @Test
     public void testGetUserCourses() throws Exception {
-        courseService.getUserCourses(20203L);
+        courseService.getUserCourses(30104L);
     }
 
     @Test

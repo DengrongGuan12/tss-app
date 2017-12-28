@@ -1,5 +1,8 @@
 package cn.superid.tss.vo;
 
+import cn.superid.tss.constant.GradeType;
+import cn.superid.tss.constant.SeasonType;
+import cn.superid.tss.model.CourseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
@@ -11,7 +14,7 @@ import java.util.List;
 @ApiModel
 public class CourseSimple {
     private long id;
-    @ApiModelProperty(value = "学期比如：2017Fall")
+    @ApiModelProperty(value = "学期比如：2017 Fall")
     private String term;
     private String grade;
     private String name;
@@ -66,5 +69,13 @@ public class CourseSimple {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public CourseSimple(){}
+
+    public CourseSimple(CourseEntity courseEntity){
+        this.id = courseEntity.getId();
+        this.term = courseEntity.getYear()+" "+ SeasonType.getName(courseEntity.getSeason());
+        this.grade = GradeType.getName(courseEntity.getGrade());
     }
 }
