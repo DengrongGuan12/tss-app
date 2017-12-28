@@ -28,6 +28,8 @@ public class Attachment {
 
     private Timestamp submitTime;
 
+    public Attachment(){}
+
     public Attachment(long id, String attachmentUrl, String fileName, long activity,
                       long roleId, String roleTile, long userId, String userName, Timestamp submitTime) {
         this.id = id;
