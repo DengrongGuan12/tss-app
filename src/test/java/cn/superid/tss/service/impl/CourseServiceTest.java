@@ -11,23 +11,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.lang.reflect.Field;
 
 
-public class CourseServiceTest extends BaseTest{
+public class CourseServiceTest extends BaseTest {
     @Autowired
     ICourseService courseService;
 
     @Test
     public void testGetUserCourses() throws Exception {
-        courseService.getUserCourses(30104L);
+        courseService.getUserCourses(30720L);
     }
 
     @Test
-    public void testCreateCourse(){
+    public void testCreateCourse() {
         CourseEntity courseEntity = CourseForm.mock(3);
 //        courseEntity.save();
         Field[] fields = courseEntity.getClass().getDeclaredFields();
-        for (Field field:fields){
+        for (Field field : fields) {
 
         }
+    }
+
+    @Test
+    public void testGetCourseDetail() throws Exception {
+        courseService.getCourseDetail(130003);
     }
 
 }

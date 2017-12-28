@@ -52,6 +52,7 @@ spring:
         #enabled: false
         #fail-fast: true
         #default-context: application
+        instanceId: ${spring.cloud.consul.discovery.service-name}-${spring.profiles.active}-${spring.cloud.consul.discovery.ip-address}-${random.value}
       retry:
         initial-interval: 1000
         max-attempts: 4

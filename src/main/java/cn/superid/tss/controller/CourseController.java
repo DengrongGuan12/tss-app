@@ -89,7 +89,7 @@ public class CourseController {
         //TODO 调用courseService
 
         //TODO 调用roleService 设置我在课程中的角色
-        return SimpleResponse.o pk(CourseDetail.mockCourseDetail());
+        return SimpleResponse.ok(CourseDetail.mockCourseDetail());
     }
 
     @ApiOperation(value = "获取所有课程", response = CourseSimple.class)
@@ -151,6 +151,7 @@ public class CourseController {
     public SimpleResponse setInviteCode(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                        @RequestParam long id,
                                        @RequestParam String inviteCode){
+        //TODO 老师权限
         courseService.setInviteCode(id,inviteCode);
         return SimpleResponse.ok(null);
     }

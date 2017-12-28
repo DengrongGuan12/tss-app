@@ -44,11 +44,7 @@ public class CourseService implements ICourseService {
             }
             String[] o1s = o1.split(" ");
             String[] o2s = o2.split(" ");
-            if (Integer.parseInt(o1s[0]) * 10 + SeasonType.getIndex(o1s[1]) > Integer.parseInt(o2s[0]) * 10 + SeasonType.getIndex(o2s[1])) {
-                return 1;
-            } else {
-                return -1;
-            }
+            return Integer.parseInt(o1s[0]) * 10 + SeasonType.getIndex(o1s[1]) > Integer.parseInt(o2s[0]) * 10 + SeasonType.getIndex(o2s[1]) ? -1 : 1;
         });
         UserEntity userEntity = DStatement.build(UserEntity.class).id(userId).selectOne("departmentId");
         //TODO 2 根据事务id获取该事务下我的某种特定类型的所有子事务,需要包含我在本事务中扮演的角色
@@ -117,18 +113,18 @@ public class CourseService implements ICourseService {
 
     @Override
     public long createCourse(CourseForm courseForm) {
-        //TODO 创建事务,调用出错了该怎么中止流程并捕获异常？
+        //TODO 3 创建事务,调用出错了该怎么中止流程并捕获异常？
 
         CourseEntity courseEntity = (CourseEntity) ObjectUtil.deepCopy(courseForm, CourseEntity.class);
         courseEntity.save();
 
-        //TODO 创建课程资料文件夹，调用出错该怎么回滚？
+        //TODO 3 创建课程资料文件夹，调用出错该怎么回滚？
         return 0;
     }
 
     @Override
     public void modifyCourse(CourseForm courseForm) {
-        //TODO 修改事务
+        //TODO 3 修改事务
 
         CourseEntity courseEntity = (CourseEntity) ObjectUtil.deepCopy(courseForm, CourseEntity.class);
         courseEntity.update();

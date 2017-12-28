@@ -6,10 +6,10 @@ package cn.superid.tss.constant;
  **/
 public enum UserType {
     NULL("null",-1),
-    STUDENT("student",0),
-    TEACHER("teacher",1),
-    DEAN("dean",2),
-    TUTOR("tutor",3);
+    STUDENT("student",5),
+    TEACHER("teacher",6),
+    DEAN("dean",7),
+    TUTOR("tutor",8);
     private final String name;
     private final int index;
     UserType(String typeStr,int typeInt){
