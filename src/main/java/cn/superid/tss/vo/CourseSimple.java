@@ -18,7 +18,7 @@ public class CourseSimple {
     private String term;
     private String grade;
     private String name;
-    @ApiModelProperty(value = "我扮演的角色:teacher(1),student(0),tutor(3),null(-1)")
+    @ApiModelProperty(value = "我扮演的角色:teacher(2),student(1),tutor(4),null(-1)")
     private int roleType;
     @ApiModelProperty(value = "小组列表")
     private List<GroupSimple> groupSimpleList;

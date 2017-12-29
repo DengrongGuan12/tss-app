@@ -26,9 +26,11 @@ public class Role {
 
     private int gender;
 
+    private int roleType;
+
     public Role(){}
 
-    public Role(long id, long userId, String title, String realName, String number, String avatar, int gender) {
+    public Role(long id, long userId, String title, String realName, String number, String avatar, int gender,int roleType) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -36,6 +38,7 @@ public class Role {
         this.number = number;
         this.avatar = avatar;
         this.gender = gender;
+        this.roleType = roleType;
     }
 
     public Role(RoleInfoDTO roleInfoDTO){
@@ -44,7 +47,7 @@ public class Role {
         this.title = roleInfoDTO.getRoleTitle();
         this.realName = roleInfoDTO.getUsername();
         this.avatar = roleInfoDTO.getAvatar();
-
+        this.gender = roleInfoDTO.getGender();
     }
 
     public long getUserId() {
@@ -103,16 +106,24 @@ public class Role {
         this.gender = gender;
     }
 
+    public int getRoleType() {
+        return roleType;
+    }
+
+    public void setRoleType(int roleType){
+        this.roleType = roleType;
+    }
+
     public static Role MockTeacher(){
         Role role  = new Role(1234567,123,"教师","刘钦","",
-                "http://mkpub.oss-cn-hangzhou.aliyuncs.com/user/1000103/small_sdfhYhsdb.png",0);
+                "http://mkpub.oss-cn-hangzhou.aliyuncs.com/user/1000103/small_sdfhYhsdb.png",0,2);
         return role;
 
     }
 
     public static Role MockStudent(){
         Role role  = new Role(1234567,123,"学生","管哥","MF1632001",
-                "http://mkpub.oss-cn-hangzhou.aliyuncs.com/user/1000103/small_sdfhYhsdb.png",0);
+                "http://mkpub.oss-cn-hangzhou.aliyuncs.com/user/1000103/small_sdfhYhsdb.png",0,1);
         return role;
     }
 

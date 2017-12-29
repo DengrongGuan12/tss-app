@@ -2,10 +2,12 @@ package cn.superid.tss.service.impl;
 
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.business.AffairDTO;
+import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
 import cn.superid.tss.constant.AffairType;
 import cn.superid.tss.service.IGroupService;
 import cn.superid.tss.vo.GroupDetail;
+import cn.superid.tss.vo.GroupSimple;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,30 +26,53 @@ public class GroupService implements IGroupService {
     BusinessClient businessClient;
 
     @Override
-    public Map<String, List<GroupDetail>> getGroupsByCourseId(long courseId, long userId) {
-        Map<String,List<GroupDetail>> result = new LinkedHashMap<>();
-
-
-        return null;
+    public Map<String, List> getGroupsOfCourse(long courseId, long userId) {
+        List<? extends GroupSimple> myGroups = getMyGroups(courseId,userId,true);
+        Set<Long> myGroupIds = myGroups.stream().map(group -> group.getId()).collect(Collectors.toSet());
+        List<? extends GroupSimple> allGroups = getAllGroups(courseId,true);
+        List<? extends GroupSimple> allOtherGroups = allGroups.stream().filter(group -> ! myGroupIds.contains(group.getId())).collect(Collectors.toList());
+        Map<String,List> result = new LinkedHashMap<>();
+        return result;
     }
 
-    public List<GroupDetail> getMyGroups(long courseId, long userId){
+    public List<? extends GroupSimple> getMyGroups(long courseId, long userId, boolean detailed){
         //TODO 3 获取我的小组:需要描述字段
         List<AffairDTO> myAffairs = businessClient.getMyChildrenAffair(userId, courseId, AffairType.GROUP.getIndex());
-        List<Long> myAffairIds = new ArrayList<>();//用于过滤全部小组
-        List<GroupDetail> myGroups = myAffairs.stream().map(affairDTO -> {
-            List<Role> roles = new ArrayList<>();
-            return new GroupDetail(affairDTO.getId(),affairDTO.getName(),true, null, roles);
+        List<GroupSimple> myGroups = myAffairs.stream().map(affairDTO -> {
+            if (detailed){
+                //TODO 3 获取小组所有角色
+                List<RoleInfoDTO> roleInfoDTOS = businessClient.getAffairAllRoles(affairDTO.getId());
+                //默认是组员
+                final int[] roleType = {6};
+                List<Role> roles = roleInfoDTOS.stream().map(roleInfoDTO -> {
+                    if (roleInfoDTO.getUserId() == userId){
+                        //TODO 2 换成角色类型(mold)
+                        roleType[0] = roleInfoDTO.getType();
+                    }
+                    return new Role(roleInfoDTO);
+                }).collect(Collectors.toList());
+                //TODO 2 添加描述字段
+                return new GroupDetail(affairDTO.getId(),affairDTO.getName(),true, null, roles, roleType[0]);
+            }else{
+                return new GroupSimple(affairDTO.getId(),affairDTO.getName(),true);
+            }
         }).collect(Collectors.toList());
         return myGroups;
     }
 
-    public List<GroupDetail> getAllGroups(long courseId, long userId){
-        //TODO 3 获取该课程下所有小组
+    public List<? extends GroupSimple> getAllGroups(long courseId, boolean detailed){
+        //TODO 3 获取该课程下所有小组（包括自己的小组）
         List<AffairDTO> allAffairs = businessClient.getChildrenAffairByType(courseId, AffairType.GROUP.getIndex());
-        List<GroupDetail> allGroups = allAffairs.stream().map(affairDTO -> {
-            List<Role> roles = new ArrayList<>();
-            return new GroupDetail(affairDTO.getId(),affairDTO.getName(),true, null, roles);
+        List<GroupSimple> allGroups = allAffairs.stream().map(affairDTO -> {
+            if (detailed){
+                //TODO 3 获取小组所有角色
+                List<RoleInfoDTO> roleInfoDTOS = businessClient.getAffairAllRoles(affairDTO.getId());
+                List<Role> roles = roleInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList());
+                //TODO 2 添加描述字段
+                return new GroupDetail(affairDTO.getId(),affairDTO.getName(),false, null, roles, -1);
+            }else{
+                return new GroupSimple(affairDTO.getId(),affairDTO.getName(),false);
+            }
         }).collect(Collectors.toList());
         return allGroups;
     }

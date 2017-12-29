@@ -5,9 +5,9 @@ package cn.superid.tss.constant;
  * @create 2017-12-25 下午4:56
  **/
 public enum AffairType {
-    COURSE(5,"course"),
-    DEPARTMENT(6,"department"),
-    GROUP(7,"group");
+    COURSE(1,"course"),
+    DEPARTMENT(2,"department"),
+    GROUP(3,"group");
 
 
     private final int index;
