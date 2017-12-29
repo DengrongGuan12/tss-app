@@ -46,19 +46,23 @@ public class RoleController {
 
     @ApiOperation(value = "邀请老师",response = SimpleResponse.class)
     @RequestMapping(value = "/inviteTeacher",method = RequestMethod.POST)
-    public SimpleResponse inviteTeacher(@RequestParam(value = "userId") long userId,
-                                        @RequestParam(value = "courseId") long courseId){
-        long roleId = roleService.addToCourse(userId,courseId, UserType.TEACHER.name());
-        return SimpleResponse.ok(roleId);
+    public SimpleResponse inviteTeacher(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                        @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+                                        @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+                                        @RequestParam(value = "userId")long allocatedUserId){
+        long id = roleService.addToCourse(courseId,roleId,allocatedUserId,UserType.TEACHER.getName());
+        return SimpleResponse.ok(id);
     }
 
     @ApiOperation(value = "邀请助教",response = SimpleResponse.class)
     @RequestMapping(value = "/inviteTutor",method = RequestMethod.POST)
-    public SimpleResponse inviteTutor(@RequestParam(value = "userId") long userId,
-                                        @RequestParam(value = "courseId") long courseId){
+    public SimpleResponse inviteTutor(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+                                      @RequestParam(value = "userId")long allocatedUserId){
 
-        long roleId = roleService.addToCourse(userId,courseId, UserType.TUTOR.name());
-        return SimpleResponse.ok(null);
+        long id = roleService.addToCourse(courseId,roleId,allocatedUserId,UserType.TUTOR.getName());
+        return SimpleResponse.ok(id);
     }
 
     @ApiOperation(value = "通过邀请码加入课程",response = SimpleResponse.class)

@@ -28,4 +28,8 @@ public enum UserType {
         return this.index;
     }
 
+    public String getName(){
+        return this.name;
+    }
+
 }

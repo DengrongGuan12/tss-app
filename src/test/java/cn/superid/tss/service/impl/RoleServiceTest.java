@@ -11,10 +11,12 @@ public class RoleServiceTest extends BaseTest{
     IRoleService roleService;
     @Test
     public void testGetRoleByCourseId() throws Exception {
+        roleService.getRoleByCourseId(115708);
     }
 
     @Test
     public void testDeleteRole() throws Exception {
+        roleService.deleteRole(920408,130008);
     }
 
     @Test

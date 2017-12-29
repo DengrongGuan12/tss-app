@@ -6,6 +6,8 @@ import cn.superid.tss.constant.UserType;
 import cn.superid.tss.service.IRoleService;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class RoleService implements IRoleService{
 
     @Autowired
     BusinessClient businessClient;
+    private static final Logger logger = LoggerFactory.getLogger(RoleService.class);
 
     @Override
     public List<RoleGroup> getRoleByCourseId(long courseId) {
@@ -27,6 +30,10 @@ public class RoleService implements IRoleService{
         TODO
         获得基础服务接口，获得一个事务下的所有角色，再进行业务处理
          */
+
+        List<RoleInfoDTO> roles = businessClient.getAffairAllRoles(courseId);
+        logger.info("roles"+roles);
+
         groups.add(RoleGroup.mockTeacherGroup());
         groups.add(RoleGroup.mockStudentGroup());
 
@@ -39,20 +46,18 @@ public class RoleService implements IRoleService{
           TODO
            调用superID的从事务中删除角色的接口
          */
+        boolean result = businessClient.deleteRole(roleId);
+
+
+        return result == true ? 0 : 1 ;
+    }
+
+    @Override
+    public long addToCourse(long courseId, long operatorRoleId, long beAllocatedUserId, String roleTitle) {
 
         return 0;
     }
 
-    @Override
-    public long addToCourse(long userId, long courseId, String roleTitle) {
-
-        /*
-
-            TODO
-            调用superID里的在事务中创建角色，为角色分配用户的接口
-         */
-        return 10001l;
-    }
 
     @Override
     public long joinCourseByCode(long userId, long couseId, String code) {
