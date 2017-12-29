@@ -4,6 +4,7 @@ import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.service.IGroupService;
 import cn.superid.tss.vo.GroupDetail;
+import cn.superid.tss.vo.GroupSimple;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
 import io.swagger.annotations.ApiOperation;
@@ -51,6 +52,7 @@ public class GroupController {
         for (int i = 0;i<10;i++){
             otherGroups.add(GroupDetail.mockOtherGroup());
         }
+//        List<GroupSimple> myGroup2 = groupService.getMyGroups(courseId,userId,true);
         map.put("所有小组",otherGroups);
         return SimpleResponse.ok(map);
     }

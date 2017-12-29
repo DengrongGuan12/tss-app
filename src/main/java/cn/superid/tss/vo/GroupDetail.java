@@ -16,6 +16,8 @@ public class GroupDetail extends GroupSimple{
     private String description;
     @ApiModelProperty(value = "角色列表")
     private List<Role> roles;
+    @ApiModelProperty(value = "我扮演的角色:leader(5),member(6),null(-1)")
+    private int roleType;
 
     public String getDescription() {
         return description;
@@ -33,10 +35,19 @@ public class GroupDetail extends GroupSimple{
         this.roles = roles;
     }
 
-    public GroupDetail(long id, String name,boolean isMine, String description, List<Role> roles) {
+    public int getRoleType() {
+        return roleType;
+    }
+
+    public void setRoleType(int roleType) {
+        this.roleType = roleType;
+    }
+
+    public GroupDetail(long id, String name, boolean isMine, String description, List<Role> roles, int roleType) {
         super(id, name,isMine);
         this.description = description;
         this.roles = roles;
+        this.roleType = roleType;
     }
 
     public static GroupDetail mockMyGroup(){
@@ -44,7 +55,7 @@ public class GroupDetail extends GroupSimple{
         for (int i = 0;i<6;i++){
             roles.add(Role.MockStudent());
         }
-        return new GroupDetail(1,"tss开发小组",true, "tss开发小组tss开发小组tss开发小组tss开发小组tss开发小组",roles);
+        return new GroupDetail(1,"tss开发小组",true, "tss开发小组tss开发小组tss开发小组tss开发小组tss开发小组",roles,5);
     }
 
     public static GroupDetail mockOtherGroup(){
@@ -52,7 +63,7 @@ public class GroupDetail extends GroupSimple{
         for (int i = 0;i<6;i++){
             roles.add(Role.MockStudent());
         }
-        return new GroupDetail(1,"tss开发小组",false, "tss开发小组tss开发小组tss开发小组tss开发小组tss开发小组",roles);
+        return new GroupDetail(1,"tss开发小组",false, "tss开发小组tss开发小组tss开发小组tss开发小组tss开发小组",roles,-1);
     }
 
 
