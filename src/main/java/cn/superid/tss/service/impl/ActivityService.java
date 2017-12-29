@@ -1,11 +1,16 @@
 package cn.superid.tss.service.impl;
 
+import cn.superid.common.rest.client.BusinessClient;
+import cn.superid.common.rest.dto.RichAnnouncementDTO;
 import cn.superid.tss.constant.ActivityType;
 import cn.superid.tss.forms.AddActivityForm;
 import cn.superid.tss.forms.AddHomeworkform;
+import cn.superid.tss.model.ActivityInfoEntity;
 import cn.superid.tss.service.IActivityService;
+import cn.superid.tss.util.DStatement;
 import cn.superid.tss.vo.Activity;
 import cn.superid.tss.vo.Homework;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +20,25 @@ import java.util.List;
 @Service
 public class ActivityService implements IActivityService{
 
+    @Autowired
+    BusinessClient client;
+
     @Override
     public List<Activity> getAllActivites(long courseId) {
         List<Activity> activities = new LinkedList<>();
 
-        activities.add(Activity.mockActivity("第一次作业","根据第一次课程内容完成以下作业要求",
-                ActivityType.Homework.getIndex()));
+//        activities.add(Activity.mockActivity("第一次作业","根据第一次课程内容完成以下作业要求",
+//                ActivityType.Homework.getIndex()));
+//
+//        activities.add(Activity.mockActivity("第一次课程","软件工程导论:软件工程的定义；软件工程的历史",
+//                ActivityType.Teaching.getIndex()));
 
-        activities.add(Activity.mockActivity("第一次课程","软件工程导论:软件工程的定义；软件工程的历史",
-                ActivityType.Teaching.getIndex()));
+        List<RichAnnouncementDTO> announcements = client.getAnnouncements(courseId);
+        for(RichAnnouncementDTO dto : announcements){
+            long id = dto.getId();
+            ActivityInfoEntity entity = DStatement.build(Activity.class).eq("id",id).selectOne();
+        }
+
 
         return activities;
     }

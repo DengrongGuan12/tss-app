@@ -50,7 +50,8 @@ public class RoleController {
                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                         @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                         @RequestParam(value = "userId")long allocatedUserId){
-        long id = roleService.addToCourse(courseId,roleId,allocatedUserId,UserType.TEACHER.getName());
+        long id = roleService.addToCourse(courseId,roleId,allocatedUserId,
+                UserType.TEACHER.getName(),UserType.TEACHER.getIndex());
         return SimpleResponse.ok(id);
     }
 
@@ -61,7 +62,8 @@ public class RoleController {
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                       @RequestParam(value = "userId")long allocatedUserId){
 
-        long id = roleService.addToCourse(courseId,roleId,allocatedUserId,UserType.TUTOR.getName());
+        long id = roleService.addToCourse(courseId,roleId,allocatedUserId,
+                                UserType.TUTOR.getName(),UserType.TUTOR.getIndex());
         return SimpleResponse.ok(id);
     }
 

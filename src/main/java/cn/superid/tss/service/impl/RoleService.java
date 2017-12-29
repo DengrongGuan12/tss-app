@@ -53,14 +53,14 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public long addToCourse(long courseId, long operatorRoleId, long beAllocatedUserId, String roleTitle) {
+    public long addToCourse(long courseId, long operatorRoleId, long beAllocatedUserId, String roleTitle,int roleType){
 
         return 0;
     }
 
 
     @Override
-    public long joinCourseByCode(long userId, long couseId, String code) {
+    public long joinCourseByCode(long userId, long courseId, String code) {
         /*
         TODO
         验证邀请码和课程是否匹配
