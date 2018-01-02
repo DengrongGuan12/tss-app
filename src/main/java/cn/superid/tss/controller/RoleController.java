@@ -29,7 +29,7 @@ public class RoleController {
     @ApiOperation(value = "课程人员页面获得所有成员", response = RoleGroup.class)
     @RequestMapping(value = "/getCourseRole",method = RequestMethod.GET)
     public SimpleResponse getCourseRoleList(@RequestParam(value = "courseId")long courseId){
-        logger.info("courseid=" + courseId);
+        logger.info("courseid {}" ,courseId);
 
         List<RoleGroup> groups = roleService.getRoleByCourseId(courseId);
 
@@ -38,10 +38,10 @@ public class RoleController {
 
     @ApiOperation(value = "从课程里面删除人员",response = SimpleResponse.class)
     @RequestMapping(value = "/deleteRole",method = RequestMethod.POST)
-    public SimpleResponse deleteRoleFromCourse(@RequestParam(value = "roleId")long roleId,
+    public SimpleResponse deleteRoleFromCourse(@RequestParam(value = "toDeleteRoleId")long toDeleteRoleId,
                                                @RequestParam(value = "courseId") long courseId){
-        roleService.deleteRole(roleId,courseId);
-        return SimpleResponse.ok(null);
+        long result = roleService.deleteRole(toDeleteRoleId,courseId);
+        return SimpleResponse.ok(result);
     }
 
     @ApiOperation(value = "邀请老师",response = SimpleResponse.class)
@@ -49,7 +49,7 @@ public class RoleController {
     public SimpleResponse inviteTeacher(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                         @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
-                                        @RequestParam(value = "userId")long allocatedUserId){
+                                        @RequestParam(value = "allocatedUserId")long allocatedUserId){
         long id = roleService.addToCourse(courseId,roleId,allocatedUserId,
                 UserType.TEACHER.getName(),UserType.TEACHER.getIndex());
         return SimpleResponse.ok(id);

@@ -1,17 +1,17 @@
 package cn.superid.tss.service.impl;
 
 import cn.superid.common.rest.client.BusinessClient;
-import cn.superid.common.rest.dto.RichAnnouncementDTO;
+import cn.superid.common.rest.dto.business.AnnouncementDetailDTO;
+import cn.superid.common.rest.dto.business.RichAnnouncementDTO;
 import cn.superid.tss.constant.ActivityType;
 import cn.superid.tss.forms.AddActivityForm;
 import cn.superid.tss.forms.AddHomeworkform;
 import cn.superid.tss.model.ActivityInfoEntity;
+import cn.superid.tss.dao.IActivityDao;
 import cn.superid.tss.service.IActivityService;
-import cn.superid.tss.util.DStatement;
 import cn.superid.tss.vo.Activity;
 import cn.superid.tss.vo.Homework;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -22,6 +22,9 @@ public class ActivityService implements IActivityService{
 
     @Autowired
     BusinessClient client;
+
+    @Autowired
+    IActivityDao activityDao;
 
     @Override
     public List<Activity> getAllActivites(long courseId) {
@@ -34,12 +37,12 @@ public class ActivityService implements IActivityService{
 //                ActivityType.Teaching.getIndex()));
 
         List<RichAnnouncementDTO> announcements = client.getAnnouncements(courseId);
+        //
         for(RichAnnouncementDTO dto : announcements){
             long id = dto.getId();
-            ActivityInfoEntity entity = DStatement.build(Activity.class).eq("id",id).selectOne();
+            ActivityInfoEntity entity = activityDao.getActivityInfoById(id);
+            activities.add(buildActivity(dto,entity));
         }
-
-
         return activities;
     }
 
@@ -63,11 +66,31 @@ public class ActivityService implements IActivityService{
     public Activity getActivity(long activityId) {
         //TODO
         //获得具体发布
+        AnnouncementDetailDTO dto = client.getAnnouncementDetails(activityId);
+
         return Activity.mockActivity("第一次作业","根据第一次课堂内容完成如下",ActivityType.Homework.getIndex());
+
     }
 
     @Override
     public Homework getHomework(long homeworkId) {
         return null;
     }
+
+
+    private Activity buildActivity(RichAnnouncementDTO dto,ActivityInfoEntity entity){
+        return new Activity(dto.getId(),dto.getTitle(),dto.getContent(),
+                dto.getCreatorId(),dto.getCreatorUserId(),dto.getRoleName(),dto.getUsername(),dto.getModifyTime(),
+                dto.getAvatar(),entity.getType());
+
+    }
+
+//    private Activity buildActivity(AnnouncementDetailDTO dto,ActivityInfoEntity entity){
+//        return new Activity(dto.getAnnouncementId(),dto.getTitle(),dto.getContent(),
+//                dto.getCreatorId(),dto.getCreatorUserId(),dto.getCreatorRoleName(),dto.getCreatorUsername(),dto.getModifyTime(),
+//                dto.getCreatorAvatar(),entity.getType());
+//
+//    }
+
+
 }

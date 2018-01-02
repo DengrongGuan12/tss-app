@@ -57,7 +57,7 @@ public class ActivityController {
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                       @RequestParam(value = "activityId")long activityId){
-        Activity activity =  activityService.getActivity(activityId);
+        Homework activity =  activityService.getHomework(activityId);
         return SimpleResponse.ok(activity);
     }
 

@@ -44,6 +44,13 @@ public class ResponseCode {
   // 文件 4
   // 发布（教学，作业，考试） 5
   // 角色 6
+  public static final int DELETE_ROLE_FAILURE = 6001;//删除角色失败
+  public static final int INVITE_ROLE_FAILURE = 6002;//邀请失败
+  public static final int WRONG_INVITECODE = 6003;//错误的邀请码
+  public static final int TEACHERLIST_FAILURE = 6004;//获取教师列表失败
+  public static final int ROLE_IN_COURSE_FAILURE = 6005;//无法在课程中获得此人员
+
+
 
 
 }

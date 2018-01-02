@@ -1,0 +1,15 @@
+package cn.superid.tss.dao.impl;
+
+import cn.superid.tss.model.ActivityInfoEntity;
+import cn.superid.tss.dao.IActivityDao;
+import cn.superid.tss.util.DStatement;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ActivityDao implements IActivityDao{
+
+    @Override
+    public ActivityInfoEntity getActivityInfoById(long id) {
+        return DStatement.build(ActivityInfoEntity.class).eq("id",id).selectOne();
+    }
+}
