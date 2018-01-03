@@ -49,12 +49,12 @@ public class FileController {
                                                    @RequestParam(value = "activityId")long activityId,
                                                    @RequestBody List<AttachmentForm> forms){
 
-        List<Long> ids = fileService.uploadAttachments(forms,activityId,courseId);
-        return SimpleResponse.ok(ids);
+        fileService.uploadAttachments(forms,activityId,courseId,roleId,userId);
+        return SimpleResponse.ok("success");
 
     }
 
-    @ApiOperation(value = "课程活动中上传附件",response = Long.class)
+    @ApiOperation(value = "上传作业",response = Long.class)
     @RequestMapping(value = "/submitHomework",method = RequestMethod.POST)
     public SimpleResponse submitHomework(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                          @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
@@ -62,7 +62,7 @@ public class FileController {
                                          @RequestParam(value = "activityId")long activityId,
                                          @RequestBody SubmitForm form){
         long id = fileService.submitHomework(form,activityId,courseId);
-        return SimpleResponse.ok(id);
+        return SimpleResponse.ok("success");
     }
 
 

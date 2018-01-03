@@ -42,7 +42,10 @@ public class ResponseCode {
   public static final int COURSE_NOT_EXIST = 7000;// 课程不存在
   // 小组 3
   // 文件 4
+  public static final int SUBMIT_HOMEWORK_FAILURE = 4001;//提交作业失败
   // 发布（教学，作业，考试） 5
+  public static final int GET_ACTIVITIES_FAILURE = 50001;//获得课程活动列表失败
+  public static final int GET_ACTIVITY_FAILURE = 50002;//无法获得活动信息
   // 角色 6
   public static final int DELETE_ROLE_FAILURE = 6001;//删除角色失败
   public static final int INVITE_ROLE_FAILURE = 6002;//邀请失败
