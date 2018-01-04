@@ -1,14 +1,19 @@
 package cn.superid.tss.service.impl;
 
 import cn.superid.common.rest.client.BusinessClient;
+import cn.superid.common.rest.client.FileClient;
 import cn.superid.common.rest.dto.business.AffairDTO;
+import cn.superid.common.rest.dto.business.AffairDetailDTO;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
+import cn.superid.common.rest.forms.AffairCreateForm;
+import cn.superid.id_client.IdClient;
 import cn.superid.tss.constant.*;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.forms.CourseForm;
 import cn.superid.tss.model.CourseEntity;
 import cn.superid.tss.model.UserEntity;
 import cn.superid.tss.service.ICourseService;
+import cn.superid.tss.service.IGroupService;
 import cn.superid.tss.util.DStatement;
 import cn.superid.tss.util.ObjectUtil;
 import cn.superid.tss.vo.CourseDetail;
@@ -33,6 +38,15 @@ public class CourseService implements ICourseService {
     @Autowired
     BusinessClient businessClient;
 
+    @Autowired
+    FileClient fileClient;
+
+    @Autowired
+    IdClient idClient;
+
+    @Autowired
+    IGroupService groupService;
+
     private static final Logger logger = LoggerFactory.getLogger(CourseService.class);
     private CourseSimple courseSimple;
 
@@ -47,20 +61,28 @@ public class CourseService implements ICourseService {
             return Integer.parseInt(o1s[0]) * 10 + SeasonType.getIndex(o1s[1]) > Integer.parseInt(o2s[0]) * 10 + SeasonType.getIndex(o2s[1]) ? -1 : 1;
         });
         UserEntity userEntity = DStatement.build(UserEntity.class).id(userId).selectOne("departmentId");
-        //TODO 2 根据事务id获取该事务下我的某种特定类型的所有子事务,需要包含我在本事务中扮演的角色
         List<AffairDTO> affairDTOS = businessClient.getMyChildrenAffair(userId, userEntity.getDepartmentId(), AffairType.COURSE.getIndex(), false);
-        Map<Long, String> affairIdNameMap = affairDTOS.stream().collect(Collectors.toMap(AffairDTO::getId, a -> a.getName(), (k1, k2) -> k1));
+        Map<Long, AffairDTO> affairIdMap = affairDTOS.stream().collect(Collectors.toMap(AffairDTO::getId, a -> a, (k1, k2) -> k1));
         Long[] affairIds = affairDTOS.stream().map(affairDTO -> affairDTO.getId()).toArray(Long[]::new);
         List<CourseEntity> courseEntities = DStatement.build(CourseEntity.class).in("id", affairIds).selectList();
         courseEntities.stream().forEach(courseEntity -> {
+            AffairDTO affairDTO = affairIdMap.get(courseEntity.getId());
             String term = courseEntity.getYear() + " " + SeasonType.getName(courseEntity.getSeason());
             String grade = GradeType.getName(courseEntity.getGrade());
             CourseSimple courseSimple = new CourseSimple(courseEntity);
-            courseSimple.setName(affairIdNameMap.get(courseEntity.getId()));
-            //TODO 2 如果是助教和学生获取课程下我的小组，如果是教师获取所有小组 性能问题
-            List<AffairDTO> groupAffairs = businessClient.getChildrenAffairByType(courseEntity.getId(), AffairType.GROUP.getIndex(), false);
-            //TODO 2 可能需要判断我是否在这个小组里扮演角色
-            List<GroupSimple> groupSimples = groupAffairs.stream().map(affairDTO -> new GroupSimple(affairDTO.getId(), affairDTO.getName(), false)).collect(Collectors.toList());
+            courseSimple.setName(affairDTO.getName());
+            //TODO 3 性能问题
+            RoleInfoDTO roleInfoDTO = affairDTO.getRoleInfoVO();
+            List<? extends GroupSimple> groups;
+            if (roleInfoDTO.getMold() == UserType.STUDENT.getIndex() || roleInfoDTO.getMold() == UserType.TUTOR.getIndex()){
+                groups = groupService.getMyGroups(courseEntity.getId(),userId,false);
+            }else {
+                // 老师获取所有小组
+                groups = groupService.getAllGroups(courseEntity.getId(), false);
+            }
+            List<GroupSimple> groupSimples = groups.stream().map(g -> (GroupSimple)g).collect(Collectors.toList());
+//            List<AffairDTO> groupAffairs = businessClient.getChildrenAffairByType(courseEntity.getId(), AffairType.GROUP.getIndex(), false);
+//            List<GroupSimple> groupSimples = groupAffairs.stream().map(affair -> new GroupSimple(affair.getId(), affair.getName(), false)).collect(Collectors.toList());
             courseSimple.setGroupSimpleList(groupSimples);
             if (result.containsKey(term)) {
                 Map<String, List> gradeCourseMap = result.get(term);
@@ -90,10 +112,14 @@ public class CourseService implements ICourseService {
 
     @Override
     public CourseDetail getCourseDetail(long courseId) {
-        //TODO 2 获取事务详情
+        //TODO 3 获取事务详情
+        AffairDetailDTO affairDetailDTO = businessClient.getAffairDetail(courseId);
 
         CourseEntity courseEntity = DStatement.build(CourseEntity.class).id(courseId).selectOne();
         CourseDetail courseDetail = new CourseDetail(courseEntity);
+
+        courseDetail.setName(affairDetailDTO.getName());
+        courseDetail.setDescription(affairDetailDTO.getDescription());
 
         //TODO 3 获取一个课程的所有教师(获取一个事务下某种特定类型的角色)
         List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(courseId, UserType.TEACHER.getIndex());
@@ -112,13 +138,20 @@ public class CourseService implements ICourseService {
 
 
     @Override
-    public long createCourse(CourseForm courseForm) {
+    public long createCourse(CourseForm courseForm, long roleId) {
         //TODO 3 创建事务,调用出错了该怎么中止流程并捕获异常？
+        long courseId = idClient.nextId("business","affair");
+        AffairCreateForm affairCreateForm = new AffairCreateForm();
+        affairCreateForm.setId(courseId);
+        affairCreateForm.setName(courseForm.getName());
+        affairCreateForm.setDescription(courseForm.getDescription());
+        affairCreateForm.setAffairMold(AffairType.COURSE.getIndex());
+        //TODO 3 创建课程资料文件夹，调用出错该怎么回滚？
 
         CourseEntity courseEntity = (CourseEntity) ObjectUtil.deepCopy(courseForm, CourseEntity.class);
+        courseEntity.setId(courseId);
         courseEntity.save();
-
-        //TODO 3 创建课程资料文件夹，调用出错该怎么回滚？
+        fileClient.addFolder(0,"课程资料", roleId, courseId);
         return 0;
     }
 

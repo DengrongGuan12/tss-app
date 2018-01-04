@@ -15,7 +15,7 @@ import java.util.Date;
  **/
 @Table(name = "course")
 @ApiModel
-public class CourseEntity extends ExecutableModel{
+public class CourseEntity extends CModel{
     @Id
     @Column(name = "id")
     private long id;

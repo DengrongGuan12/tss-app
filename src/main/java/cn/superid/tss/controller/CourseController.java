@@ -6,9 +6,11 @@ import cn.superid.tss.constant.SeasonType;
 import cn.superid.tss.constant.UserType;
 import cn.superid.tss.forms.CourseForm;
 import cn.superid.tss.service.ICourseService;
+import cn.superid.tss.service.IRoleService;
 import cn.superid.tss.vo.CourseDetail;
 import cn.superid.tss.vo.CourseSimple;
 import cn.superid.tss.vo.GroupSimple;
+import cn.superid.tss.vo.Role;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +28,15 @@ public class CourseController {
     @Autowired
     ICourseService courseService;
 
-    @ApiOperation(value="获取我的课程列表",response = CourseSimple.class)
+    @Autowired
+    IRoleService roleService;
+
+    @ApiOperation(value = "获取我的课程列表", response = CourseSimple.class)
     @RequestMapping(value = "/getMyCourses", method = RequestMethod.GET)
     public SimpleResponse getMyCourses(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
-                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId){
-        Map<String,Map> result = new TreeMap<>();
-        Map<String,List> courseSimpleMap = new LinkedHashMap<>();
+                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId) {
+        Map<String, Map> result = new TreeMap<>();
+        Map<String, List> courseSimpleMap = new LinkedHashMap<>();
         CourseSimple courseSimple1 = new CourseSimple();
         courseSimple1.setId(1);
         courseSimple1.setGrade("大一");
@@ -39,8 +44,8 @@ public class CourseController {
         courseSimple1.setRoleType(0);
         courseSimple1.setTerm("2017");
         List<GroupSimple> groupSimpleList = new ArrayList<>();
-        for (int i = 1;i<20;i++){
-            groupSimpleList.add(GroupSimple.mockOtherGroup());
+        for (int i = 1; i < 20; i++) {
+            groupSimpleList.add(GroupSimple.mockOtherGroup(i));
         }
         courseSimple1.setGroupSimpleList(groupSimpleList);
         CourseSimple courseSimple2 = new CourseSimple();
@@ -50,14 +55,14 @@ public class CourseController {
         courseSimple2.setRoleType(0);
         courseSimple2.setTerm("2017");
         List<GroupSimple> groupSimpleList2 = new ArrayList<>();
-        for (int i = 1;i<20;i++){
-            groupSimpleList2.add(GroupSimple.mockOtherGroup());
+        for (int i = 1; i < 20; i++) {
+            groupSimpleList2.add(GroupSimple.mockOtherGroup(i));
         }
         courseSimple2.setGroupSimpleList(groupSimpleList2);
         List<CourseSimple> courseSimples = new ArrayList<>();
         courseSimples.add(courseSimple1);
         courseSimples.add(courseSimple2);
-        courseSimpleMap.put("大一",courseSimples);
+        courseSimpleMap.put("大一", courseSimples);
 
         CourseSimple courseSimple3 = new CourseSimple();
         courseSimple3.setId(3);
@@ -66,38 +71,38 @@ public class CourseController {
         courseSimple3.setRoleType(1);
         courseSimple3.setTerm("2017");
         List<GroupSimple> groupSimpleList3 = new ArrayList<>();
-        for (int i = 1;i<20;i++){
-            GroupSimple groupSimple = new GroupSimple();
-            groupSimple.setMine(false);
-            groupSimple.setName("小组"+i);
-            groupSimpleList3.add(groupSimple);
+        for (int i = 1; i < 20; i++) {
+            groupSimpleList3.add(GroupSimple.mockOtherGroup(i));
         }
         courseSimple3.setGroupSimpleList(groupSimpleList3);
         List<CourseSimple> courseSimples1 = new ArrayList<>();
         courseSimples1.add(courseSimple3);
-        courseSimpleMap.put("大二",courseSimples1);
-        result.put("2017 FALL",courseSimpleMap);
-        result.put("2017 SUMMER",courseSimpleMap);
+        courseSimpleMap.put("大二", courseSimples1);
+        result.put("2017 FALL", courseSimpleMap);
+        result.put("2017 SUMMER", courseSimpleMap);
+//        Map<String,Map> result = courseService.getUserCourses(userId);
         return SimpleResponse.ok(result);
     }
 
-    @ApiOperation(value = "获取课程信息",response = CourseDetail.class)
+    @ApiOperation(value = "获取课程信息", response = CourseDetail.class)
     @RequestMapping(value = "/getCourseDetail", method = RequestMethod.GET)
     public SimpleResponse getCourseDetail(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                           @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
-                                          @RequestParam(value = "courseId") long courseId){
+                                          @RequestParam(value = "courseId") long courseId) {
         //TODO 调用courseService
-
+//        CourseDetail courseDetail = courseService.getCourseDetail(courseId);
         //TODO 调用roleService 设置我在课程中的角色
+//        Role role = roleService.getRoleInAffair(courseId,userId);
+//        courseDetail.setRoleType(role.getRoleType());
         return SimpleResponse.ok(CourseDetail.mockCourseDetail());
     }
 
     @ApiOperation(value = "获取所有课程", response = CourseSimple.class)
     @RequestMapping(value = "/getAllCourses", method = RequestMethod.GET)
     public SimpleResponse getAllCourses(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
-                                        @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId){
-        Map<String,Map> result = new LinkedHashMap<>();
-        Map<String,List> courseSimpleMap = new LinkedHashMap<>();
+                                        @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId) {
+        Map<String, Map> result = new LinkedHashMap<>();
+        Map<String, List> courseSimpleMap = new LinkedHashMap<>();
         CourseSimple courseSimple1 = new CourseSimple();
         courseSimple1.setId(1);
         courseSimple1.setGrade("大一");
@@ -113,7 +118,7 @@ public class CourseController {
         List<CourseSimple> courseSimples = new ArrayList<>();
         courseSimples.add(courseSimple1);
         courseSimples.add(courseSimple2);
-        courseSimpleMap.put("大一",courseSimples);
+        courseSimpleMap.put("大一", courseSimples);
         CourseSimple courseSimple3 = new CourseSimple();
         courseSimple3.setId(3);
         courseSimple3.setGrade("大二");
@@ -122,9 +127,9 @@ public class CourseController {
         courseSimple3.setTerm("2017");
         List<CourseSimple> courseSimples1 = new ArrayList<>();
         courseSimples1.add(courseSimple3);
-        courseSimpleMap.put("大二",courseSimples1);
-        result.put("2017 FALL",courseSimpleMap);
-        result.put("2017 SUMMER",courseSimpleMap);
+        courseSimpleMap.put("大二", courseSimples1);
+        result.put("2017 FALL", courseSimpleMap);
+        result.put("2017 SUMMER", courseSimpleMap);
         return SimpleResponse.ok(result);
     }
 
@@ -132,34 +137,29 @@ public class CourseController {
     @ApiOperation(value = "创建课程", response = SimpleResponse.class)
     @RequestMapping(value = "/createCourse", method = RequestMethod.POST)
     public SimpleResponse createCourse(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
-                                       @RequestBody CourseForm course){
+                                       @RequestBody CourseForm course) {
         courseService.createCourse(course);
         return SimpleResponse.ok(10);
     }
 
-    @ApiOperation(value = "修改课程",response = SimpleResponse.class, notes = "所有值都必传，不管有没有改变")
+    @ApiOperation(value = "修改课程", response = SimpleResponse.class, notes = "所有值都必传，不管有没有改变")
     @RequestMapping(value = "/modifyCourse", method = RequestMethod.POST)
     public SimpleResponse modifyCourse(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
-                                       @RequestBody CourseForm course){
+                                       @RequestBody CourseForm course) {
         //TODO 教务员权限
         courseService.modifyCourse(course);
         return SimpleResponse.ok(null);
     }
 
-    @ApiOperation(value = "设置课程邀请码",response = SimpleResponse.class, notes = "id, inviteCode 必传")
+    @ApiOperation(value = "设置课程邀请码", response = SimpleResponse.class, notes = "id, inviteCode 必传")
     @RequestMapping(value = "/setInviteCode", method = RequestMethod.POST)
     public SimpleResponse setInviteCode(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
-                                       @RequestParam long id,
-                                       @RequestParam String inviteCode){
+                                        @RequestParam long id,
+                                        @RequestParam String inviteCode) {
         //TODO 老师权限
-        courseService.setInviteCode(id,inviteCode);
+        courseService.setInviteCode(id, inviteCode);
         return SimpleResponse.ok(null);
     }
-
-
-
-
-
 
 
 }

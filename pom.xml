@@ -457,8 +457,8 @@
         </dependency>
         <dependency>
             <groupId>cn.superid</groupId>
-            <artifactId>id-generator-sdk</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <artifactId>id-sdk</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>cn.superid</groupId>

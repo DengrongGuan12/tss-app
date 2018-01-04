@@ -1,12 +1,12 @@
 package cn.superid.tss;
 
 import cn.superid.common.rest.client.EnableCommonClient;
+import cn.superid.id_client.core.EnableIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -21,6 +21,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableHystrix
 @EnableHystrixDashboard
 @EnableDiscoveryClient
+@EnableIdGenerator
 @EnableAspectJAutoProxy
 public class WebApplication {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebApplication.class);

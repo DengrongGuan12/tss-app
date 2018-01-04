@@ -11,7 +11,7 @@ import java.sql.Timestamp;
  * @author liushao
  */
 @Table(name = "activity")
-public class ActivityInfoEntity extends ExecutableModel{
+public class ActivityInfoEntity extends CModel{
 
     @Id
     @Column(name = "id")

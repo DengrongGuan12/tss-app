@@ -121,7 +121,7 @@ public class RoleService implements IRoleService{
     public List<Role> getTeachersOfDepartment(long departmentId) {
         List<Role> roles = new ArrayList<>();
         try {
-            List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(departmentId, UserType.DEAN.getIndex());
+            List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(departmentId, UserType.TEACHER.getIndex());
             roleInfoDTOS.stream().forEach(item -> {
                 roles.add(roleTransform(item));
             });

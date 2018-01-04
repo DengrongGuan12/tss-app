@@ -32,7 +32,7 @@ public class CourseServiceTest extends BaseTest {
 
     @Test
     public void testGetCourseDetail() throws Exception {
-        courseService.getCourseDetail(130003);
+        courseService.getCourseDetail(130008);
     }
 
 }

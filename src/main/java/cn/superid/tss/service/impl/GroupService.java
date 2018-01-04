@@ -39,23 +39,23 @@ public class GroupService implements IGroupService {
     }
 
     public List<? extends GroupSimple> getMyGroups(long courseId, long userId, boolean detailed){
-        //TODO 3 获取我的小组:需要描述字段
-        List<AffairDTO> myAffairs = businessClient.getMyChildrenAffair(userId, courseId, AffairType.GROUP.getIndex(), true);
+        //TODO 3 获取我的小组
+        List<AffairDTO> myAffairs = businessClient.getMyChildrenAffair(userId, courseId, AffairType.GROUP.getIndex(), detailed);
         List<GroupSimple> myGroups = myAffairs.stream().map(affairDTO -> {
             if (detailed){
                 //TODO 3 获取小组所有角色
                 List<RoleInfoDTO> roleInfoDTOS = businessClient.getAffairAllRoles(affairDTO.getId());
                 //默认是组员
-                final int[] roleType = {6};
+                final int[] roleType = {UserType.MEMBER.getIndex()};
                 List<Role> roles = roleInfoDTOS.stream().map(roleInfoDTO -> {
                     if (roleInfoDTO.getUserId() == userId){
-                        //TODO 2 换成角色类型(mold)
-                        roleType[0] = roleInfoDTO.getType();
+                        //TODO 3
+                        roleType[0] = roleInfoDTO.getMold();
                     }
                     return new Role(roleInfoDTO);
                 }).collect(Collectors.toList());
-                //TODO 2 添加描述字段
-                return new GroupDetail(affairDTO.getId(),affairDTO.getName(),true, null, roles, roleType[0]);
+                //TODO 3
+                return new GroupDetail(affairDTO.getId(),affairDTO.getName(),true, affairDTO.getDescription(), roles, roleType[0]);
             }else{
                 return new GroupSimple(affairDTO.getId(),affairDTO.getName(),true);
             }
@@ -71,8 +71,8 @@ public class GroupService implements IGroupService {
                 //TODO 3 获取小组所有角色
                 List<RoleInfoDTO> roleInfoDTOS = businessClient.getAffairAllRoles(affairDTO.getId());
                 List<Role> roles = roleInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList());
-                //TODO 2 添加描述字段
-                return new GroupDetail(affairDTO.getId(),affairDTO.getName(),false, null, roles, -1);
+                //TODO 3
+                return new GroupDetail(affairDTO.getId(),affairDTO.getName(),false, affairDTO.getDescription(), roles, -1);
             }else{
                 return new GroupSimple(affairDTO.getId(),affairDTO.getName(),false);
             }
