@@ -3,20 +3,30 @@ package cn.superid.tss.service.impl;
 
 import cn.superid.tss.BaseTest;
 import cn.superid.tss.service.IRoleService;
+import cn.superid.tss.vo.Role;
+import cn.superid.tss.vo.RoleGroup;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 public class RoleServiceTest extends BaseTest{
+
+    private static final Logger logger = LoggerFactory.getLogger(RoleServiceTest.class);
     @Autowired
     IRoleService roleService;
     @Test
     public void testGetRoleByCourseId() throws Exception {
-        roleService.getRoleByCourseId(115708);
+        List<RoleGroup> roles = roleService.getRoleByCourseId(130008);
+        logger.info("roleGroups {}",roles);
+
     }
 
     @Test
     public void testDeleteRole() throws Exception {
-        roleService.deleteRole(920408,130008);
+        roleService.deleteRole(1022203,130008);
     }
 
     @Test

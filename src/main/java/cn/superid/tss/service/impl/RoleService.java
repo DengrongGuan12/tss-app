@@ -131,13 +131,9 @@ public class RoleService implements IRoleService{
 
     @Override
     public Role getRoleInAffair(long affairId, long userId) {
-        //TODO 2 获取用户在事务下的角色
-        return null;
-    }
-    public Role getRoleInCourse(long courseId, long userId) {
         Role r;
         try {
-            List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(courseId, userId);
+            List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(affairId, userId);
             r = roleTransform(infos.get(0));
         } catch (Exception e) {
             throw new ErrorCodeException(ResponseCode.ROLE_IN_COURSE_FAILURE,"无法在课程中获得此人员");
@@ -145,6 +141,7 @@ public class RoleService implements IRoleService{
 
         return r;
     }
+
 
     private Role roleTransform(RoleInfoDTO dto){
         if(null == dto){

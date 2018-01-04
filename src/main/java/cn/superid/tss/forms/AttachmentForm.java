@@ -1,9 +1,14 @@
 package cn.superid.tss.forms;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel
 public class AttachmentForm {
 
+    @ApiModelProperty(value = "文件名")
     private String fileName;
-
+    @ApiModelProperty(value = "文件地址")
     private String url;
 
 
