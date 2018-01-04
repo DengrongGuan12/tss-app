@@ -61,7 +61,7 @@ public class FileController {
                                          @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                          @RequestParam(value = "activityId")long activityId,
                                          @RequestBody SubmitForm form){
-        long id = fileService.submitHomework(form,activityId,courseId);
+        long id = fileService.submitHomework(form,activityId,courseId,roleId,userId);
         return SimpleResponse.ok("success");
     }
 

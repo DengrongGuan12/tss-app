@@ -47,8 +47,6 @@ public class FileService implements IFileService{
 
 
 
-
-
     @Override
     public List<Attachment> getAttachments(long activityId) {
         List<AttachmentEntity> entities = attachmentDao.getAttachmentsByActivityId(activityId);
