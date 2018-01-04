@@ -5,6 +5,7 @@ import cn.superid.common.rest.dto.business.AffairDTO;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
 import cn.superid.tss.constant.AffairType;
+import cn.superid.tss.constant.UserType;
 import cn.superid.tss.service.IGroupService;
 import cn.superid.tss.vo.GroupDetail;
 import cn.superid.tss.vo.GroupSimple;
@@ -32,6 +33,8 @@ public class GroupService implements IGroupService {
         List<? extends GroupSimple> allGroups = getAllGroups(courseId,true);
         List<? extends GroupSimple> allOtherGroups = allGroups.stream().filter(group -> ! myGroupIds.contains(group.getId())).collect(Collectors.toList());
         Map<String,List> result = new LinkedHashMap<>();
+        result.put("我的小组",myGroups);
+        result.put("所有小组",allOtherGroups);
         return result;
     }
 
@@ -94,6 +97,9 @@ public class GroupService implements IGroupService {
         affairCreateForm.setParentAffairId(courseId);
         affairCreateForm.setUserId(userId);
         affairCreateForm.setOperationRoleId(roleId);
+        affairCreateForm.setOwnerRoleMold(UserType.LEADER.getIndex());
+        affairCreateForm.setOwnerRoleTitle("组长");
+        affairCreateForm.setAffairMold(AffairType.GROUP.getIndex());
         return businessClient.createAffair(affairCreateForm);
     }
 }

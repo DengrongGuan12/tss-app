@@ -2,7 +2,11 @@ package cn.superid.tss.controller;
 
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.tss.constant.RequestHeaders;
+import cn.superid.tss.constant.ResponseCode;
+import cn.superid.tss.constant.UserType;
+import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.service.IGroupService;
+import cn.superid.tss.service.IRoleService;
 import cn.superid.tss.vo.GroupDetail;
 import cn.superid.tss.vo.GroupSimple;
 import cn.superid.tss.vo.Role;
@@ -26,6 +30,9 @@ public class GroupController {
 
     @Autowired
     IGroupService groupService;
+
+    @Autowired
+    IRoleService roleService;
 
     @ApiOperation(value = "创建小组", response = SimpleResponse.class)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -61,9 +68,15 @@ public class GroupController {
     @RequestMapping(value = "/exit", method = RequestMethod.GET)
     public SimpleResponse exitGroup(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                     @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
-                                    @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long groupId){
-        // 只有组员能退出小组
-        return SimpleResponse.ok(null);
+                                    @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+                                    @RequestParam long groupId){
+        Role role = roleService.getRoleInAffair(groupId, userId);
+        if (role.getRoleType() == UserType.LEADER.getIndex()){
+            throw new ErrorCodeException(ResponseCode.UNSUPPORTED_OPERATION_EXCEPTION,"只有组员能退出小组");
+        }else{
+            roleService.deleteRole(role.getId(),groupId);
+            return SimpleResponse.ok(null);
+        }
     }
 
     @ApiOperation(value = "删除小组", response = SimpleResponse.class)
@@ -71,7 +84,7 @@ public class GroupController {
     public SimpleResponse deleteGroup(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                     @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long groupId){
-        // 只有组长能删除小组
+        //TODO 只有组长能删除小组
         return SimpleResponse.ok(null);
     }
 

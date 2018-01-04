@@ -30,12 +30,12 @@ public interface IRoleService {
     List<Role> getTeachersOfDepartment(long departmentId);
 
     /**
-     * 获取用户在课程中的角色，没有则返回null
-     * @param courseId
+     * 获取用户在事务中的角色，没有则返回null
+     * @param affairId
      * @param userId
      * @return
      */
-    Role getRoleInCourse(long courseId, long userId);
+    Role getRoleInAffair(long affairId, long userId);
 
 
 }

@@ -84,9 +84,8 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public Role getRoleInCourse(long courseId, long userId) {
+    public Role getRoleInAffair(long affairId, long userId) {
         //TODO 2 获取用户在事务下的角色
-
         return null;
     }
 
