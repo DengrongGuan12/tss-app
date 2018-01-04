@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Table(name = "attachment")
-public class AttachmentEntity extends ExecutableModel{
+public class AttachmentEntity extends CModel{
 
     @Id
     @Column(name = "id")

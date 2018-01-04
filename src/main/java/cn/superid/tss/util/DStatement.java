@@ -34,7 +34,7 @@ public class DStatement extends Statement<DStatement> {
     }
 
     public static long generateId(Class clazz){
-        return idClient.nextId("file", ModelMeta.getModelMeta(clazz).getTableName());
+        return idClient.nextId("tss", ModelMeta.getModelMeta(clazz).getTableName());
     }
 
     public static void setIdClient(IdClient client){

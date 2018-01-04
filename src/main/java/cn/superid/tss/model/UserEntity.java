@@ -14,7 +14,7 @@ import javax.persistence.Table;
  **/
 @Table(name = "user")
 @Cacheable(key = "user")
-public class UserEntity extends ExecutableModel{
+public class UserEntity extends CModel{
     private long id;
     @CacheOrder(0)
     private String number;

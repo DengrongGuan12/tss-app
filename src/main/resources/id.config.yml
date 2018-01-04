@@ -2,6 +2,6 @@ id:
    retry-interval: 1000
    segment: 100
 consul:
-   host: 192.168.1.100
+   host: 192.168.1.204
    port: 8501
    refresh-local: 60000

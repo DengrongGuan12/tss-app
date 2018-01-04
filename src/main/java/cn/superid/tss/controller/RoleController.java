@@ -5,6 +5,7 @@ import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.constant.UserType;
 import cn.superid.tss.service.impl.RoleService;
+import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -87,6 +88,13 @@ public class RoleController {
 
         roleService.deleteRole(roleId,courseId);
         return SimpleResponse.ok(null);
+    }
+
+    @ApiOperation(value = "获取一个用户在事务中的角色,在进入一个课程或小组的时候调用", response = Role.class)
+    @RequestMapping(value = "/getRoleInAffair", method = RequestMethod.GET)
+    public SimpleResponse getRoleInAffair(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                          @RequestParam(value = "affairId")long affairId){
+        return SimpleResponse.ok(Role.MockStudent());
     }
 
 }

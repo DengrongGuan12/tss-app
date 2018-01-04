@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Table(name = "submit")
-public class SubmitEntity extends ExecutableModel{
+public class SubmitEntity extends CModel{
 
 
     @Id
