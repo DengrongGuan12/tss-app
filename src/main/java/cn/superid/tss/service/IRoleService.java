@@ -37,5 +37,7 @@ public interface IRoleService {
      */
     Role getRoleInAffair(long affairId, long userId);
 
+    Role getRoleInCourse(long courseId, long userId);
+
 
 }

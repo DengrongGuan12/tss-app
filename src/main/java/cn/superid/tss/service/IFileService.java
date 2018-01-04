@@ -12,14 +12,13 @@ public interface IFileService {
 
     List<Attachment> getAttachments(long activity);
 
-    List<Long> uploadAttachments(List<AttachmentForm> attachmentFormList,long activityId,long courseId);
+    int uploadAttachments(List<AttachmentForm> attachmentFormList,long activityId,long courseId,long roleId,long userId);
 
-    long submitHomework(SubmitForm form,long activityId,long courseId);
+    long submitHomework(SubmitForm form,long activityId,long courseId,long roleId,long userId);
 
     List<Submit> getSubmits(long activityId);
 
     SubmitCount getSubmitCount(long activityId);
-
 
 
 

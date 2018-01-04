@@ -20,7 +20,7 @@ public class Attachment {
 
     private long roleId;
 
-    private String roleTile;
+    private String roleTitle;
 
     private long userId;
 
@@ -37,7 +37,7 @@ public class Attachment {
         this.fileName = fileName;
         this.activityId = activity;
         this.roleId = roleId;
-        this.roleTile = roleTile;
+        this.roleTitle = roleTile;
         this.userId = userId;
         this.userName = userName;
         this.submitTime = submitTime;
@@ -83,12 +83,12 @@ public class Attachment {
         this.roleId = roleId;
     }
 
-    public String getRoleTile() {
-        return roleTile;
+    public String getRoleTitle() {
+        return roleTitle;
     }
 
-    public void setRoleTile(String roleTile) {
-        this.roleTile = roleTile;
+    public void setRoleTitle(String roleTitle) {
+        this.roleTitle = roleTitle;
     }
 
     public long getUserId() {
