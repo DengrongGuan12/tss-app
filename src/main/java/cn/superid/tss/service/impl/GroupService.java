@@ -40,7 +40,7 @@ public class GroupService implements IGroupService {
 
     public List<? extends GroupSimple> getMyGroups(long courseId, long userId, boolean detailed){
         //TODO 3 获取我的小组:需要描述字段
-        List<AffairDTO> myAffairs = businessClient.getMyChildrenAffair(userId, courseId, AffairType.GROUP.getIndex());
+        List<AffairDTO> myAffairs = businessClient.getMyChildrenAffair(userId, courseId, AffairType.GROUP.getIndex(), true);
         List<GroupSimple> myGroups = myAffairs.stream().map(affairDTO -> {
             if (detailed){
                 //TODO 3 获取小组所有角色
@@ -65,7 +65,7 @@ public class GroupService implements IGroupService {
 
     public List<? extends GroupSimple> getAllGroups(long courseId, boolean detailed){
         //TODO 3 获取该课程下所有小组（包括自己的小组）
-        List<AffairDTO> allAffairs = businessClient.getChildrenAffairByType(courseId, AffairType.GROUP.getIndex());
+        List<AffairDTO> allAffairs = businessClient.getChildrenAffairByType(courseId, AffairType.GROUP.getIndex(), true);
         List<GroupSimple> allGroups = allAffairs.stream().map(affairDTO -> {
             if (detailed){
                 //TODO 3 获取小组所有角色

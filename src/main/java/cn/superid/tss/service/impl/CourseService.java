@@ -48,7 +48,7 @@ public class CourseService implements ICourseService {
         });
         UserEntity userEntity = DStatement.build(UserEntity.class).id(userId).selectOne("departmentId");
         //TODO 2 根据事务id获取该事务下我的某种特定类型的所有子事务,需要包含我在本事务中扮演的角色
-        List<AffairDTO> affairDTOS = businessClient.getMyChildrenAffair(userId, userEntity.getDepartmentId(), AffairType.COURSE.getIndex());
+        List<AffairDTO> affairDTOS = businessClient.getMyChildrenAffair(userId, userEntity.getDepartmentId(), AffairType.COURSE.getIndex(), false);
         Map<Long, String> affairIdNameMap = affairDTOS.stream().collect(Collectors.toMap(AffairDTO::getId, a -> a.getName(), (k1, k2) -> k1));
         Long[] affairIds = affairDTOS.stream().map(affairDTO -> affairDTO.getId()).toArray(Long[]::new);
         List<CourseEntity> courseEntities = DStatement.build(CourseEntity.class).in("id", affairIds).selectList();
@@ -58,7 +58,7 @@ public class CourseService implements ICourseService {
             CourseSimple courseSimple = new CourseSimple(courseEntity);
             courseSimple.setName(affairIdNameMap.get(courseEntity.getId()));
             //TODO 2 如果是助教和学生获取课程下我的小组，如果是教师获取所有小组 性能问题
-            List<AffairDTO> groupAffairs = businessClient.getChildrenAffairByType(courseEntity.getId(), AffairType.GROUP.getIndex());
+            List<AffairDTO> groupAffairs = businessClient.getChildrenAffairByType(courseEntity.getId(), AffairType.GROUP.getIndex(), false);
             //TODO 2 可能需要判断我是否在这个小组里扮演角色
             List<GroupSimple> groupSimples = groupAffairs.stream().map(affairDTO -> new GroupSimple(affairDTO.getId(), affairDTO.getName(), false)).collect(Collectors.toList());
             courseSimple.setGroupSimpleList(groupSimples);
@@ -114,7 +114,7 @@ public class CourseService implements ICourseService {
     @Override
     public long createCourse(CourseForm courseForm) {
         //TODO 3 创建事务,调用出错了该怎么中止流程并捕获异常？
-        
+
         CourseEntity courseEntity = (CourseEntity) ObjectUtil.deepCopy(courseForm, CourseEntity.class);
         courseEntity.save();
 
