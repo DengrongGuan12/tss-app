@@ -65,16 +65,18 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public int deleteRole(long roleId, long courseId) {
+    public int deleteRole(long operateId,long roleId, long courseId) {
 
         boolean result;
         try{
-            result = businessClient.deleteRole(roleId);
+            result = businessClient.deleteRole(operateId,roleId);
         }catch (Exception e){
             throw new ErrorCodeException(ResponseCode.DELETE_ROLE_FAILURE,"删除角色失败");
         }
 
-
+        if(!result){
+            throw new ErrorCodeException(ResponseCode.DELETE_ROLE_FAILURE,"删除角色失败");
+        }
         return result == true ? 0 : 1 ;
     }
 
@@ -86,7 +88,8 @@ public class RoleService implements IRoleService{
             long departmentId = userService.getDepartmentIdOfUser(beAllocatedUserId);
             List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(departmentId, beAllocatedUserId);
             long beAllocatedRoleId = infos.get(0).getRoleId();
-            roleId = businessClient.allocateNewRole(courseId, operatorRoleId, beAllocatedRoleId, roleType, roleTitle);
+            roleId = businessClient.allocateNewRole(courseId, operatorRoleId,
+                    beAllocatedRoleId, roleType, roleTitle);
         }catch (Exception e){
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"邀请角色失败");
         }

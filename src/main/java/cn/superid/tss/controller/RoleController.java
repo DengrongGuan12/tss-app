@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -31,16 +32,22 @@ public class RoleController {
     public SimpleResponse getCourseRoleList(@RequestParam(value = "courseId")long courseId){
         logger.info("courseid {}" ,courseId);
 
-        List<RoleGroup> groups = roleService.getRoleByCourseId(courseId);
+        List<RoleGroup> groups = new LinkedList<>();
+        groups.add(RoleGroup.mockTeacherGroup());
+        groups.add(RoleGroup.mockStudentGroup());
+                //roleService.getRoleByCourseId(courseId);
 
         return SimpleResponse.ok(groups);
     }
 
     @ApiOperation(value = "从课程里面删除人员",response = SimpleResponse.class)
     @RequestMapping(value = "/deleteRole",method = RequestMethod.POST)
-    public SimpleResponse deleteRoleFromCourse(@RequestParam(value = "toDeleteRoleId")long toDeleteRoleId,
-                                               @RequestParam(value = "courseId") long courseId){
-        long result = roleService.deleteRole(toDeleteRoleId,courseId);
+    public SimpleResponse deleteRoleFromCourse(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                               @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+                                               @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+                                                @RequestParam(value = "toDeleteRoleId")long toDeleteRoleId
+                                                ){
+        long result = roleService.deleteRole(roleId,toDeleteRoleId,courseId);
         return SimpleResponse.ok(result);
     }
 
@@ -83,9 +90,9 @@ public class RoleController {
     @RequestMapping(value = "/quitCourse",method = RequestMethod.POST)
     public SimpleResponse quitCourse(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
-                                     @RequestParam(value = "courseId") long courseId){
+                                     @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId){
 
-        roleService.deleteRole(roleId,courseId);
+        roleService.deleteRole(roleId,roleId,courseId);
         return SimpleResponse.ok(null);
     }
 

@@ -9,7 +9,7 @@ public interface IRoleService {
 
     List<RoleGroup> getRoleByCourseId(long courseId);
 
-    int deleteRole(long roleId,long courseId);
+    int deleteRole(long operateId,long roleId,long courseId);
 
     /*
       将一个用户加入到一门课程中
