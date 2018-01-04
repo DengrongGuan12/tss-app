@@ -45,11 +45,11 @@ public class GroupSimple {
         this.id = id;
     }
 
-    public static GroupSimple mockMyGroup(){
-        return new GroupSimple(1,"tss小组",true);
+    public static GroupSimple mockMyGroup(long id){
+        return new GroupSimple(id,"tss小组"+id,true);
     }
 
-    public static GroupSimple mockOtherGroup(){
-        return new GroupSimple(1,"小组",false);
+    public static GroupSimple mockOtherGroup(long id){
+        return new GroupSimple(id,"小组"+id,false);
     }
 }

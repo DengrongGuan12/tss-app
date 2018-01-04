@@ -1,8 +1,6 @@
 package cn.superid.tss.model;
 
-import org.exemodel.annotation.CacheOrder;
 import org.exemodel.annotation.Cacheable;
-import org.exemodel.orm.ExecutableModel;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -16,19 +14,12 @@ import javax.persistence.Table;
 @Cacheable(key = "user")
 public class UserEntity extends CModel{
     private long id;
-    @CacheOrder(0)
     private String number;
-    @CacheOrder(1)
     private String department;
-    @CacheOrder(2)
     private long departmentId;
-    @CacheOrder(3)
     private long schoolId;
-    @CacheOrder(4)
     private String year;// 入学年份
-    @CacheOrder(5)
     private int degree;
-    @CacheOrder(6)
     private int type;
 
     @Id

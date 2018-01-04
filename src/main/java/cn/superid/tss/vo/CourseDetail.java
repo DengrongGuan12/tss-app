@@ -28,8 +28,6 @@ public class CourseDetail {
     private int courseType;
     @ApiModelProperty(value = "我扮演的角色:teacher(1),student(0),tutor(3),null(-1)")
     private int roleType;
-    @ApiModelProperty(value = "我在此事务中的roleId")
-    private int roleId;
     @ApiModelProperty(value = "邀请码，仅教师视角展示")
     private String inviteCode;
 
@@ -37,7 +35,7 @@ public class CourseDetail {
 
     public CourseDetail(){}
 
-    public CourseDetail(long id,String name,String number,String description,String term,String grade,String startDate,String endDate,int credit, int courseType,int roleType, int roleId, List<Role> roles, String inviteCode){
+    public CourseDetail(long id,String name,String number,String description,String term,String grade,String startDate,String endDate,int credit, int courseType,int roleType, List<Role> roles, String inviteCode){
         this.id = id;
         this.name = name;
         this.number = number;
@@ -51,7 +49,6 @@ public class CourseDetail {
         this.roleType = roleType;
         this.teachers = roles;
         this.inviteCode = inviteCode;
-        this.roleId = roleId;
     }
 
     public CourseDetail(CourseEntity courseEntity){
@@ -170,19 +167,11 @@ public class CourseDetail {
         this.inviteCode = inviteCode;
     }
 
-    public int getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
-
     public static CourseDetail mockCourseDetail(){
         List<Role> roles = new ArrayList<>();
         for (int i = 0;i<3;i++){
             roles.add(Role.MockTeacher());
         }
-        return new CourseDetail(1,"计算系统基础","834258","计算机入门","2017 Fall","大一","2017年9月1日","2018年6月1日",2,0,0,10,roles,"wet345");
+        return new CourseDetail(1,"计算系统基础","834258","计算机入门","2017 Fall","大一","2017年9月1日","2018年6月1日",2,0,0,roles,"wet345");
     }
 }

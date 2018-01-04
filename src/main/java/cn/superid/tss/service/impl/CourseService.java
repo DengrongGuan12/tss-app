@@ -1,9 +1,12 @@
 package cn.superid.tss.service.impl;
 
 import cn.superid.common.rest.client.BusinessClient;
+import cn.superid.common.rest.client.FileClient;
 import cn.superid.common.rest.dto.business.AffairDTO;
 import cn.superid.common.rest.dto.business.AffairDetailDTO;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
+import cn.superid.common.rest.forms.AffairCreateForm;
+import cn.superid.id_client.IdClient;
 import cn.superid.tss.constant.*;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.forms.CourseForm;
@@ -36,6 +39,12 @@ public class CourseService implements ICourseService {
     BusinessClient businessClient;
 
     @Autowired
+    FileClient fileClient;
+
+    @Autowired
+    IdClient idClient;
+
+    @Autowired
     IGroupService groupService;
 
     private static final Logger logger = LoggerFactory.getLogger(CourseService.class);
@@ -52,7 +61,6 @@ public class CourseService implements ICourseService {
             return Integer.parseInt(o1s[0]) * 10 + SeasonType.getIndex(o1s[1]) > Integer.parseInt(o2s[0]) * 10 + SeasonType.getIndex(o2s[1]) ? -1 : 1;
         });
         UserEntity userEntity = DStatement.build(UserEntity.class).id(userId).selectOne("departmentId");
-        //TODO 3
         List<AffairDTO> affairDTOS = businessClient.getMyChildrenAffair(userId, userEntity.getDepartmentId(), AffairType.COURSE.getIndex(), false);
         Map<Long, AffairDTO> affairIdMap = affairDTOS.stream().collect(Collectors.toMap(AffairDTO::getId, a -> a, (k1, k2) -> k1));
         Long[] affairIds = affairDTOS.stream().map(affairDTO -> affairDTO.getId()).toArray(Long[]::new);
@@ -64,11 +72,12 @@ public class CourseService implements ICourseService {
             CourseSimple courseSimple = new CourseSimple(courseEntity);
             courseSimple.setName(affairDTO.getName());
             //TODO 3 性能问题
-            RoleInfoDTO roleInfoDTO = affairDTO.getRoleInfoDTO();
+            RoleInfoDTO roleInfoDTO = affairDTO.getRoleInfoVO();
             List<? extends GroupSimple> groups;
             if (roleInfoDTO.getMold() == UserType.STUDENT.getIndex() || roleInfoDTO.getMold() == UserType.TUTOR.getIndex()){
                 groups = groupService.getMyGroups(courseEntity.getId(),userId,false);
             }else {
+                // 老师获取所有小组
                 groups = groupService.getAllGroups(courseEntity.getId(), false);
             }
             List<GroupSimple> groupSimples = groups.stream().map(g -> (GroupSimple)g).collect(Collectors.toList());
@@ -129,13 +138,20 @@ public class CourseService implements ICourseService {
 
 
     @Override
-    public long createCourse(CourseForm courseForm) {
+    public long createCourse(CourseForm courseForm, long roleId) {
         //TODO 3 创建事务,调用出错了该怎么中止流程并捕获异常？
+        long courseId = idClient.nextId("business","affair");
+        AffairCreateForm affairCreateForm = new AffairCreateForm();
+        affairCreateForm.setId(courseId);
+        affairCreateForm.setName(courseForm.getName());
+        affairCreateForm.setDescription(courseForm.getDescription());
+        affairCreateForm.setAffairMold(AffairType.COURSE.getIndex());
+        //TODO 3 创建课程资料文件夹，调用出错该怎么回滚？
 
         CourseEntity courseEntity = (CourseEntity) ObjectUtil.deepCopy(courseForm, CourseEntity.class);
+        courseEntity.setId(courseId);
         courseEntity.save();
-
-        //TODO 3 创建课程资料文件夹，调用出错该怎么回滚？
+        fileClient.addFolder(0,"课程资料", roleId, courseId);
         return 0;
     }
 
