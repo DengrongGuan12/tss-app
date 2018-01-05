@@ -98,7 +98,7 @@ public class GroupService implements IGroupService {
         affairCreateForm.setUserId(userId);
         affairCreateForm.setOperationRoleId(roleId);
         affairCreateForm.setOwnerRoleMold(UserType.LEADER.getIndex());
-        affairCreateForm.setOwnerRoleTitle("组长");
+        affairCreateForm.setOwnerRoleTitle(UserType.LEADER.getName());
         affairCreateForm.setAffairMold(AffairType.GROUP.getIndex());
         return businessClient.createAffair(affairCreateForm);
     }

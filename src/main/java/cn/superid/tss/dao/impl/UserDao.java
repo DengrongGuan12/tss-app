@@ -5,6 +5,8 @@ import cn.superid.tss.model.UserEntity;
 import cn.superid.tss.util.DStatement;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author DengrongGuan
  * @create 2017-12-20 上午10:34
@@ -21,5 +23,10 @@ public class UserDao implements IUserDao{
     public String getNumber(long userId) {
         UserEntity entity =  DStatement.build(UserEntity.class).id(userId).selectOne("number");
         return entity.getNumber();
+    }
+
+    @Override
+    public List<UserEntity> selectUsersByIds(Long[] ids, String... fields) {
+        return DStatement.build(UserEntity.class).in("id", ids).selectList(fields);
     }
 }

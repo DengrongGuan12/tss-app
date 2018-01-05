@@ -6,6 +6,7 @@ import cn.superid.common.utils.BitMapUtil;
 import cn.superid.tss.constant.DegreeType;
 import cn.superid.tss.constant.ResponseCode;
 import cn.superid.tss.constant.UserType;
+import cn.superid.tss.dao.IUserDao;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.model.UserEntity;
 import cn.superid.tss.service.IUserService;
@@ -27,6 +28,8 @@ public class UserService implements IUserService{
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
     UserClient userClient;
+    @Autowired
+    IUserDao userDao;
 
     @Override
     public UserInfo getUserInfo(long userId) {
@@ -39,7 +42,7 @@ public class UserService implements IUserService{
         userInfo.setRealName(userInfoDTO.getRealname());
         userInfo.setPersonInfoPublic(BitMapUtil.fillDTO(userInfoDTO.getPersonInfoPublic(), PersonInfoPublic.class));
 
-        UserEntity userEntity = DStatement.build(UserEntity.class).id(userId).selectOne();
+        UserEntity userEntity = userDao.getUserEntity(userId);
         if (userEntity != null){
             userInfo.setType(userEntity.getType());
             userInfo.setDegree(DegreeType.getName(userEntity.getDegree()));
@@ -52,7 +55,7 @@ public class UserService implements IUserService{
 
     @Override
     public long getDepartmentIdOfUser(long userId) {
-        UserEntity userEntity = DStatement.build(UserEntity.class).id(userId).selectOne("departmentId");
+        UserEntity userEntity = userDao.getUserEntity(userId);
         if (userEntity == null){
             throw new ErrorCodeException(ResponseCode.USER_NOT_EXIST,"用户不存在");
         }

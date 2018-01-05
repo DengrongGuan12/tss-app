@@ -7,6 +7,7 @@ import cn.superid.tss.constant.UserType;
 import cn.superid.tss.forms.CourseForm;
 import cn.superid.tss.service.ICourseService;
 import cn.superid.tss.service.IRoleService;
+import cn.superid.tss.service.IUserService;
 import cn.superid.tss.vo.CourseDetail;
 import cn.superid.tss.vo.CourseSimple;
 import cn.superid.tss.vo.GroupSimple;
@@ -30,6 +31,9 @@ public class CourseController {
 
     @Autowired
     IRoleService roleService;
+
+    @Autowired
+    IUserService userService;
 
     @ApiOperation(value = "获取我的课程列表", response = CourseSimple.class)
     @RequestMapping(value = "/getMyCourses", method = RequestMethod.GET)
@@ -89,9 +93,9 @@ public class CourseController {
     public SimpleResponse getCourseDetail(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                           @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                           @RequestParam(value = "courseId") long courseId) {
-        //TODO 调用courseService
+        //调用courseService
 //        CourseDetail courseDetail = courseService.getCourseDetail(courseId);
-        //TODO 调用roleService 设置我在课程中的角色
+        //调用roleService 设置我在课程中的角色
 //        Role role = roleService.getRoleInAffair(courseId,userId);
 //        courseDetail.setRoleType(role.getRoleType());
         return SimpleResponse.ok(CourseDetail.mockCourseDetail());
@@ -130,6 +134,9 @@ public class CourseController {
         courseSimpleMap.put("大二", courseSimples1);
         result.put("2017 FALL", courseSimpleMap);
         result.put("2017 SUMMER", courseSimpleMap);
+        // 获取我所在的院系id
+//        long departmentId = userService.getDepartmentIdOfUser(userId);
+//        Map<String,Map> result = courseService.getCoursesOfDepartment(departmentId);
         return SimpleResponse.ok(result);
     }
 
@@ -140,16 +147,17 @@ public class CourseController {
                                        @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                        @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long departmentId,
                                        @RequestBody CourseForm course) {
-        courseService.createCourse(course, roleId, departmentId, userId);
+//        long courseId = courseService.createCourse(course, roleId, departmentId, userId);
         return SimpleResponse.ok(10);
     }
 
     @ApiOperation(value = "修改课程", response = SimpleResponse.class, notes = "所有值都必传，不管有没有改变")
     @RequestMapping(value = "/modifyCourse", method = RequestMethod.POST)
     public SimpleResponse modifyCourse(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                        @RequestBody CourseForm course) {
         //TODO 教务员权限
-        courseService.modifyCourse(course);
+        courseService.modifyCourse(course, roleId);
         return SimpleResponse.ok(null);
     }
 
