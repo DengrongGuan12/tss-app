@@ -137,8 +137,10 @@ public class CourseController {
     @ApiOperation(value = "创建课程", response = SimpleResponse.class)
     @RequestMapping(value = "/createCourse", method = RequestMethod.POST)
     public SimpleResponse createCourse(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long departmentId,
                                        @RequestBody CourseForm course) {
-        courseService.createCourse(course);
+        courseService.createCourse(course, roleId, departmentId, userId);
         return SimpleResponse.ok(10);
     }
 

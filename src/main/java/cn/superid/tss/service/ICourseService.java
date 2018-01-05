@@ -12,7 +12,7 @@ import java.util.Map;
 public interface ICourseService {
     Map<String,Map> getUserCourses(long userId);
     CourseDetail getCourseDetail(long courseId);
-    long createCourse(CourseForm courseForm, long roleId);
+    long createCourse(CourseForm courseForm, long roleId, long departmentId, long userId);
     void modifyCourse(CourseForm courseForm);
     void setInviteCode(long id,String inviteCode);
 }

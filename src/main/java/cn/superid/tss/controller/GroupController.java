@@ -74,7 +74,7 @@ public class GroupController {
         if (role.getRoleType() == UserType.LEADER.getIndex()){
             throw new ErrorCodeException(ResponseCode.UNSUPPORTED_OPERATION_EXCEPTION,"只有组员能退出小组");
         }else{
-            roleService.deleteRole(role.getId(),groupId);
+            roleService.deleteRole(role.getId(),role.getId(),groupId);
             return SimpleResponse.ok(null);
         }
     }

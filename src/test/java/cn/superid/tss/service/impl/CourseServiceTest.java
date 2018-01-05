@@ -22,12 +22,14 @@ public class CourseServiceTest extends BaseTest {
 
     @Test
     public void testCreateCourse() {
-        CourseEntity courseEntity = CourseForm.mock(3);
+//        CourseEntity courseEntity = CourseForm.mock(3);
 //        courseEntity.save();
-        Field[] fields = courseEntity.getClass().getDeclaredFields();
-        for (Field field : fields) {
-
-        }
+//        Field[] fields = courseEntity.getClass().getDeclaredFields();
+//        for (Field field : fields) {
+//
+//        }
+        CourseForm courseForm = CourseForm.mock();
+        courseService.createCourse(courseForm, 906213, 115708, 30720);
     }
 
     @Test

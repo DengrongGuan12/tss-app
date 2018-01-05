@@ -31,6 +31,13 @@ public class CourseForm extends CourseEntity{
         this.description = description;
     }
 
+    public CourseForm(String number, String year, int season, int grade, Date startDate, Date endDate, int credit, String inviteCode, int type, String name, List<Long> teacherList, String description) {
+        super(number, year, season, grade, startDate, endDate, credit, inviteCode, type);
+        this.name = name;
+        this.teacherList = teacherList;
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }
@@ -57,6 +64,10 @@ public class CourseForm extends CourseEntity{
 
     public static CourseForm mock(long id){
         return new CourseForm(id,"124","2015",2,0,new Date(),new Date(),4,null,0,"软件工程",null,null);
+    }
+
+    public static CourseForm mock(){
+        return new CourseForm("124","2015",2,0,new Date(),new Date(),4,null,0,"软件工程",null,null);
     }
 
 

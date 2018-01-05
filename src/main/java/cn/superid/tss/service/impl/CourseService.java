@@ -138,7 +138,7 @@ public class CourseService implements ICourseService {
 
 
     @Override
-    public long createCourse(CourseForm courseForm, long roleId) {
+    public long createCourse(CourseForm courseForm, long roleId, long departmentId, long userId) {
         //TODO 3 创建事务,调用出错了该怎么中止流程并捕获异常？
         long courseId = idClient.nextId("business","affair");
         AffairCreateForm affairCreateForm = new AffairCreateForm();
@@ -146,6 +146,12 @@ public class CourseService implements ICourseService {
         affairCreateForm.setName(courseForm.getName());
         affairCreateForm.setDescription(courseForm.getDescription());
         affairCreateForm.setAffairMold(AffairType.COURSE.getIndex());
+        affairCreateForm.setParentAffairId(departmentId);
+        affairCreateForm.setUserId(userId);
+        affairCreateForm.setOperationRoleId(roleId);
+        affairCreateForm.setOwnerRoleTitle(UserType.DEAN.getName());
+        affairCreateForm.setOwnerRoleMold(UserType.DEAN.getIndex());
+        businessClient.createAffair(affairCreateForm);
         //TODO 3 创建课程资料文件夹，调用出错该怎么回滚？
 
         CourseEntity courseEntity = (CourseEntity) ObjectUtil.deepCopy(courseForm, CourseEntity.class);

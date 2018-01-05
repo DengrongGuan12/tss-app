@@ -56,6 +56,18 @@ public class CourseEntity extends CModel{
         this.type = type;
     }
 
+    public CourseEntity(String number, String year, int season, int grade, Date startDate, Date endDate, int credit, String inviteCode, int type){
+        this.number = number;
+        this.year = year;
+        this.season = season;
+        this.grade = grade;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.credit = credit;
+        this.inviteCode = inviteCode;
+        this.type = type;
+    }
+
     public long getId() {
         return id;
     }
