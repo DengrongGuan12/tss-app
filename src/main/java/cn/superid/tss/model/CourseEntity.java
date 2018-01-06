@@ -36,6 +36,7 @@ public class CourseEntity extends CModel{
     private String inviteCode;
     @ApiModelProperty(value = "1:required,0:optional",required = true)
     private int type;
+    private long defaultFolder;
 
     public CourseEntity(){}
 
@@ -146,5 +147,13 @@ public class CourseEntity extends CModel{
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public long getDefaultFolder() {
+        return defaultFolder;
+    }
+
+    public void setDefaultFolder(long defaultFolder) {
+        this.defaultFolder = defaultFolder;
     }
 }
