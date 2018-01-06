@@ -10,9 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 public interface ICourseService {
-    Map<String,Map> getUserCourses(long userId);
+    Map<String, Map> getUserCourses(long userId);
+
+    Map<String, Map> getCoursesOfDepartment(long departmentId);
+
     CourseDetail getCourseDetail(long courseId);
+
     long createCourse(CourseForm courseForm, long roleId, long departmentId, long userId);
-    void modifyCourse(CourseForm courseForm);
-    void setInviteCode(long id,String inviteCode);
+
+    void modifyCourse(CourseForm courseForm, long roleId);
+
+    void setInviteCode(long id, String inviteCode);
 }

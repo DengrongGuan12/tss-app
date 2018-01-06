@@ -59,8 +59,9 @@ public class GroupController {
         for (int i = 0;i<10;i++){
             otherGroups.add(GroupDetail.mockOtherGroup());
         }
-//        List<GroupSimple> myGroup2 = groupService.getMyGroups(courseId,userId,true);
         map.put("所有小组",otherGroups);
+
+//        Map<String,List<GroupDetail>> map = groupService.getGroupsOfCourse(courseId, userId);
         return SimpleResponse.ok(map);
     }
 
@@ -83,16 +84,19 @@ public class GroupController {
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public SimpleResponse deleteGroup(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
-                                    @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long groupId){
+                                    @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+                                      @RequestParam(value = "groupId") long groupId){
         //TODO 只有组长能删除小组
         return SimpleResponse.ok(null);
     }
 
     @ApiOperation(value = "申请加入小组",response = SimpleResponse.class)
-    @RequestMapping(value = "/applyToJoin", method = RequestMethod.GET)
+    @RequestMapping(value = "/applyToJoin", method = RequestMethod.POST)
     public SimpleResponse applyToJoin(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
-                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long groupId){
+                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+                                      @RequestParam(value = "reason")String reason,
+                                      @RequestParam(value = "groupId")long groupId){
         return SimpleResponse.ok(null);
     }
 

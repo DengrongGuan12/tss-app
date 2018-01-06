@@ -6,15 +6,17 @@ import cn.superid.common.rest.dto.business.AffairDTO;
 import cn.superid.common.rest.dto.business.AffairDetailDTO;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
+import cn.superid.common.rest.forms.AffairModifyForm;
 import cn.superid.id_client.IdClient;
 import cn.superid.tss.constant.*;
+import cn.superid.tss.dao.ICourseDao;
+import cn.superid.tss.dao.IUserDao;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.forms.CourseForm;
 import cn.superid.tss.model.CourseEntity;
 import cn.superid.tss.model.UserEntity;
 import cn.superid.tss.service.ICourseService;
 import cn.superid.tss.service.IGroupService;
-import cn.superid.tss.util.DStatement;
 import cn.superid.tss.util.ObjectUtil;
 import cn.superid.tss.vo.CourseDetail;
 import cn.superid.tss.vo.CourseSimple;
@@ -31,6 +33,9 @@ import java.util.stream.Collectors;
 /**
  * @author DengrongGuan
  * @create 2017-12-21 下午2:09
+ *TODO 获取我的课程中的小组列表尚未测试
+ *TODO 创建课程未测试通过
+ *
  **/
 @Service
 public class CourseService implements ICourseService {
@@ -47,11 +52,28 @@ public class CourseService implements ICourseService {
     @Autowired
     IGroupService groupService;
 
+    @Autowired
+    ICourseDao courseDao;
+
+    @Autowired
+    IUserDao userDao;
+
     private static final Logger logger = LoggerFactory.getLogger(CourseService.class);
-    private CourseSimple courseSimple;
 
     @Override
     public Map<String, Map> getUserCourses(long userId) {
+        UserEntity userEntity = userDao.getUserEntity(userId);
+        List<AffairDTO> affairDTOS = businessClient.getMyChildrenAffair(userId, userEntity.getDepartmentId(), AffairType.COURSE.getIndex(), false);
+        return parseAffairsToCourses(affairDTOS,true,userId);
+    }
+
+    @Override
+    public Map<String, Map> getCoursesOfDepartment(long departmentId) {
+        List<AffairDTO> affairDTOS = businessClient.getChildrenAffairByType(departmentId,AffairType.COURSE.getIndex(),false);
+        return parseAffairsToCourses(affairDTOS,false);
+    }
+
+    private Map<String, Map> parseAffairsToCourses(List<AffairDTO> affairDTOS, boolean needGroup, long ... userId){
         Map<String, Map> result = new TreeMap<>((String o1, String o2) -> {
             if (o1.equals(o2)) {
                 return 0;
@@ -60,11 +82,9 @@ public class CourseService implements ICourseService {
             String[] o2s = o2.split(" ");
             return Integer.parseInt(o1s[0]) * 10 + SeasonType.getIndex(o1s[1]) > Integer.parseInt(o2s[0]) * 10 + SeasonType.getIndex(o2s[1]) ? -1 : 1;
         });
-        UserEntity userEntity = DStatement.build(UserEntity.class).id(userId).selectOne("departmentId");
-        List<AffairDTO> affairDTOS = businessClient.getMyChildrenAffair(userId, userEntity.getDepartmentId(), AffairType.COURSE.getIndex(), false);
         Map<Long, AffairDTO> affairIdMap = affairDTOS.stream().collect(Collectors.toMap(AffairDTO::getId, a -> a, (k1, k2) -> k1));
         Long[] affairIds = affairDTOS.stream().map(affairDTO -> affairDTO.getId()).toArray(Long[]::new);
-        List<CourseEntity> courseEntities = DStatement.build(CourseEntity.class).in("id", affairIds).selectList();
+        List<CourseEntity> courseEntities = courseDao.selectCoursesByIds(affairIds);
         courseEntities.stream().forEach(courseEntity -> {
             AffairDTO affairDTO = affairIdMap.get(courseEntity.getId());
             String term = courseEntity.getYear() + " " + SeasonType.getName(courseEntity.getSeason());
@@ -72,18 +92,20 @@ public class CourseService implements ICourseService {
             CourseSimple courseSimple = new CourseSimple(courseEntity);
             courseSimple.setName(affairDTO.getName());
             //TODO 3 性能问题
-            RoleInfoDTO roleInfoDTO = affairDTO.getRoleInfoVO();
-            List<? extends GroupSimple> groups;
-            if (roleInfoDTO.getMold() == UserType.STUDENT.getIndex() || roleInfoDTO.getMold() == UserType.TUTOR.getIndex()){
-                groups = groupService.getMyGroups(courseEntity.getId(),userId,false);
-            }else {
-                // 老师获取所有小组
-                groups = groupService.getAllGroups(courseEntity.getId(), false);
-            }
-            List<GroupSimple> groupSimples = groups.stream().map(g -> (GroupSimple)g).collect(Collectors.toList());
+            if (needGroup){
+                RoleInfoDTO roleInfoDTO = affairDTO.getRoleInfoVO();
+                List<? extends GroupSimple> groups;
+                if (roleInfoDTO.getMold() == UserType.STUDENT.getIndex() || roleInfoDTO.getMold() == UserType.TUTOR.getIndex()){
+                    groups = groupService.getMyGroups(courseEntity.getId(),userId[0],false);
+                }else {
+                    // 老师获取所有小组
+                    groups = groupService.getAllGroups(courseEntity.getId(), false);
+                }
+                List<GroupSimple> groupSimples = groups.stream().map(g -> (GroupSimple)g).collect(Collectors.toList());
 //            List<AffairDTO> groupAffairs = businessClient.getChildrenAffairByType(courseEntity.getId(), AffairType.GROUP.getIndex(), false);
 //            List<GroupSimple> groupSimples = groupAffairs.stream().map(affair -> new GroupSimple(affair.getId(), affair.getName(), false)).collect(Collectors.toList());
-            courseSimple.setGroupSimpleList(groupSimples);
+                courseSimple.setGroupSimpleList(groupSimples);
+            }
             if (result.containsKey(term)) {
                 Map<String, List> gradeCourseMap = result.get(term);
                 if (gradeCourseMap.containsKey(grade)) {
@@ -115,7 +137,7 @@ public class CourseService implements ICourseService {
         //TODO 3 获取事务详情
         AffairDetailDTO affairDetailDTO = businessClient.getAffairDetail(courseId);
 
-        CourseEntity courseEntity = DStatement.build(CourseEntity.class).id(courseId).selectOne();
+        CourseEntity courseEntity = courseDao.selectCourseById(courseId);
         CourseDetail courseDetail = new CourseDetail(courseEntity);
 
         courseDetail.setName(affairDetailDTO.getName());
@@ -124,7 +146,7 @@ public class CourseService implements ICourseService {
         //TODO 3 获取一个课程的所有教师(获取一个事务下某种特定类型的角色)
         List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(courseId, UserType.TEACHER.getIndex());
         Long[] userIds = roleInfoDTOS.stream().map(roleInfoDTO -> roleInfoDTO.getUserId()).toArray(Long[]::new);
-        List<UserEntity> userEntities = DStatement.build(UserEntity.class).in("id", userIds).selectList("id", "number");
+        List<UserEntity> userEntities = userDao.selectUsersByIds(userIds,"id","number");
         Map<Long, String> userIdNumberMap = userEntities.stream().collect(Collectors.toMap(UserEntity::getId, a -> a.getNumber(), (k1, k2) -> k1));
         List<Role> teachers = new ArrayList<>();
         roleInfoDTOS.stream().forEach(roleInfoDTO -> {
@@ -156,15 +178,20 @@ public class CourseService implements ICourseService {
 
         CourseEntity courseEntity = (CourseEntity) ObjectUtil.deepCopy(courseForm, CourseEntity.class);
         courseEntity.setId(courseId);
-        courseEntity.save();
+        courseDao.addCourse(courseEntity);
         fileClient.addFolder(0,"课程资料", roleId, courseId);
-        return 0;
+        return courseId;
     }
 
     @Override
-    public void modifyCourse(CourseForm courseForm) {
-        //TODO 3 修改事务
-
+    public void modifyCourse(CourseForm courseForm, long roleId) {
+        AffairModifyForm affairModifyForm = new AffairModifyForm();
+        affairModifyForm.setOperationRoleId(roleId);
+        affairModifyForm.setId(courseForm.getId());
+        affairModifyForm.setName(courseForm.getName());
+        affairModifyForm.setDescription(courseForm.getDescription());
+        businessClient.modifyAffair(affairModifyForm);
+        //TODO 2 回滚操作
         CourseEntity courseEntity = (CourseEntity) ObjectUtil.deepCopy(courseForm, CourseEntity.class);
         courseEntity.update();
     }
@@ -174,7 +201,7 @@ public class CourseService implements ICourseService {
         if (null == inviteCode || inviteCode.length() == 0 || inviteCode.length() > 10) {
             throw new ErrorCodeException(ResponseCode.PARAM_ERROR, "邀请码不能为空且长度必须小于10");
         }
-        CourseEntity courseEntity = DStatement.build(CourseEntity.class).id(id).selectOne();
+        CourseEntity courseEntity = courseDao.selectCourseById(id);
         if (courseEntity == null) {
             throw new ErrorCodeException(ResponseCode.COURSE_NOT_EXIST, "课程不存在");
         }
