@@ -4,7 +4,6 @@ package cn.superid.tss.service.impl;
 import cn.superid.tss.BaseTest;
 import cn.superid.tss.constant.UserType;
 import cn.superid.tss.service.IRoleService;
-import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -27,17 +26,18 @@ public class RoleServiceTest extends BaseTest{
 
     @Test
     public void testDeleteRole() throws Exception {
-        roleService.deleteRole(1022203,1022203,130008);
+        roleService.deleteRole(1022603,1022603,130008);
     }
 
     @Test
     public void testAddToCourse() throws Exception {
-        roleService.addToCourse(130008,1022505,31011,
+        roleService.addMember(130008,1022505,31011,
                 UserType.STUDENT.getChName(),UserType.STUDENT.getIndex());
     }
 
     @Test
     public void testJoinCourseByCode() throws Exception {
+        roleService.joinCourseByCode(31011,130008,"123gdf43");
     }
 
     @Test

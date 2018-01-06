@@ -1,6 +1,5 @@
 package cn.superid.tss.controller;
 
-import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.constant.UserType;
@@ -58,7 +57,7 @@ public class RoleController {
                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                         @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                         @RequestParam(value = "allocatedUserId")long allocatedUserId){
-        long id = roleService.addToCourse(courseId,roleId,allocatedUserId,
+        long id = roleService.addMember(courseId,roleId,allocatedUserId,
                 UserType.TEACHER.getName(),UserType.TEACHER.getIndex());
         return SimpleResponse.ok(id);
     }
@@ -70,7 +69,7 @@ public class RoleController {
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                       @RequestParam(value = "userId")long allocatedUserId){
 
-        long id = roleService.addToCourse(courseId,roleId,allocatedUserId,
+        long id = roleService.addMember(courseId,roleId,allocatedUserId,
                                 UserType.TUTOR.getName(),UserType.TUTOR.getIndex());
         return SimpleResponse.ok(id);
     }

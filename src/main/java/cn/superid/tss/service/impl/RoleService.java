@@ -81,7 +81,7 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public long addToCourse(long courseId, long operatorRoleId, long beAllocatedUserId, String roleTitle,int roleType){
+    public long addMember(long courseId, long operatorRoleId, long beAllocatedUserId, String roleTitle, int roleType){
         long roleId;
         try {
 
