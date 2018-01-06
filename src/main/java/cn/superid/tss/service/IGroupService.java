@@ -17,4 +17,7 @@ public interface IGroupService {
     List<RoleGroup> getRolesOfGroup(long groupId);
 
     long createGroup(long userId, long roleId, long courseId, String name, String description);
+
+    void deleteGroup(long groupId);
+
 }

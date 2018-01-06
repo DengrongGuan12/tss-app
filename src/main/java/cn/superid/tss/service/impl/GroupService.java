@@ -14,6 +14,7 @@ import cn.superid.tss.vo.RoleGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.RoleInfo;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -82,9 +83,17 @@ public class GroupService implements IGroupService {
 
     @Override
     public List<RoleGroup> getRolesOfGroup(long groupId) {
+        //TODO 3
         List<RoleGroup> roleGroups = new ArrayList<>();
-        roleGroups.add(RoleGroup.mockGroupLeader());
-        roleGroups.add(RoleGroup.mockGroupMember());
+        List<RoleInfoDTO> leaderInfoDTOS = businessClient.getRolesByType(groupId, UserType.LEADER.getIndex());
+        List<RoleInfoDTO> memberInfoDTOS = businessClient.getRolesByType(groupId, UserType.MEMBER.getIndex());
+        List<RoleInfoDTO> tutorInfoDTOS = businessClient.getRolesByType(groupId, UserType.TUTOR.getIndex());
+        roleGroups.add(new RoleGroup(UserType.LEADER.getName(),
+                leaderInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList())));
+        roleGroups.add(new RoleGroup(UserType.MEMBER.getName(),
+                memberInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList())));
+        roleGroups.add(new RoleGroup(UserType.TUTOR.getName(),
+                tutorInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList())));
         return roleGroups;
     }
 
@@ -101,5 +110,11 @@ public class GroupService implements IGroupService {
         affairCreateForm.setOwnerRoleTitle(UserType.LEADER.getName());
         affairCreateForm.setAffairMold(AffairType.GROUP.getIndex());
         return businessClient.createAffair(affairCreateForm);
+    }
+
+    @Override
+    public void deleteGroup(long groupId) {
+        //TODO 2 删除事务
+
     }
 }

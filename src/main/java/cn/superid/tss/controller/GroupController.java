@@ -97,6 +97,7 @@ public class GroupController {
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                       @RequestParam(value = "reason")String reason,
                                       @RequestParam(value = "groupId")long groupId){
+        //TODO 1
         return SimpleResponse.ok(null);
     }
 
@@ -106,6 +107,7 @@ public class GroupController {
                                  @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                  @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long groupId,
                                  @RequestParam("userId")long invitedId){
+        roleService.addMember(groupId, roleId, invitedId, UserType.MEMBER.getName(), UserType.MEMBER.getIndex());
         return SimpleResponse.ok(null);
     }
 
@@ -115,7 +117,11 @@ public class GroupController {
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long groupId){
 
-        return SimpleResponse.ok(groupService.getRolesOfGroup(groupId));
+        List<RoleGroup> roleGroups = new ArrayList<>();
+        roleGroups.add(RoleGroup.mockGroupLeader());
+        roleGroups.add(RoleGroup.mockGroupMember());
+//        List<RoleGroup> roleGroups = groupService.getRolesOfGroup(groupId);
+        return SimpleResponse.ok(roleGroups);
     }
 
 
