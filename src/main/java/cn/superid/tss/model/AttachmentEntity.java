@@ -17,6 +17,8 @@ public class AttachmentEntity extends CModel{
     private String attachmentUrl;
     @Column(name = "filename")
     private String fileName;
+    @Column(name = "size")
+    private double size;
     @Column(name = "activity_id")
     private long activityId;
     @Column(name = "role_id")
@@ -30,12 +32,13 @@ public class AttachmentEntity extends CModel{
     @Column(name = "submit_time")
     private Timestamp submitTime;
 
-    public AttachmentEntity(long id, String attachmentUrl, String fileName,
+    public AttachmentEntity(long id, String attachmentUrl, String fileName,double size,
                             long activityId, long roleId, String roleTitle,
                             long userId, String userName, Timestamp submitTime) {
         this.id = id;
         this.attachmentUrl = attachmentUrl;
         this.fileName = fileName;
+        this.size = size;
         this.activityId = activityId;
         this.roleId = roleId;
         this.roleTitle = roleTitle;
@@ -114,5 +117,13 @@ public class AttachmentEntity extends CModel{
 
     public void setSubmitTime(Timestamp submitTime) {
         this.submitTime = submitTime;
+    }
+
+    public double getSize() {
+        return size;
+    }
+
+    public void setSize(double size) {
+        this.size = size;
     }
 }

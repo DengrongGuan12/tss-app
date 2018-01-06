@@ -12,7 +12,6 @@ import cn.superid.tss.model.ActivityInfoEntity;
 import cn.superid.tss.dao.IActivityDao;
 import cn.superid.tss.service.IActivityService;
 import cn.superid.tss.vo.Activity;
-import cn.superid.tss.vo.Homework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,15 +38,15 @@ public class ActivityService implements IActivityService{
         List<RichAnnouncementDTO> announcements;
         try {
             announcements = client.getAnnouncements(courseId);
+            announcements.stream().forEach(item->{
+                long id = item.getId();
+                ActivityInfoEntity entity = activityDao.getActivityInfoById(id);
+                activities.add(buildActivity(item,entity));
+            });
         } catch (Exception e) {
             throw new ErrorCodeException(ResponseCode.GET_ACTIVITIES_FAILURE,"获得课程活动列表失败");
         }
 
-        announcements.stream().forEach(item->{
-            long id = item.getId();
-            ActivityInfoEntity entity = activityDao.getActivityInfoById(id);
-            activities.add(buildActivity(item,entity));
-        });
         return activities;
     }
 
@@ -82,21 +81,21 @@ public class ActivityService implements IActivityService{
         return buildActivity(dto,entity);
     }
 
-    @Override
-    public Homework getHomework(long homeworkId) {
-        AnnouncementDetailDTO dto;
-        ActivityInfoEntity entity;
-        try {
-            dto = client.getAnnouncementDetails(homeworkId);
-            entity = activityDao.getActivityInfoById(homeworkId);
-        } catch (Exception e) {
-            throw new ErrorCodeException(ResponseCode.GET_ACTIVITY_FAILURE,"无法获得活动信息");
-        }
-
-        return buildHomework(dto,entity);
-
-
-    }
+//    @Override
+//    public Homework getHomework(long homeworkId) {
+//        AnnouncementDetailDTO dto;
+//        ActivityInfoEntity entity;
+//        try {
+//            dto = client.getAnnouncementDetails(homeworkId);
+//            entity = activityDao.getActivityInfoById(homeworkId);
+//        } catch (Exception e) {
+//            throw new ErrorCodeException(ResponseCode.GET_ACTIVITY_FAILURE,"无法获得活动信息");
+//        }
+//
+//        return buildHomework(dto,entity);
+//
+//
+//    }
 
 
     private Activity buildActivity(RichAnnouncementDTO dto,ActivityInfoEntity entity){
@@ -109,16 +108,10 @@ public class ActivityService implements IActivityService{
     private Activity buildActivity(AnnouncementDetailDTO dto,ActivityInfoEntity entity){
         return new Activity(dto.getAnnouncementId(),dto.getTitle(),dto.getContent(),
                 dto.getCreatorId(),dto.getCreatorUserId(),dto.getCreatorRoleName(),dto.getCreatorUsername(),dto.getModifyTime(),
-                dto.getCreatorAvatar(),entity.getType());
+                dto.getCreatorAvatar(),entity.getDeadline(),entity.getHomeworkType(),entity.getType());
 
     }
 
-    private Homework buildHomework(AnnouncementDetailDTO dto,ActivityInfoEntity entity){
-        return new Homework(dto.getAnnouncementId(),dto.getTitle(),dto.getContent(),
-                dto.getCreatorId(),dto.getCreatorUserId(),dto.getCreatorRoleName(),dto.getCreatorUsername(),dto.getModifyTime(),
-                dto.getCreatorAvatar(),entity.getType(),entity.getDeadline(),entity.getHomeworkType());
-
-    }
 
 
 

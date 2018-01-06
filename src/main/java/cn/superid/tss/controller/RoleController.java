@@ -71,7 +71,7 @@ public class RoleController {
 
         long id = roleService.addMember(courseId,roleId,allocatedUserId,
                                 UserType.TUTOR.getName(),UserType.TUTOR.getIndex());
-        return SimpleResponse.ok(id);
+        return SimpleResponse.ok("successs");
     }
 
     @ApiOperation(value = "通过邀请码加入课程",response = SimpleResponse.class)

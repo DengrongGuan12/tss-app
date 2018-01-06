@@ -10,7 +10,6 @@ import cn.superid.tss.forms.AddTeachingForm;
 import cn.superid.tss.service.IActivityService;
 import cn.superid.tss.service.impl.ActivityService;
 import cn.superid.tss.vo.Activity;
-import cn.superid.tss.vo.Homework;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,7 @@ public class ActivityController {
     @RequestMapping(value = "/getActivities",method = RequestMethod.GET)
     public SimpleResponse getAllActivities(@RequestParam(value = "courseId") long courseId){
         logger.info("/getActivities","courseId=",courseId);
-        List<Activity> activities = activityService.getAllActivites(1234567l);
+        List<Activity> activities = activityService.getAllActivites(courseId);
         return SimpleResponse.ok(activities);
     }
 
@@ -51,15 +50,15 @@ public class ActivityController {
         return SimpleResponse.ok(activity);
     }
 
-    @ApiOperation(value = "获得作业详情",response = Homework.class)
-    @RequestMapping(value = "/getHomeworkDetail",method = RequestMethod.GET)
-    public SimpleResponse getHomework(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
-                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
-                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
-                                      @RequestParam(value = "activityId")long activityId){
-        Homework activity =  activityService.getHomework(activityId);
-        return SimpleResponse.ok(activity);
-    }
+//    @ApiOperation(value = "获得作业详情",response = Homework.class)
+//    @RequestMapping(value = "/getHomeworkDetail",method = RequestMethod.GET)
+//    public SimpleResponse getHomework(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+//                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+//                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+//                                      @RequestParam(value = "activityId")long activityId){
+//        Homework activity =  activityService.getHomework(activityId);
+//        return SimpleResponse.ok(activity);
+//    }
 
 
 

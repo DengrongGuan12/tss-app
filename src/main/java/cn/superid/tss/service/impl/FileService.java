@@ -1,9 +1,16 @@
 package cn.superid.tss.service.impl;
 
+import cn.superid.common.rest.client.BusinessClient;
+import cn.superid.common.rest.client.FileClient;
 import cn.superid.common.rest.client.UserClient;
+import cn.superid.id_client.IdClient;
+import cn.superid.tss.constant.CommonConstant;
+import cn.superid.tss.constant.HomeworkType;
 import cn.superid.tss.constant.ResponseCode;
+import cn.superid.tss.constant.UserType;
 import cn.superid.tss.dao.IActivityDao;
 import cn.superid.tss.dao.IAttachmentDao;
+import cn.superid.tss.dao.ICourseDao;
 import cn.superid.tss.dao.ISubmitDao;
 import cn.superid.tss.dao.impl.ActivityDao;
 import cn.superid.tss.exception.ErrorCodeException;
@@ -43,7 +50,23 @@ public class FileService implements IFileService{
     UserClient userClient;
 
     @Autowired
+    IdClient idClient;
+
+    @Autowired
     IActivityDao activityDao;
+
+    @Autowired
+    GroupService gs;
+
+    @Autowired
+    FileClient fileClient;
+
+    @Autowired
+    ICourseDao courseDao;
+
+    @Autowired
+    BusinessClient businessClient;
+
 
 
 
@@ -63,8 +86,15 @@ public class FileService implements IFileService{
         attachmentFormList.stream().forEach(item->{
             entities.add(buildEntity(item,activityId,roleId,userId));
         });
-        //TODO 上传到文件库里
+
         attachmentDao.batchSave(entities);
+        //TODO 上传到文件库里
+        long folderId = courseDao.selectCourseById(activityId).getDefaultFolder();
+        entities.stream().forEach(item->{
+            long fileId = idClient.nextId("file","file");
+            fileClient.addFile(fileId,folderId,item.getFileName(),item.getAttachmentUrl(),item.getSize(),courseId,roleId);
+        });
+
         return 0;
     }
 
@@ -98,19 +128,37 @@ public class FileService implements IFileService{
         entities.stream().forEach(item->{
             submits.add(entity2submit(item));
         });
-        return null;
+        return submits;
     }
 
     @Override
     public SubmitCount getSubmitCount(long activityId) {
-        return null;
+        SubmitCount count = new SubmitCount();
+        ActivityInfoEntity entity  = activityDao.getActivityInfoById(activityId);
+        //获得作业的类型
+        int homeworkType = entity.getHomeworkType();
+        int shouldSubmit = 0;
+        if(homeworkType == HomeworkType.GROUP.getIndex()){//小组作业
+            shouldSubmit= gs.getAllGroups(activityId,false).size();
+            count.setTotal(shouldSubmit);
+        }
+        if(homeworkType == HomeworkType.NORMAL.getIndex()){//普通作业
+            shouldSubmit = (int) businessClient.getAffairAllRoles(activityId).stream().filter(item->item.getMold()==UserType.STUDENT.getIndex()).count();
+            count.setTotal(shouldSubmit);
+        }
+
+        int submitted = getSubmits(activityId).size();
+        count.setSubmitted(submitted);
+        count.setToSubmit(shouldSubmit - submitted);
+        return count;
     }
 
     private AttachmentEntity buildEntity(AttachmentForm form,long activityId,long roleId,long userId){
         String userName = userClient.findById(userId).getUsername();
         //TODO 获得roleTitle
         String roleTile = null;
-        return new AttachmentEntity(0l,form.getUrl(),form.getFileName(),
+        long attachmentId = idClient.nextId(CommonConstant.SERVICE_NAME,"attachment");
+        return new AttachmentEntity(attachmentId,form.getUrl(),form.getFileName(),form.getSize(),
                 activityId,roleId,roleTile,userId,userName,new Timestamp(System.currentTimeMillis()));
 
     }
@@ -121,7 +169,8 @@ public class FileService implements IFileService{
         String roleTile = null;
         Timestamp deadline = activityDao.getActivityInfoById(activityId).getDeadline();
         Timestamp curr = new Timestamp(System.currentTimeMillis());
-        return new SubmitEntity(0l,form.getUrl(),form.getFileName(),
+        long submitId = idClient.nextId(CommonConstant.SERVICE_NAME,"");
+        return new SubmitEntity(submitId,form.getUrl(),form.getFileName(),
                 activityId,roleId,roleTile,userId,userName,curr,curr.after(deadline)? 0:1);
     }
 

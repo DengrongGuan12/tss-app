@@ -18,8 +18,9 @@ public class AttachmentDao implements IAttachmentDao{
 
     @Override
     public int batchSave(List<AttachmentEntity> entities) {
-        //TODO generateId
+
         AbstractSession.currentSession().saveBatch(entities);
+
         return 0;
     }
 }

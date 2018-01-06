@@ -3,6 +3,7 @@ package cn.superid.tss.dao.impl;
 import cn.superid.tss.dao.ISubmitDao;
 import cn.superid.tss.model.SubmitEntity;
 import cn.superid.tss.util.DStatement;
+import org.exemodel.session.AbstractSession;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public class SubmitDao implements ISubmitDao{
 
     @Override
     public int saveSubmit(SubmitEntity entity) {
-        //TODO genetate Id
+        AbstractSession.currentSession().save(entity);
         return 0;
     }
 

@@ -31,6 +31,10 @@ public class Activity {
 
     private String creatorAvatar;
 
+    private Timestamp deadline;
+
+    private int homeworkType;
+
     @ApiModelProperty(value = " Teaching(\"教学\",0),\n" +
             "    Homework(\"作业\",1),\n" +
             "    Exam(\"考试\",2),\n" +
@@ -56,6 +60,23 @@ public class Activity {
         this.creatorUserName = creatorUserName;
         this.createTime = createTime;
         this.creatorAvatar = avator;
+        this.type = type;
+    }
+
+    public Activity(long id, String title, String content, long creatorRoleId,
+                    long createUserId, String createRoleTitle, String creatorUserName, Timestamp createTime,
+                    String creatorAvatar, Timestamp deadline, int homeworkType, int type) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.creatorRoleId = creatorRoleId;
+        this.createUserId = createUserId;
+        this.createRoleTitle = createRoleTitle;
+        this.creatorUserName = creatorUserName;
+        this.createTime = createTime;
+        this.creatorAvatar = creatorAvatar;
+        this.deadline = deadline;
+        this.homeworkType = homeworkType;
         this.type = type;
     }
 
@@ -139,8 +160,23 @@ public class Activity {
         this.type = type;
     }
 
+    public Timestamp getDeadline() {
+        return deadline;
+    }
 
-    public static Activity mockActivity(String title, String content,int type){
+    public void setDeadline(Timestamp deadline) {
+        this.deadline = deadline;
+    }
+
+    public int getHomeworkType() {
+        return homeworkType;
+    }
+
+    public void setHomeworkType(int homeworkType) {
+        this.homeworkType = homeworkType;
+    }
+
+    public static Activity mockActivity(String title, String content, int type){
         return new Activity(1234,title,content,1234567l,1234,
                 "教师","刘钦",
                 new Timestamp(System.currentTimeMillis()),"http://mkpub.oss-cn-hangzhou.aliyuncs.com/user/1000103/small_sdfhYhsdb.png",
