@@ -1,6 +1,7 @@
 package cn.superid.tss.service.impl;
 
 import cn.superid.common.rest.client.BusinessClient;
+import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.AffairDTO;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
@@ -109,7 +110,8 @@ public class GroupService implements IGroupService {
         affairCreateForm.setOwnerRoleMold(UserType.LEADER.getIndex());
         affairCreateForm.setOwnerRoleTitle(UserType.LEADER.getName());
         affairCreateForm.setAffairMold(AffairType.GROUP.getIndex());
-        return businessClient.createAffair(affairCreateForm);
+        SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm);
+        return (Long) simpleResponse.getData();
     }
 
     @Override
