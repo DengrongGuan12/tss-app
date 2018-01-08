@@ -69,7 +69,7 @@ public class RoleService implements IRoleService{
 
         boolean result;
         try{
-            result = businessClient.deleteRole(operateId,roleId);
+            result = (boolean)businessClient.deleteRole(operateId,roleId).getData();
         }catch (Exception e){
             throw new ErrorCodeException(ResponseCode.DELETE_ROLE_FAILURE,"删除角色失败");
         }
@@ -88,8 +88,8 @@ public class RoleService implements IRoleService{
             long departmentId = userService.getDepartmentIdOfUser(beAllocatedUserId);
             List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(departmentId, beAllocatedUserId);
             long beAllocatedRoleId = infos.get(0).getRoleId();
-            roleId = businessClient.allocateNewRole(courseId, operatorRoleId,
-                    beAllocatedRoleId, roleType, roleTitle);
+            roleId = (long)businessClient.allocateNewRole(courseId, operatorRoleId,
+                    beAllocatedRoleId, roleType, roleTitle).getData();
         }catch (Exception e){
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"邀请角色失败");
         }
@@ -109,7 +109,7 @@ public class RoleService implements IRoleService{
             long departmentId = userService.getDepartmentIdOfUser(userId);
             List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(departmentId, userId);
             long beAllocatedRoleId = infos.get(0).getRoleId();
-            roleId = businessClient.allocateNewRole(courseId, beAllocatedRoleId, beAllocatedRoleId, UserType.STUDENT.getIndex(), UserType.STUDENT.getName());
+            roleId = (long)businessClient.allocateNewRole(courseId, beAllocatedRoleId, beAllocatedRoleId, UserType.STUDENT.getIndex(), UserType.STUDENT.getName()).getData();
         }catch (Exception e){
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"加入课程失败");
         }
