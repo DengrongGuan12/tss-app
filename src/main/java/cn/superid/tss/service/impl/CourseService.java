@@ -85,13 +85,14 @@ public class CourseService implements ICourseService {
         List<CourseEntity> courseEntities = courseDao.selectCoursesByIds(affairIds);
         courseEntities.stream().forEach(courseEntity -> {
             AffairDTO affairDTO = affairIdMap.get(courseEntity.getId());
+            RoleInfoDTO roleInfoDTO = affairDTO.getRoleInfoVO();
             String term = courseEntity.getYear() + " " + SeasonType.getName(courseEntity.getSeason());
             String grade = GradeType.getName(courseEntity.getGrade());
             CourseSimple courseSimple = new CourseSimple(courseEntity);
             courseSimple.setName(affairDTO.getName());
+            courseSimple.setRoleType(roleInfoDTO.getMold());
             //TODO 3 性能问题
             if (needGroup){
-                RoleInfoDTO roleInfoDTO = affairDTO.getRoleInfoVO();
                 List<? extends GroupSimple> groups;
                 if (roleInfoDTO.getMold() == UserType.STUDENT.getIndex() || roleInfoDTO.getMold() == UserType.TUTOR.getIndex()){
                     groups = groupService.getMyGroups(courseEntity.getId(),userId[0],false);

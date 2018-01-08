@@ -90,6 +90,7 @@ public class RoleService implements IRoleService{
             roleId = (long)businessClient.allocateNewRole(courseId, operatorRoleId,
                     beAllocatedRoleId, roleType, roleTitle).getData();
         }catch (Exception e){
+            logger.error("",e);
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"邀请角色失败");
         }
         return roleId;

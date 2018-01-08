@@ -41,4 +41,9 @@ public class GroupServiceTest extends BaseTest{
 //        long groupId3 = groupService.createGroup(20203,1131603,130008,"皮鞋大王","一把梭");
     }
 
+    @Test
+    public void deleteGroup(){
+        groupService.deleteGroup(1131206,340506);
+    }
+
 }

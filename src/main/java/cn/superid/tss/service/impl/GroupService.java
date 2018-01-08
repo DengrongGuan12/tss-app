@@ -123,8 +123,9 @@ public class GroupService implements IGroupService {
     }
 
     @Override
-    public void deleteGroup(long groupId) {
-        //TODO 2 删除事务
+    public void deleteGroup(long roleId, long groupId) {
+        //TODO 3 删除事务
+        businessClient.disableAffair(roleId, groupId);
 
     }
 
