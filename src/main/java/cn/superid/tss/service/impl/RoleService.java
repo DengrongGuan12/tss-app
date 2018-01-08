@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.management.relation.RoleInfo;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -143,6 +144,12 @@ public class RoleService implements IRoleService{
         }
 
         return r;
+    }
+
+    @Override
+    public Role getRoleById(long roleId) {
+        List<RoleInfoDTO> roleInfoDTOS = businessClient.fillRole(new Long[]{roleId});
+        return roleTransform(roleInfoDTOS.get(0));
     }
 
 

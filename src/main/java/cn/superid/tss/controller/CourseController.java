@@ -39,52 +39,52 @@ public class CourseController {
     @RequestMapping(value = "/getMyCourses", method = RequestMethod.GET)
     public SimpleResponse getMyCourses(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                        @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId) {
-        Map<String, Map> result = new TreeMap<>();
-        Map<String, List> courseSimpleMap = new LinkedHashMap<>();
-        CourseSimple courseSimple1 = new CourseSimple();
-        courseSimple1.setId(1);
-        courseSimple1.setGrade("大一");
-        courseSimple1.setName("计算系统基础");
-        courseSimple1.setRoleType(0);
-        courseSimple1.setTerm("2017");
-        List<GroupSimple> groupSimpleList = new ArrayList<>();
-        for (int i = 1; i < 20; i++) {
-            groupSimpleList.add(GroupSimple.mockOtherGroup(i));
-        }
-        courseSimple1.setGroupSimpleList(groupSimpleList);
-        CourseSimple courseSimple2 = new CourseSimple();
-        courseSimple2.setId(2);
-        courseSimple2.setGrade("大一");
-        courseSimple2.setName("离散数学");
-        courseSimple2.setRoleType(0);
-        courseSimple2.setTerm("2017");
-        List<GroupSimple> groupSimpleList2 = new ArrayList<>();
-        for (int i = 1; i < 20; i++) {
-            groupSimpleList2.add(GroupSimple.mockOtherGroup(i));
-        }
-        courseSimple2.setGroupSimpleList(groupSimpleList2);
-        List<CourseSimple> courseSimples = new ArrayList<>();
-        courseSimples.add(courseSimple1);
-        courseSimples.add(courseSimple2);
-        courseSimpleMap.put("大一", courseSimples);
-
-        CourseSimple courseSimple3 = new CourseSimple();
-        courseSimple3.setId(3);
-        courseSimple3.setGrade("大二");
-        courseSimple3.setName("操作系统");
-        courseSimple3.setRoleType(1);
-        courseSimple3.setTerm("2017");
-        List<GroupSimple> groupSimpleList3 = new ArrayList<>();
-        for (int i = 1; i < 20; i++) {
-            groupSimpleList3.add(GroupSimple.mockOtherGroup(i));
-        }
-        courseSimple3.setGroupSimpleList(groupSimpleList3);
-        List<CourseSimple> courseSimples1 = new ArrayList<>();
-        courseSimples1.add(courseSimple3);
-        courseSimpleMap.put("大二", courseSimples1);
-        result.put("2017 FALL", courseSimpleMap);
-        result.put("2017 SUMMER", courseSimpleMap);
-//        Map<String,Map> result = courseService.getUserCourses(userId);
+//        Map<String, Map> result = new TreeMap<>();
+//        Map<String, List> courseSimpleMap = new LinkedHashMap<>();
+//        CourseSimple courseSimple1 = new CourseSimple();
+//        courseSimple1.setId(1);
+//        courseSimple1.setGrade("大一");
+//        courseSimple1.setName("计算系统基础");
+//        courseSimple1.setRoleType(0);
+//        courseSimple1.setTerm("2017");
+//        List<GroupSimple> groupSimpleList = new ArrayList<>();
+//        for (int i = 1; i < 20; i++) {
+//            groupSimpleList.add(GroupSimple.mockOtherGroup(i));
+//        }
+//        courseSimple1.setGroupSimpleList(groupSimpleList);
+//        CourseSimple courseSimple2 = new CourseSimple();
+//        courseSimple2.setId(2);
+//        courseSimple2.setGrade("大一");
+//        courseSimple2.setName("离散数学");
+//        courseSimple2.setRoleType(0);
+//        courseSimple2.setTerm("2017");
+//        List<GroupSimple> groupSimpleList2 = new ArrayList<>();
+//        for (int i = 1; i < 20; i++) {
+//            groupSimpleList2.add(GroupSimple.mockOtherGroup(i));
+//        }
+//        courseSimple2.setGroupSimpleList(groupSimpleList2);
+//        List<CourseSimple> courseSimples = new ArrayList<>();
+//        courseSimples.add(courseSimple1);
+//        courseSimples.add(courseSimple2);
+//        courseSimpleMap.put("大一", courseSimples);
+//
+//        CourseSimple courseSimple3 = new CourseSimple();
+//        courseSimple3.setId(3);
+//        courseSimple3.setGrade("大二");
+//        courseSimple3.setName("操作系统");
+//        courseSimple3.setRoleType(1);
+//        courseSimple3.setTerm("2017");
+//        List<GroupSimple> groupSimpleList3 = new ArrayList<>();
+//        for (int i = 1; i < 20; i++) {
+//            groupSimpleList3.add(GroupSimple.mockOtherGroup(i));
+//        }
+//        courseSimple3.setGroupSimpleList(groupSimpleList3);
+//        List<CourseSimple> courseSimples1 = new ArrayList<>();
+//        courseSimples1.add(courseSimple3);
+//        courseSimpleMap.put("大二", courseSimples1);
+//        result.put("2017 FALL", courseSimpleMap);
+//        result.put("2017 SUMMER", courseSimpleMap);
+        Map<String,Map> result = courseService.getUserCourses(userId);
         return SimpleResponse.ok(result);
     }
 
@@ -94,49 +94,50 @@ public class CourseController {
                                           @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                           @RequestParam(value = "courseId") long courseId) {
         //调用courseService
-//        CourseDetail courseDetail = courseService.getCourseDetail(courseId);
+        CourseDetail courseDetail = courseService.getCourseDetail(courseId);
         //调用roleService 设置我在课程中的角色
-//        Role role = roleService.getRoleInAffair(courseId,userId);
-//        courseDetail.setRoleType(role.getRoleType());
-        return SimpleResponse.ok(CourseDetail.mockCourseDetail());
+        Role role = roleService.getRoleInAffair(courseId,userId);
+        courseDetail.setRoleType(role.getRoleType());
+        return SimpleResponse.ok(courseDetail);
+//        return SimpleResponse.ok(CourseDetail.mockCourseDetail());
     }
 
     @ApiOperation(value = "获取所有课程", response = CourseSimple.class)
     @RequestMapping(value = "/getAllCourses", method = RequestMethod.GET)
     public SimpleResponse getAllCourses(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId) {
-        Map<String, Map> result = new LinkedHashMap<>();
-        Map<String, List> courseSimpleMap = new LinkedHashMap<>();
-        CourseSimple courseSimple1 = new CourseSimple();
-        courseSimple1.setId(1);
-        courseSimple1.setGrade("大一");
-        courseSimple1.setName("计算系统基础");
-        courseSimple1.setRoleType(0);
-        courseSimple1.setTerm("2017");
-        CourseSimple courseSimple2 = new CourseSimple();
-        courseSimple2.setId(2);
-        courseSimple2.setGrade("大一");
-        courseSimple2.setName("离散数学");
-        courseSimple2.setRoleType(0);
-        courseSimple2.setTerm("2017");
-        List<CourseSimple> courseSimples = new ArrayList<>();
-        courseSimples.add(courseSimple1);
-        courseSimples.add(courseSimple2);
-        courseSimpleMap.put("大一", courseSimples);
-        CourseSimple courseSimple3 = new CourseSimple();
-        courseSimple3.setId(3);
-        courseSimple3.setGrade("大二");
-        courseSimple3.setName("操作系统");
-        courseSimple3.setRoleType(1);
-        courseSimple3.setTerm("2017");
-        List<CourseSimple> courseSimples1 = new ArrayList<>();
-        courseSimples1.add(courseSimple3);
-        courseSimpleMap.put("大二", courseSimples1);
-        result.put("2017 FALL", courseSimpleMap);
-        result.put("2017 SUMMER", courseSimpleMap);
+//        Map<String, Map> result = new LinkedHashMap<>();
+//        Map<String, List> courseSimpleMap = new LinkedHashMap<>();
+//        CourseSimple courseSimple1 = new CourseSimple();
+//        courseSimple1.setId(1);
+//        courseSimple1.setGrade("大一");
+//        courseSimple1.setName("计算系统基础");
+//        courseSimple1.setRoleType(0);
+//        courseSimple1.setTerm("2017");
+//        CourseSimple courseSimple2 = new CourseSimple();
+//        courseSimple2.setId(2);
+//        courseSimple2.setGrade("大一");
+//        courseSimple2.setName("离散数学");
+//        courseSimple2.setRoleType(0);
+//        courseSimple2.setTerm("2017");
+//        List<CourseSimple> courseSimples = new ArrayList<>();
+//        courseSimples.add(courseSimple1);
+//        courseSimples.add(courseSimple2);
+//        courseSimpleMap.put("大一", courseSimples);
+//        CourseSimple courseSimple3 = new CourseSimple();
+//        courseSimple3.setId(3);
+//        courseSimple3.setGrade("大二");
+//        courseSimple3.setName("操作系统");
+//        courseSimple3.setRoleType(1);
+//        courseSimple3.setTerm("2017");
+//        List<CourseSimple> courseSimples1 = new ArrayList<>();
+//        courseSimples1.add(courseSimple3);
+//        courseSimpleMap.put("大二", courseSimples1);
+//        result.put("2017 FALL", courseSimpleMap);
+//        result.put("2017 SUMMER", courseSimpleMap);
         // 获取我所在的院系id
-//        long departmentId = userService.getDepartmentIdOfUser(userId);
-//        Map<String,Map> result = courseService.getCoursesOfDepartment(departmentId);
+        long departmentId = userService.getDepartmentIdOfUser(userId);
+        Map<String,Map> result = courseService.getCoursesOfDepartment(departmentId);
         return SimpleResponse.ok(result);
     }
 
@@ -147,8 +148,8 @@ public class CourseController {
                                        @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                        @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long departmentId,
                                        @RequestBody CourseForm course) {
-//        long courseId = courseService.createCourse(course, roleId, departmentId, userId);
-        return SimpleResponse.ok(10);
+        long courseId = courseService.createCourse(course, roleId, departmentId, userId);
+        return SimpleResponse.ok(courseId);
     }
 
     @ApiOperation(value = "修改课程", response = SimpleResponse.class, notes = "所有值都必传，不管有没有改变")

@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 
 
 public class CourseServiceTest extends BaseTest {
@@ -17,7 +18,8 @@ public class CourseServiceTest extends BaseTest {
 
     @Test
     public void testGetUserCourses() throws Exception {
-        courseService.getUserCourses(30720L);
+       Map map = courseService.getUserCourses(30720L);
+       System.out.println(map);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package cn.superid.tss.service;
 
+import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.tss.vo.GroupDetail;
 import cn.superid.tss.vo.GroupSimple;
 import cn.superid.tss.vo.RoleGroup;
@@ -19,5 +20,7 @@ public interface IGroupService {
     long createGroup(long userId, long roleId, long courseId, String name, String description);
 
     void deleteGroup(long groupId);
+
+    List<RoleInfoDTO> getLeadersOfGroup(long groupId);
 
 }

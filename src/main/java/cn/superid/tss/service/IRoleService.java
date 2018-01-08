@@ -37,7 +37,6 @@ public interface IRoleService {
      */
     Role getRoleInAffair(long affairId, long userId);
 
-
-
+    Role getRoleById(long roleId);
 
 }

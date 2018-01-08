@@ -34,9 +34,6 @@ import java.util.stream.Collectors;
 /**
  * @author DengrongGuan
  * @create 2017-12-21 下午2:09
- *TODO 获取我的课程中的小组列表尚未测试
- *TODO 创建课程未测试通过
- *
  **/
 @Service
 public class CourseService implements ICourseService {
@@ -135,16 +132,18 @@ public class CourseService implements ICourseService {
 
     @Override
     public CourseDetail getCourseDetail(long courseId) {
-        //TODO 3 获取事务详情
+        //获取事务详情
         AffairDetailDTO affairDetailDTO = businessClient.getAffairDetail(courseId);
-
         CourseEntity courseEntity = courseDao.selectCourseById(courseId);
+        if (affairDetailDTO == null || courseEntity == null){
+            throw new ErrorCodeException(ResponseCode.COURSE_NOT_EXIST,courseId+" 课程不存在");
+        }
         CourseDetail courseDetail = new CourseDetail(courseEntity);
 
         courseDetail.setName(affairDetailDTO.getName());
         courseDetail.setDescription(affairDetailDTO.getDescription());
 
-        //TODO 3 获取一个课程的所有教师(获取一个事务下某种特定类型的角色)
+        //获取一个课程的所有教师(获取一个事务下某种特定类型的角色)
         List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(courseId, UserType.TEACHER.getIndex());
         Long[] userIds = roleInfoDTOS.stream().map(roleInfoDTO -> roleInfoDTO.getUserId()).toArray(Long[]::new);
         List<UserEntity> userEntities = userDao.selectUsersByIds(userIds,"id","number");
@@ -175,6 +174,9 @@ public class CourseService implements ICourseService {
         affairCreateForm.setOwnerRoleTitle(UserType.DEAN.getName());
         affairCreateForm.setOwnerRoleMold(UserType.DEAN.getIndex());
         SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm);
+        if (simpleResponse.getCode() != 0){
+            throw new ErrorCodeException(simpleResponse.getCode(),simpleResponse.getException());
+        }
         //TODO 3 创建课程资料文件夹，调用出错该怎么回滚？
         long folderId = idClient.nextId("file","file");
         fileClient.addFolder(0,"课程资料", roleId, courseId,folderId);

@@ -98,17 +98,25 @@ public class GroupService implements IGroupService {
         return roleGroups;
     }
 
+
+
     @Override
     public long createGroup(long userId, long roleId, long courseId, String name, String description) {
-        //TODO 3
         AffairCreateForm affairCreateForm = new AffairCreateForm();
         affairCreateForm.setDescription(description);
         affairCreateForm.setName(name);
         affairCreateForm.setParentAffairId(courseId);
         affairCreateForm.setUserId(userId);
         affairCreateForm.setOperationRoleId(roleId);
-        affairCreateForm.setOwnerRoleMold(UserType.LEADER.getIndex());
-        affairCreateForm.setOwnerRoleTitle(UserType.LEADER.getName());
+        //TODO 3 获取角色详情，判断是老师，助教还是学生。
+        RoleInfoDTO roleInfoDTO = businessClient.fillRole(new Long[]{roleId}).get(0);
+        if (roleInfoDTO.getMold() == UserType.STUDENT.getIndex()){
+            affairCreateForm.setOwnerRoleMold(UserType.LEADER.getIndex());
+            affairCreateForm.setOwnerRoleTitle(UserType.LEADER.getName());
+        }else{
+            affairCreateForm.setOwnerRoleMold(roleInfoDTO.getMold());
+            affairCreateForm.setOwnerRoleTitle(UserType.getName(roleInfoDTO.getMold()));
+        }
         affairCreateForm.setAffairMold(AffairType.GROUP.getIndex());
         SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm);
         return new Long((Integer) simpleResponse.getData());
@@ -118,5 +126,10 @@ public class GroupService implements IGroupService {
     public void deleteGroup(long groupId) {
         //TODO 2 删除事务
 
+    }
+
+    @Override
+    public List<RoleInfoDTO> getLeadersOfGroup(long groupId) {
+        return businessClient.getRolesByType(groupId, UserType.LEADER.getIndex());
     }
 }
