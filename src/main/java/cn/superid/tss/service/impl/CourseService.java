@@ -2,6 +2,7 @@ package cn.superid.tss.service.impl;
 
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.client.FileClient;
+import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.AffairDTO;
 import cn.superid.common.rest.dto.business.AffairDetailDTO;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
@@ -173,13 +174,14 @@ public class CourseService implements ICourseService {
         affairCreateForm.setOperationRoleId(roleId);
         affairCreateForm.setOwnerRoleTitle(UserType.DEAN.getName());
         affairCreateForm.setOwnerRoleMold(UserType.DEAN.getIndex());
-        businessClient.createAffair(affairCreateForm);
+        SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm);
         //TODO 3 创建课程资料文件夹，调用出错该怎么回滚？
-
+        long folderId = idClient.nextId("file","file");
+        fileClient.addFolder(0,"课程资料", roleId, courseId,folderId);
         CourseEntity courseEntity = (CourseEntity) ObjectUtil.deepCopy(courseForm, CourseEntity.class);
         courseEntity.setId(courseId);
+        courseEntity.setDefaultFolder(folderId);
         courseDao.addCourse(courseEntity);
-        fileClient.addFolder(0,"课程资料", roleId, courseId);
         return courseId;
     }
 
