@@ -1,9 +1,13 @@
 package cn.superid.tss.controller;
 
 import cn.superid.common.rest.dto.SimpleResponse;
+import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.tss.constant.RequestHeaders;
+import cn.superid.tss.constant.ResponseCode;
 import cn.superid.tss.constant.UserType;
+import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.service.impl.RoleService;
+import cn.superid.tss.service.impl.UserService;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
 import io.swagger.annotations.ApiOperation;
@@ -23,6 +27,8 @@ import java.util.List;
 public class RoleController {
     @Autowired
     RoleService roleService;
+    @Autowired
+    UserService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(RoleController.class);
 
@@ -69,8 +75,14 @@ public class RoleController {
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                       @RequestParam(value = "userId")long allocatedUserId){
 
-        long id = roleService.addMember(courseId,roleId,allocatedUserId,
-                                UserType.TUTOR.getName(),UserType.TUTOR.getIndex());
+        try {
+            long departmentId = userService.getDepartmentIdOfUser(allocatedUserId);
+            Role role = roleService.getRoleInAffair(departmentId, allocatedUserId);
+            long id = roleService.addMember(courseId, roleId, role.getId(),
+                    UserType.TUTOR.getName(), UserType.TUTOR.getIndex());
+        } catch (Exception e) {
+            throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE, "邀请角色失败");
+        }
         return SimpleResponse.ok("successs");
     }
 

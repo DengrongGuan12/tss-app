@@ -82,13 +82,11 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public long addMember(long courseId, long operatorRoleId, long beAllocatedUserId, String roleTitle, int roleType){
+    public long addMember(long courseId, long operatorRoleId, long beAllocatedRoleId, String roleTitle, int roleType){
         long roleId;
         try {
 
-            long departmentId = userService.getDepartmentIdOfUser(beAllocatedUserId);
-            List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(departmentId, beAllocatedUserId);
-            long beAllocatedRoleId = infos.get(0).getRoleId();
+
             roleId = (long)businessClient.allocateNewRole(courseId, operatorRoleId,
                     beAllocatedRoleId, roleType, roleTitle).getData();
         }catch (Exception e){

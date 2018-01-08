@@ -11,5 +11,7 @@ public interface IActivityDao {
 
     List<ActivityInfoEntity> getActivitiesByParent(long parentId);
 
+    int saveActivity(ActivityInfoEntity entity);
+
 
 }

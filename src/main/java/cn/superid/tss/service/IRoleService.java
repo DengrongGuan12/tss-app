@@ -14,7 +14,7 @@ public interface IRoleService {
     /*
       将一个用户加入到一门课程中
      */
-    long addMember(long courseId, long operatorRoleId, long beAllocatedUserId, String roleTitle, int roleType);
+    long addMember(long courseId, long operatorRoleId, long beAllocatedRoleId, String roleTitle, int roleType);
 
     /*
         通过邀请码加入课程
