@@ -111,7 +111,7 @@ public class GroupService implements IGroupService {
         affairCreateForm.setOwnerRoleTitle(UserType.LEADER.getName());
         affairCreateForm.setAffairMold(AffairType.GROUP.getIndex());
         SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm);
-        return (Long) simpleResponse.getData();
+        return new Long((Integer) simpleResponse.getData());
     }
 
     @Override
