@@ -12,7 +12,6 @@ import cn.superid.tss.dao.IActivityDao;
 import cn.superid.tss.dao.IAttachmentDao;
 import cn.superid.tss.dao.ICourseDao;
 import cn.superid.tss.dao.ISubmitDao;
-import cn.superid.tss.dao.impl.ActivityDao;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.forms.AttachmentForm;
 import cn.superid.tss.forms.SubmitForm;
@@ -20,19 +19,16 @@ import cn.superid.tss.model.ActivityInfoEntity;
 import cn.superid.tss.model.AttachmentEntity;
 import cn.superid.tss.model.SubmitEntity;
 import cn.superid.tss.service.IFileService;
-import cn.superid.tss.util.DStatement;
 import cn.superid.tss.util.ObjectUtil;
 import cn.superid.tss.vo.Attachment;
 import cn.superid.tss.vo.Submit;
 import cn.superid.tss.vo.SubmitCount;
 import org.apache.commons.collections.CollectionUtils;
-import org.exemodel.session.AbstractSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,7 +84,7 @@ public class FileService implements IFileService{
         });
 
         attachmentDao.batchSave(entities);
-        //TODO 上传到文件库里
+
         long folderId = courseDao.selectCourseById(activityId).getDefaultFolder();
         entities.stream().forEach(item->{
             long fileId = idClient.nextId("file","file");
@@ -155,18 +151,26 @@ public class FileService implements IFileService{
 
     private AttachmentEntity buildEntity(AttachmentForm form,long activityId,long roleId,long userId){
         String userName = userClient.findById(userId).getUsername();
-        //TODO 获得roleTitle
-        String roleTile = null;
+//
+//        Long ids[] = new Long[1];
+//        ids[0] = roleId;
+//        String roleTile;
+//        try {
+//            roleTile= businessClient.fillRole(ids).get(0).getRoleTitle();
+//        } catch (Exception e) {
+//            roleTile = null;
+//        }
         long attachmentId = idClient.nextId(CommonConstant.SERVICE_NAME,"attachment");
         return new AttachmentEntity(attachmentId,form.getUrl(),form.getFileName(),form.getSize(),
-                activityId,roleId,roleTile,userId,userName,new Timestamp(System.currentTimeMillis()));
+                activityId,roleId,null,userId,userName,new Timestamp(System.currentTimeMillis()));
 
     }
 
     private SubmitEntity buildEntity(SubmitForm form,long activityId,long roleId,long userId){
         String userName = userClient.findById(userId).getUsername();
-        //TODO 获得roleTitle
-        String roleTile = null;
+//        Long ids[] = new Long[1];
+//        ids[0] = roleId;
+        String roleTile = null;//businessClient.fillRole(ids).get(0).getRoleTitle();
         Timestamp deadline = activityDao.getActivityInfoById(activityId).getDeadline();
         Timestamp curr = new Timestamp(System.currentTimeMillis());
         long submitId = idClient.nextId(CommonConstant.SERVICE_NAME,"");

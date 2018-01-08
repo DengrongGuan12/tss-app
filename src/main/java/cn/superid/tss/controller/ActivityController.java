@@ -2,20 +2,17 @@ package cn.superid.tss.controller;
 
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.tss.constant.ActivityType;
-import cn.superid.tss.constant.CourseType;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.forms.AddActivityForm;
 import cn.superid.tss.forms.AddHomeworkform;
 import cn.superid.tss.forms.AddTeachingForm;
 import cn.superid.tss.service.IActivityService;
-import cn.superid.tss.service.impl.ActivityService;
 import cn.superid.tss.vo.Activity;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sun.util.resources.ga.LocaleNames_ga;
 
 import java.util.List;
 
