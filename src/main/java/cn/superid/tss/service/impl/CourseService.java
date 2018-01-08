@@ -90,7 +90,11 @@ public class CourseService implements ICourseService {
             String grade = GradeType.getName(courseEntity.getGrade());
             CourseSimple courseSimple = new CourseSimple(courseEntity);
             courseSimple.setName(affairDTO.getName());
-            courseSimple.setRoleType(roleInfoDTO.getMold());
+            if (roleInfoDTO == null){
+                courseSimple.setRoleType(UserType.NULL.getIndex());
+            }else{
+                courseSimple.setRoleType(roleInfoDTO.getMold());
+            }
             //TODO 3 性能问题
             if (needGroup){
                 List<? extends GroupSimple> groups;
