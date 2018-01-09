@@ -14,7 +14,7 @@ public class SubmitEntity extends CModel{
     @Id
     @Column(name = "id")
     private long id;
-    @Column(name = "attachment_url")
+    @Column(name = "submit_url")
     private String attachmentUrl;
     @Column(name = "filename")
     private String fileName;

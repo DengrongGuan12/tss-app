@@ -14,7 +14,14 @@ public class AttachmentForm {
     private double size;
 
 
+    public AttachmentForm(){
+    }
 
+    public AttachmentForm(String fileName, String url, double size) {
+        this.fileName = fileName;
+        this.url = url;
+        this.size = size;
+    }
 
     public String getFileName() {
         return fileName;

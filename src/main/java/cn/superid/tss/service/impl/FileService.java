@@ -26,7 +26,6 @@ import cn.superid.tss.vo.SubmitCount;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,13 +83,18 @@ public class FileService implements IFileService{
                 entities.add(buildEntity(item,activityId,roleId,userId));
             });
 
-            attachmentDao.batchSave(entities);
+            try {
+                attachmentDao.batchSave(entities);
 
-            long folderId = courseDao.selectCourseById(activityId).getDefaultFolder();
-            entities.stream().forEach(item->{
-                long fileId = idClient.nextId("file","file");
-                fileClient.addFile(fileId,folderId,item.getFileName(),item.getAttachmentUrl(),item.getSize(),courseId,roleId);
-            });
+                long folderId = courseDao.selectCourseById(courseId).getDefaultFolder();
+                entities.stream().forEach(item->{
+                    long fileId = idClient.nextId("file","file");
+                    fileClient.addFile(fileId,folderId,item.getFileName(),item.getAttachmentUrl(),item.getSize(),courseId,roleId);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new ErrorCodeException(ResponseCode.UPLOAD_ATTACHMENT_FAILURE,"上传附件失败");
+            }
         }
 
 
@@ -176,7 +180,7 @@ public class FileService implements IFileService{
         String roleTile = null;//businessClient.fillRole(ids).get(0).getRoleTitle();
         Timestamp deadline = activityDao.getActivityInfoById(activityId).getDeadline();
         Timestamp curr = new Timestamp(System.currentTimeMillis());
-        long submitId = idClient.nextId(CommonConstant.SERVICE_NAME,"");
+        long submitId = idClient.nextId(CommonConstant.SERVICE_NAME,"submit");
         return new SubmitEntity(submitId,form.getUrl(),form.getFileName(),
                 activityId,roleId,roleTile,userId,userName,curr,curr.after(deadline)? 0:1);
     }

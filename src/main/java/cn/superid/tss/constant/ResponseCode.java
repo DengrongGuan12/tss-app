@@ -43,6 +43,9 @@ public class ResponseCode {
   // 小组 3
   // 文件 4
   public static final int SUBMIT_HOMEWORK_FAILURE = 4001;//提交作业失败
+  public static final int UPLOAD_ATTACHMENT_FAILURE = 4002;//上传附件失败
+
+
   // 发布（教学，作业，考试） 5
   public static final int GET_ACTIVITIES_FAILURE = 50001;//获得课程活动列表失败
   public static final int GET_ACTIVITY_FAILURE = 50002;//无法获得活动信息
