@@ -1,6 +1,7 @@
 package cn.superid.tss.service.impl;
 
 import cn.superid.common.rest.client.BusinessClient;
+import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.tss.constant.ResponseCode;
 import cn.superid.tss.constant.UserType;
@@ -12,6 +13,7 @@ import cn.superid.tss.service.IRoleService;
 import cn.superid.tss.service.IUserService;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hmef.attribute.MAPIAttribute;
 import org.exemodel.orm.ExecutableModel;
 import org.slf4j.Logger;
@@ -44,12 +46,12 @@ public class RoleService implements IRoleService{
 
     @Override
     public List<RoleGroup> getRoleByCourseId(long courseId) {
-        logger.info("courseId {}",courseId);
+        logger.info("courseId {}", courseId);
         List<RoleGroup> groups = new LinkedList<>();
 
         //获得事务下的所有角色
         List<RoleInfoDTO> roles = businessClient.getAffairAllRoles(courseId);
-        logger.info("roles{}",roles);
+        logger.info("roles{}", roles);
 
         //将role按角色整理
         Map<Integer,List<RoleInfoDTO>> group = roles.stream().collect(Collectors.groupingBy(RoleInfoDTO::getMold));
@@ -59,19 +61,21 @@ public class RoleService implements IRoleService{
             entry.getValue().stream().forEach(item->{
                 roleList.add(roleTransform(item));
             });
-            groups.add(new RoleGroup(roleType,roleList));
+            groups.add(new RoleGroup(roleType, roleList));
         }
 
         return groups;
     }
 
     @Override
-    public int deleteRole(long operateId,long roleId, long courseId) {
+    public int deleteRole(long operateId, long roleId, long courseId) {
 
         boolean result;
         try{
-            result = (boolean)businessClient.deleteRole(operateId,roleId).getData();
+            SimpleResponse response = businessClient.deleteRole(operateId,roleId);
+            result = response.getCode() == 0 ? true : false;
         }catch (Exception e){
+            logger.error(e.getMessage());
             throw new ErrorCodeException(ResponseCode.DELETE_ROLE_FAILURE,"删除角色失败");
         }
 
@@ -86,9 +90,9 @@ public class RoleService implements IRoleService{
         long roleId;
         try {
 
-
-            roleId = (long)businessClient.allocateNewRole(courseId, operatorRoleId,
-                    beAllocatedRoleId, roleType, roleTitle).getData();
+            SimpleResponse response = businessClient.allocateNewRole(courseId, operatorRoleId,
+                    beAllocatedRoleId, roleType, roleTitle);
+            roleId = Long.valueOf((Integer)response.getData());
         }catch (Exception e){
             logger.error("add member fail:",e);
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"邀请角色失败");
@@ -122,9 +126,12 @@ public class RoleService implements IRoleService{
         List<Role> roles = new ArrayList<>();
         try {
             List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(departmentId, UserType.TEACHER.getIndex());
-            roleInfoDTOS.stream().forEach(item -> {
-                roles.add(roleTransform(item));
-            });
+
+            if (!CollectionUtils.isEmpty(roleInfoDTOS)) {
+                roleInfoDTOS.stream().forEach(item -> {
+                    roles.add(roleTransform(item));
+                });
+            }
         } catch (Exception e) {
             throw new ErrorCodeException(ResponseCode.TEACHERLIST_FAILURE,"获取教师列表失败");
         }
@@ -137,7 +144,7 @@ public class RoleService implements IRoleService{
         Role r;
         try {
             List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(affairId, userId);
-            if (infos.size() == 0){
+            if (CollectionUtils.isEmpty(infos)){
                 return null;
             }
             r = roleTransform(infos.get(0));

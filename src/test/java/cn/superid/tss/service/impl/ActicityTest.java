@@ -25,6 +25,7 @@ public class ActicityTest extends BaseTest{
 
 
     @Test
+    //test pass
     public void testCreateActivity(){
         AddActivityForm form = new AddActivityForm();
         form.setTitle("第一次作业");
@@ -41,6 +42,7 @@ public class ActicityTest extends BaseTest{
 
 
     @Test
+    //test pass
     public void testCreateHomework(){
         AddHomeworkform homeworkform = new AddHomeworkform();
         homeworkform.setTitle("第一次作业");
@@ -69,7 +71,15 @@ public class ActicityTest extends BaseTest{
     }
 
     @Test
+    //test pass
     public void testGetActivities(){
         List<Activity> activities = activityService.getAllActivites(courseId);
+    }
+
+    @Test
+    //test pass
+    public void testGetActivity(){
+        Activity activity = activityService.getActivity(240503);
+
     }
 }
