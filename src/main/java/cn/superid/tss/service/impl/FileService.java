@@ -79,17 +79,20 @@ public class FileService implements IFileService{
     @Override
     public int uploadAttachments(List<AttachmentForm> attachmentFormList, long activityId, long courseId,long roleId,long userId) {
         List<AttachmentEntity> entities = new ArrayList<>();
-        attachmentFormList.stream().forEach(item->{
-            entities.add(buildEntity(item,activityId,roleId,userId));
-        });
+        if(!CollectionUtils.isEmpty(attachmentFormList)){
+            attachmentFormList.stream().forEach(item->{
+                entities.add(buildEntity(item,activityId,roleId,userId));
+            });
 
-        attachmentDao.batchSave(entities);
+            attachmentDao.batchSave(entities);
 
-        long folderId = courseDao.selectCourseById(activityId).getDefaultFolder();
-        entities.stream().forEach(item->{
-            long fileId = idClient.nextId("file","file");
-            fileClient.addFile(fileId,folderId,item.getFileName(),item.getAttachmentUrl(),item.getSize(),courseId,roleId);
-        });
+            long folderId = courseDao.selectCourseById(activityId).getDefaultFolder();
+            entities.stream().forEach(item->{
+                long fileId = idClient.nextId("file","file");
+                fileClient.addFile(fileId,folderId,item.getFileName(),item.getAttachmentUrl(),item.getSize(),courseId,roleId);
+            });
+        }
+
 
         return 0;
     }

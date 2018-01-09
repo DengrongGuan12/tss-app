@@ -1,6 +1,7 @@
 package cn.superid.tss.service.impl;
 
 import cn.superid.common.rest.client.BusinessClient;
+import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.AnnouncementDetailDTO;
 import cn.superid.common.rest.dto.business.CreateAnnouncementForm;
 import cn.superid.common.rest.dto.business.RichAnnouncementDTO;
@@ -19,6 +20,7 @@ import cn.superid.tss.service.IFileService;
 import cn.superid.tss.vo.Activity;
 import cn.superid.tss.vo.Attachment;
 import cn.superid.tss.vo.GroupSimple;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +61,7 @@ public class ActivityService implements IActivityService{
                 activities.add(buildActivity(item,entity));
             });
         } catch (Exception e) {
-            throw new ErrorCodeException(ResponseCode.GET_ACTIVITIES_FAILURE,"获得课程活动列表失败");
+            e.printStackTrace();
         }
 
         return activities;
@@ -75,11 +77,14 @@ public class ActivityService implements IActivityService{
         caf.setContent(form.getContent());caf.setRoleId(roleId);
         caf.setUseId(userId);
         try {
-            id = (long)client.createAnnouncement(caf).getData();
+            SimpleResponse response = client.createAnnouncement(caf);
+            id = Long.valueOf((Integer)response.getData());
             List<AttachmentForm> attachments = form.getAttachments();
-            fileService.uploadAttachments(attachments,id,courseId,roleId,userId);
-            long infoID = idClient.nextId("tss","activity");
-            ActivityInfoEntity entity = new ActivityInfoEntity(infoID,type,-100,null,-100);
+            if(!CollectionUtils.isEmpty(attachments)){
+                fileService.uploadAttachments(attachments,id,courseId,roleId,userId);
+            }
+
+            ActivityInfoEntity entity = new ActivityInfoEntity(id,type,-100,null,-100);
             activityDao.saveActivity(entity);
         } catch (Exception e) {
             throw new ErrorCodeException(ResponseCode.CREATE_ACTIVITY_FAILURE,"创建课程活动失败");
@@ -121,11 +126,14 @@ public class ActivityService implements IActivityService{
         caf.setRoleId(roleId);
         caf.setUseId(userId);
         try {
-            homeworkId = (long) client.createAnnouncement(caf).getData();
+            SimpleResponse response = client.createAnnouncement(caf);
+            homeworkId = Long.valueOf((Integer)response.getData());
             List<AttachmentForm> attachments = form.getAttachments();
-            fileService.uploadAttachments(attachments, homeworkId, affairId, roleId, userId);
-            long infoID = idClient.nextId("tss", "activity");
-            ActivityInfoEntity entity = new ActivityInfoEntity(infoID, ActivityType.Homework.getIndex(), homeworkType, form.getDeadline(), parentId);
+            if(!CollectionUtils.isEmpty(attachments)){
+                fileService.uploadAttachments(attachments, homeworkId, affairId, roleId, userId);
+            }
+
+            ActivityInfoEntity entity = new ActivityInfoEntity(homeworkId, ActivityType.Homework.getIndex(), homeworkType, form.getDeadline(), parentId);
             activityDao.saveActivity(entity);
 
         } catch (Exception e) {

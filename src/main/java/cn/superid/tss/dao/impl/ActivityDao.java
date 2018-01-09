@@ -13,7 +13,7 @@ public class ActivityDao implements IActivityDao{
 
     @Override
     public ActivityInfoEntity getActivityInfoById(long id) {
-        return DStatement.build(ActivityInfoEntity.class).eq("id",id).selectOne();
+        return DStatement.build(ActivityInfoEntity.class).id(id).selectOne();
     }
 
     @Override

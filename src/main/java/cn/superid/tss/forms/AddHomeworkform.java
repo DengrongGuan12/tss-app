@@ -18,6 +18,9 @@ public class AddHomeworkform extends AddActivityForm{
         this.deadline = deadline;
     }
 
+    public AddHomeworkform(){}
+
+
     public int getHomeworkType() {
         return homeworkType;
     }
