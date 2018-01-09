@@ -88,7 +88,12 @@ public class GroupController {
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                       @RequestParam(value = "groupId") long groupId) {
         //TODO 只有组长能删除小组
-        return SimpleResponse.ok(null);
+        Role role = roleService.getRoleInAffair(groupId,userId);
+        if (role.getRoleType() == UserType.LEADER.getIndex()){
+            groupService.deleteGroup(role.getId(),groupId);
+            return SimpleResponse.ok(null);
+        }
+        return SimpleResponse.exception(new ErrorCodeException(403,"无操作权限"));
     }
 
     @ApiOperation(value = "申请加入小组", response = SimpleResponse.class)
@@ -103,13 +108,18 @@ public class GroupController {
     }
 
     @ApiOperation(value = "邀请组员", response = SimpleResponse.class)
-    @RequestMapping(value = "/invite", method = RequestMethod.GET)
+    @RequestMapping(value = "/invite", method = RequestMethod.POST)
     public SimpleResponse invite(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                  @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                  @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long groupId,
-                                 @RequestParam("userId") long invitedId) {
+                                 @RequestParam("roleId") long invitedId) {
         //TODO 只有组长老师助教能邀请组员
-//        Role role = roleService.getRoleById()
+        Role role = roleService.getRoleById(invitedId);
+        if (role.getRoleType() == UserType.TUTOR.getIndex() || role.getRoleType() == UserType.TEACHER.getIndex()){
+            //如果邀请的是助教或老师
+            roleService.addMember(groupId, roleId, invitedId, role.getTitle(), role.getRoleType());
+            return SimpleResponse.ok(null);
+        }
         List<RoleInfoDTO> leaders = groupService.getLeadersOfGroup(groupId);
         String roleTitle = UserType.MEMBER.getName();
         int roleType = UserType.MEMBER.getIndex();

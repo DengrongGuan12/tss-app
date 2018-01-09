@@ -19,7 +19,7 @@ public interface IGroupService {
 
     long createGroup(long userId, long roleId, long courseId, String name, String description);
 
-    void deleteGroup(long groupId);
+    void deleteGroup(long roleId, long groupId);
 
     List<RoleInfoDTO> getLeadersOfGroup(long groupId);
 

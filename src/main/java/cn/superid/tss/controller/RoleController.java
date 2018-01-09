@@ -112,7 +112,7 @@ public class RoleController {
     @RequestMapping(value = "/getRoleInAffair", method = RequestMethod.GET)
     public SimpleResponse getRoleInAffair(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                           @RequestParam(value = "affairId")long affairId){
-        return SimpleResponse.ok(Role.MockStudent());
+        return SimpleResponse.ok(roleService.getRoleInAffair(affairId,userId));
     }
 
 }
