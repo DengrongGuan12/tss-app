@@ -117,7 +117,11 @@ public class GroupService implements IGroupService {
         affairCreateForm.setUserId(userId);
         affairCreateForm.setOperationRoleId(roleId);
         //TODO 3 获取角色详情，判断是老师，助教还是学生。
-        RoleInfoDTO roleInfoDTO = businessClient.fillRole(new Long[]{roleId}).get(0);
+        List<RoleInfoDTO> roleInfoDTOS = businessClient.fillRole(new Long[]{roleId});
+        if (roleInfoDTOS == null || roleInfoDTOS.size() == 0){
+            throw new ErrorCodeException(ResponseCode.PARAM_ERROR,"找不到对应的角色!");
+        }
+        RoleInfoDTO roleInfoDTO = roleInfoDTOS.get(0);
         if (roleInfoDTO.getMold() == UserType.STUDENT.getIndex()){
             affairCreateForm.setOwnerRoleMold(UserType.LEADER.getIndex());
             affairCreateForm.setOwnerRoleTitle(UserType.LEADER.getName());

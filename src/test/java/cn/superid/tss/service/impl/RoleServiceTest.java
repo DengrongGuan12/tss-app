@@ -2,8 +2,11 @@ package cn.superid.tss.service.impl;
 
 
 import cn.superid.common.rest.client.BusinessClient;
+import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.tss.BaseTest;
+import cn.superid.tss.constant.ResponseCode;
 import cn.superid.tss.constant.UserType;
+import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.service.IRoleService;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
@@ -59,6 +62,15 @@ public class RoleServiceTest extends BaseTest{
     //test pass
     public void testGetRoleInAffair(){
         Role r = roleService.getRoleInAffair(130008,30104);
+    }
+
+    @Test
+    public void fillRole(){
+        List<RoleInfoDTO> roleInfoDTOS = businessClient.fillRole(new Long[]{});
+        if (roleInfoDTOS == null || roleInfoDTOS.size() == 0){
+            throw new ErrorCodeException(ResponseCode.PARAM_ERROR,"找不到对应的角色!");
+        }
+        System.out.println("....");
     }
 
 }
