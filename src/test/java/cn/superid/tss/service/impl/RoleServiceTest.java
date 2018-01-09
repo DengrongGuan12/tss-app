@@ -5,6 +5,7 @@ import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.tss.BaseTest;
 import cn.superid.tss.constant.UserType;
 import cn.superid.tss.service.IRoleService;
+import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -20,8 +21,8 @@ public class RoleServiceTest extends BaseTest{
     IRoleService roleService;
     @Autowired
     BusinessClient businessClient;
-
     @Test
+    //TODO 测试是否过滤了已经删掉的角色
     public void testGetRoleByCourseId() throws Exception {
         List<RoleGroup> roles = roleService.getRoleByCourseId(130008);
         logger.info("roleGroups {}",roles);
@@ -29,25 +30,35 @@ public class RoleServiceTest extends BaseTest{
     }
 
     @Test
+    //test PASS
     public void testDeleteRole() throws Exception {
-        roleService.deleteRole(1022603,1022603,130008);
+        roleService.deleteRole(1022203,1022203,130008);
     }
 
     @Test
+    // 400 bad request
     public void testAddToCourse() throws Exception {
-        roleService.addMember(130008,1022505,31011,
+        roleService.addMember(920208,1022505,1022505,
                 UserType.STUDENT.getChName(),UserType.STUDENT.getIndex());
     }
 
     @Test
+    //400 bad request
     public void testJoinCourseByCode() throws Exception {
         roleService.joinCourseByCode(31011,130008,"123gdf43");
     }
 
     @Test
+    //test pass
     public void testGetTeachersOfDepartment() throws Exception {
         roleService.getTeachersOfDepartment(115708);
 
+    }
+
+    @Test
+    //test pass
+    public void testGetRoleInAffair(){
+        Role r = roleService.getRoleInAffair(130008,30104);
     }
 
 }

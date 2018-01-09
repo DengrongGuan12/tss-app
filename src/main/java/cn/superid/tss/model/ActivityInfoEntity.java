@@ -33,6 +33,8 @@ public class ActivityInfoEntity extends CModel{
         this.parentId = parentId;
     }
 
+    public ActivityInfoEntity(){}
+
     public long getId() {
         return id;
     }

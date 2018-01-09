@@ -18,7 +18,6 @@ import cn.superid.tss.dao.IActivityDao;
 import cn.superid.tss.service.IActivityService;
 import cn.superid.tss.service.IFileService;
 import cn.superid.tss.vo.Activity;
-import cn.superid.tss.vo.Attachment;
 import cn.superid.tss.vo.GroupSimple;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -58,7 +57,10 @@ public class ActivityService implements IActivityService{
             announcements.stream().forEach(item->{
                 long id = item.getId();
                 ActivityInfoEntity entity = activityDao.getActivityInfoById(id);
-                activities.add(buildActivity(item,entity));
+                if(null != entity){
+                    activities.add(buildActivity(item,entity));
+
+                }
             });
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,8 +71,7 @@ public class ActivityService implements IActivityService{
 
     @Override
     public long createActivity(AddActivityForm form, int type, long courseId, long roleId, long userId) {
-        //调用superID创建发布接口
-        //塞进自己的数据库里
+
         long id = 0;
         CreateAnnouncementForm caf = new CreateAnnouncementForm();
         caf.setAffairId(courseId);caf.setTitle(form.getTitle());
@@ -152,6 +153,7 @@ public class ActivityService implements IActivityService{
             dto = client.getAnnouncementDetails(activityId);
             entity = activityDao.getActivityInfoById(activityId);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ErrorCodeException(ResponseCode.GET_ACTIVITY_FAILURE,"无法获得活动信息");
         }
 
@@ -176,7 +178,7 @@ public class ActivityService implements IActivityService{
 
 
     private Activity buildActivity(RichAnnouncementDTO dto,ActivityInfoEntity entity){
-        return new Activity(dto.getId(),dto.getTitle(),dto.getContent(),
+        return new Activity(dto.getId(),dto.getTitle(),dto.getThumbContent(),
                 dto.getCreatorId(),dto.getCreatorUserId(),dto.getRoleName(),dto.getUsername(),dto.getModifyTime(),
                 dto.getAvatar(),entity.getType());
 

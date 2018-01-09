@@ -47,6 +47,8 @@ public class AttachmentEntity extends CModel{
         this.submitTime = submitTime;
     }
 
+    public AttachmentEntity(){}
+
     public long getId() {
         return id;
     }
