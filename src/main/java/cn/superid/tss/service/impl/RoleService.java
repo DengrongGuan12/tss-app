@@ -90,7 +90,7 @@ public class RoleService implements IRoleService{
             roleId = (long)businessClient.allocateNewRole(courseId, operatorRoleId,
                     beAllocatedRoleId, roleType, roleTitle).getData();
         }catch (Exception e){
-            logger.error("",e);
+            logger.error("add member fail:",e);
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"邀请角色失败");
         }
         return roleId;
@@ -137,8 +137,12 @@ public class RoleService implements IRoleService{
         Role r;
         try {
             List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(affairId, userId);
+            if (infos.size() == 0){
+                return null;
+            }
             r = roleTransform(infos.get(0));
         } catch (Exception e) {
+            logger.error("get role in affair fail:",e);
             throw new ErrorCodeException(ResponseCode.ROLE_IN_COURSE_FAILURE,"无法在课程中获得此人员");
         }
 

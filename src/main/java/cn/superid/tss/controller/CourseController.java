@@ -97,7 +97,11 @@ public class CourseController {
         CourseDetail courseDetail = courseService.getCourseDetail(courseId);
         //调用roleService 设置我在课程中的角色
         Role role = roleService.getRoleInAffair(courseId,userId);
-        courseDetail.setRoleType(role.getRoleType());
+        if (role != null) {
+            courseDetail.setRoleType(role.getRoleType());
+        }else{
+            courseDetail.setRoleType(UserType.NULL.getIndex());
+        }
         return SimpleResponse.ok(courseDetail);
 //        return SimpleResponse.ok(CourseDetail.mockCourseDetail());
     }
