@@ -6,12 +6,17 @@ import cn.superid.common.rest.dto.business.AffairDTO;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
 import cn.superid.tss.constant.AffairType;
+import cn.superid.tss.constant.ResponseCode;
 import cn.superid.tss.constant.UserType;
+import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.service.IGroupService;
 import cn.superid.tss.vo.GroupDetail;
 import cn.superid.tss.vo.GroupSimple;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
+import com.alibaba.fastjson.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +30,9 @@ import java.util.stream.Collectors;
  **/
 @Service
 public class GroupService implements IGroupService {
+
+    private static final Logger logger = LoggerFactory.getLogger(GroupService.class);
+
     @Autowired
     BusinessClient businessClient;
 
@@ -118,8 +126,14 @@ public class GroupService implements IGroupService {
             affairCreateForm.setOwnerRoleTitle(UserType.getName(roleInfoDTO.getMold()));
         }
         affairCreateForm.setAffairMold(AffairType.GROUP.getIndex());
+        logger.info("affairCreateForm:"+JSON.toJSONString(affairCreateForm));
         SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm);
-        return new Long((Integer) simpleResponse.getData());
+        logger.info("simpleResponse:"+JSON.toJSONString(simpleResponse));
+        if (simpleResponse.getCode() == 0){
+            return new Long((Integer) simpleResponse.getData());
+        }else{
+            throw new ErrorCodeException(ResponseCode.CATCH_EXCEPTION,(String) simpleResponse.getData());
+        }
     }
 
     @Override

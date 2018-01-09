@@ -1,6 +1,7 @@
 package cn.superid.tss.service.impl;
 
 
+import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.tss.BaseTest;
 import cn.superid.tss.constant.UserType;
 import cn.superid.tss.service.IRoleService;
@@ -17,6 +18,9 @@ public class RoleServiceTest extends BaseTest{
     private static final Logger logger = LoggerFactory.getLogger(RoleServiceTest.class);
     @Autowired
     IRoleService roleService;
+    @Autowired
+    BusinessClient businessClient;
+
     @Test
     public void testGetRoleByCourseId() throws Exception {
         List<RoleGroup> roles = roleService.getRoleByCourseId(130008);
