@@ -51,7 +51,7 @@ public class RoleService implements IRoleService{
         List<RoleGroup> groups = new LinkedList<>();
 
         //获得事务下的所有角色
-        List<RoleInfoDTO> roles = businessClient.getAffairAllRoles(courseId);
+        List<RoleInfoDTO> roles = businessClient.getAffairAllRoles(courseId, StateType.NORMAL.getIndex());
         logger.info("roles{}", roles);
 
         //将role按角色整理

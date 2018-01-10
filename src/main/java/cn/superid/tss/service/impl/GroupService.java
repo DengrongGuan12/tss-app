@@ -56,7 +56,7 @@ public class GroupService implements IGroupService {
         List<GroupSimple> myGroups = myAffairs.stream().map(affairDTO -> {
             if (detailed){
                 //TODO 3 获取小组所有角色
-                List<RoleInfoDTO> roleInfoDTOS = businessClient.getAffairAllRoles(affairDTO.getId());
+                List<RoleInfoDTO> roleInfoDTOS = businessClient.getAffairAllRoles(affairDTO.getId(), StateType.NORMAL.getIndex());
                 //默认是组员
                 final int[] roleType = {UserType.MEMBER.getIndex()};
                 List<Role> roles = roleInfoDTOS.stream().map(roleInfoDTO -> {
@@ -81,7 +81,7 @@ public class GroupService implements IGroupService {
         List<GroupSimple> allGroups = allAffairs.stream().map(affairDTO -> {
             if (detailed){
                 //TODO 3 获取小组所有角色
-                List<RoleInfoDTO> roleInfoDTOS = businessClient.getAffairAllRoles(affairDTO.getId());
+                List<RoleInfoDTO> roleInfoDTOS = businessClient.getAffairAllRoles(affairDTO.getId(), StateType.NORMAL.getIndex());
                 List<Role> roles = roleInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList());
                 //TODO 3
                 return new GroupDetail(affairDTO.getId(),affairDTO.getName(),false, affairDTO.getDescription(), roles, -1);

@@ -4,10 +4,7 @@ import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.client.FileClient;
 import cn.superid.common.rest.client.UserClient;
 import cn.superid.id_client.IdClient;
-import cn.superid.tss.constant.CommonConstant;
-import cn.superid.tss.constant.HomeworkType;
-import cn.superid.tss.constant.ResponseCode;
-import cn.superid.tss.constant.UserType;
+import cn.superid.tss.constant.*;
 import cn.superid.tss.dao.IActivityDao;
 import cn.superid.tss.dao.IAttachmentDao;
 import cn.superid.tss.dao.ICourseDao;
@@ -146,7 +143,7 @@ public class FileService implements IFileService{
             count.setTotal(shouldSubmit);
         }
         if(homeworkType == HomeworkType.NORMAL.getIndex()){//普通作业
-            shouldSubmit = (int) businessClient.getAffairAllRoles(activityId).stream().filter(item->item.getMold()==UserType.STUDENT.getIndex()).count();
+            shouldSubmit = (int) businessClient.getAffairAllRoles(activityId, StateType.NORMAL.getIndex()).stream().filter(item->item.getMold()==UserType.STUDENT.getIndex()).count();
             count.setTotal(shouldSubmit);
         }
 
