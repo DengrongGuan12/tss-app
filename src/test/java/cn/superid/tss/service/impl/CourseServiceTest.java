@@ -1,10 +1,13 @@
 package cn.superid.tss.service.impl;
 
 
+import cn.superid.common.rest.client.FileClient;
+import cn.superid.id_client.IdClient;
 import cn.superid.tss.BaseTest;
 import cn.superid.tss.forms.CourseForm;
 import cn.superid.tss.model.CourseEntity;
 import cn.superid.tss.service.ICourseService;
+import cn.superid.tss.util.DStatement;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,6 +18,14 @@ import java.util.Map;
 public class CourseServiceTest extends BaseTest {
     @Autowired
     ICourseService courseService;
+
+    @Autowired
+    FileClient fileClient;
+
+    @Autowired
+    IdClient idClient;
+
+
 
     @Test
     public void testGetUserCourses() throws Exception {
@@ -32,6 +43,15 @@ public class CourseServiceTest extends BaseTest {
 //        }
         CourseForm courseForm = CourseForm.mock();
         courseService.createCourse(courseForm, 906213, 115708, 30720);
+    }
+
+    @Test
+    public void testAddFolder(){
+        long folderId = idClient.nextId("file","file");
+        fileClient.addFolder(0,"课程资料", 920208, 130008,folderId);
+        CourseEntity courseEntity = DStatement.build(CourseEntity.class).id(130008).selectOne();
+        courseEntity.setDefaultFolder(folderId);
+        courseEntity.update();
     }
 
     @Test

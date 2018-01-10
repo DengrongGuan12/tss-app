@@ -61,13 +61,13 @@ public class CourseService implements ICourseService {
     @Override
     public Map<String, Map> getUserCourses(long userId) {
         UserEntity userEntity = userDao.getUserEntity(userId);
-        List<AffairDTO> affairDTOS = businessClient.getMyChildrenAffair(userId, userEntity.getDepartmentId(), AffairType.COURSE.getIndex(), false);
+        List<AffairDTO> affairDTOS = businessClient.getMyChildrenAffair(userId, userEntity.getDepartmentId(), AffairType.COURSE.getIndex(), StateType.NORMAL.getIndex(), false);
         return parseAffairsToCourses(affairDTOS,true,userId);
     }
 
     @Override
     public Map<String, Map> getCoursesOfDepartment(long departmentId) {
-        List<AffairDTO> affairDTOS = businessClient.getChildrenAffairByType(departmentId,AffairType.COURSE.getIndex(),false);
+        List<AffairDTO> affairDTOS = businessClient.getChildrenAffairByType(departmentId,AffairType.COURSE.getIndex(),StateType.NORMAL.getIndex(), false);
         return parseAffairsToCourses(affairDTOS,false);
     }
 
@@ -149,7 +149,7 @@ public class CourseService implements ICourseService {
         courseDetail.setDescription(affairDetailDTO.getDescription());
 
         //获取一个课程的所有教师(获取一个事务下某种特定类型的角色)
-        List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(courseId, UserType.TEACHER.getIndex());
+        List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(courseId, UserType.TEACHER.getIndex(), StateType.NORMAL.getIndex());
         Long[] userIds = roleInfoDTOS.stream().map(roleInfoDTO -> roleInfoDTO.getUserId()).toArray(Long[]::new);
         List<UserEntity> userEntities = userDao.selectUsersByIds(userIds,"id","number");
         Map<Long, String> userIdNumberMap = userEntities.stream().collect(Collectors.toMap(UserEntity::getId, a -> a.getNumber(), (k1, k2) -> k1));

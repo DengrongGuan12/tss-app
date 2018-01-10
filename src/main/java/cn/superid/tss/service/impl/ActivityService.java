@@ -9,6 +9,7 @@ import cn.superid.id_client.IdClient;
 import cn.superid.tss.constant.ActivityType;
 import cn.superid.tss.constant.HomeworkType;
 import cn.superid.tss.constant.ResponseCode;
+import cn.superid.tss.constant.StateType;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.forms.AddActivityForm;
 import cn.superid.tss.forms.AddHomeworkform;
@@ -53,7 +54,7 @@ public class ActivityService implements IActivityService{
 
         List<RichAnnouncementDTO> announcements;
         try {
-            announcements = client.getAnnouncements(courseId);
+            announcements = client.getAnnouncements(courseId, StateType.NORMAL.getIndex());
             announcements.stream().forEach(item->{
                 long id = item.getId();
                 ActivityInfoEntity entity = activityDao.getActivityInfoById(id);

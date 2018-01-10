@@ -7,6 +7,7 @@ import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
 import cn.superid.tss.constant.AffairType;
 import cn.superid.tss.constant.ResponseCode;
+import cn.superid.tss.constant.StateType;
 import cn.superid.tss.constant.UserType;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.service.IGroupService;
@@ -15,6 +16,7 @@ import cn.superid.tss.vo.GroupSimple;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
 import com.alibaba.fastjson.JSON;
+import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,7 @@ public class GroupService implements IGroupService {
 
     public List<? extends GroupSimple> getMyGroups(long courseId, long userId, boolean detailed){
         //TODO 3 获取我的小组
-        List<AffairDTO> myAffairs = businessClient.getMyChildrenAffair(userId, courseId, AffairType.GROUP.getIndex(), detailed);
+        List<AffairDTO> myAffairs = businessClient.getMyChildrenAffair(userId, courseId, AffairType.GROUP.getIndex(), 0, detailed);
         List<GroupSimple> myGroups = myAffairs.stream().map(affairDTO -> {
             if (detailed){
                 //TODO 3 获取小组所有角色
@@ -75,7 +77,7 @@ public class GroupService implements IGroupService {
 
     public List<? extends GroupSimple> getAllGroups(long courseId, boolean detailed){
         //TODO 3 获取该课程下所有小组（包括自己的小组）
-        List<AffairDTO> allAffairs = businessClient.getChildrenAffairByType(courseId, AffairType.GROUP.getIndex(), true);
+        List<AffairDTO> allAffairs = businessClient.getChildrenAffairByType(courseId, AffairType.GROUP.getIndex(), StateType.NORMAL.getIndex(), true);
         List<GroupSimple> allGroups = allAffairs.stream().map(affairDTO -> {
             if (detailed){
                 //TODO 3 获取小组所有角色
@@ -94,9 +96,9 @@ public class GroupService implements IGroupService {
     public List<RoleGroup> getRolesOfGroup(long groupId) {
         //TODO 3
         List<RoleGroup> roleGroups = new ArrayList<>();
-        List<RoleInfoDTO> leaderInfoDTOS = businessClient.getRolesByType(groupId, UserType.LEADER.getIndex());
-        List<RoleInfoDTO> memberInfoDTOS = businessClient.getRolesByType(groupId, UserType.MEMBER.getIndex());
-        List<RoleInfoDTO> tutorInfoDTOS = businessClient.getRolesByType(groupId, UserType.TUTOR.getIndex());
+        List<RoleInfoDTO> leaderInfoDTOS = businessClient.getRolesByType(groupId, UserType.LEADER.getIndex(), StateType.NORMAL.getIndex());
+        List<RoleInfoDTO> memberInfoDTOS = businessClient.getRolesByType(groupId, UserType.MEMBER.getIndex(), StateType.NORMAL.getIndex());
+        List<RoleInfoDTO> tutorInfoDTOS = businessClient.getRolesByType(groupId, UserType.TUTOR.getIndex(), StateType.NORMAL.getIndex());
         roleGroups.add(new RoleGroup(UserType.LEADER.getName(),
                 leaderInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList())));
         roleGroups.add(new RoleGroup(UserType.MEMBER.getName(),
@@ -149,6 +151,6 @@ public class GroupService implements IGroupService {
 
     @Override
     public List<RoleInfoDTO> getLeadersOfGroup(long groupId) {
-        return businessClient.getRolesByType(groupId, UserType.LEADER.getIndex());
+        return businessClient.getRolesByType(groupId, UserType.LEADER.getIndex(), StateType.NORMAL.getIndex());
     }
 }

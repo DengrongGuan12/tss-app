@@ -4,6 +4,7 @@ import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.tss.constant.ResponseCode;
+import cn.superid.tss.constant.StateType;
 import cn.superid.tss.constant.UserType;
 import cn.superid.tss.dao.ICourseDao;
 import cn.superid.tss.dao.IUserDao;
@@ -111,7 +112,7 @@ public class RoleService implements IRoleService{
         long roleId;
         try {
             long departmentId = userService.getDepartmentIdOfUser(userId);
-            List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(departmentId, userId);
+            List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(departmentId, userId, StateType.NORMAL.getIndex());
             long beAllocatedRoleId = infos.get(0).getRoleId();
             roleId = (long)businessClient.allocateNewRole(courseId, beAllocatedRoleId, beAllocatedRoleId, UserType.STUDENT.getIndex(), UserType.STUDENT.getName()).getData();
         }catch (Exception e){
@@ -125,7 +126,7 @@ public class RoleService implements IRoleService{
     public List<Role> getTeachersOfDepartment(long departmentId) {
         List<Role> roles = new ArrayList<>();
         try {
-            List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(departmentId, UserType.TEACHER.getIndex());
+            List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(departmentId, UserType.TEACHER.getIndex(), StateType.NORMAL.getIndex());
 
             if (!CollectionUtils.isEmpty(roleInfoDTOS)) {
                 roleInfoDTOS.stream().forEach(item -> {
@@ -143,7 +144,7 @@ public class RoleService implements IRoleService{
     public Role getRoleInAffair(long affairId, long userId) {
         Role r;
         try {
-            List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(affairId, userId);
+            List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(affairId, userId, StateType.NORMAL.getIndex());
             if (CollectionUtils.isEmpty(infos)){
                 return null;
             }
