@@ -59,41 +59,41 @@ public class ActivityController {
 
 
 
-    @ApiOperation(value = "创建教学",response = Long.class)
-    @RequestMapping(value = "/createTeaching",method = RequestMethod.POST)
-    public SimpleResponse createTeaching(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
-                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
-                                         @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
-                                         @RequestBody AddTeachingForm teaching){
-        long activityId = activityService.createActivity(teaching, ActivityType.Teaching.getIndex(),courseId,roleId,userId);
-        return SimpleResponse.ok(activityId);
-    }
+//    @ApiOperation(value = "创建教学",response = Long.class)
+//    @RequestMapping(value = "/createTeaching",method = RequestMethod.POST)
+//    public SimpleResponse createTeaching(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+//                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+//                                         @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+//                                         @RequestBody AddTeachingForm teaching){
+//        long activityId = activityService.createActivity(teaching, ActivityType.Teaching.getIndex(),courseId,roleId,userId);
+//        return SimpleResponse.ok(activityId);
+//    }
+//
+//    @ApiOperation(value = "创建作业",response = Long.class)
+//    @RequestMapping(value = "/createHomework",method = RequestMethod.POST)
+//    public SimpleResponse createHomework(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+//                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+//                                         @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+//                                         @RequestBody AddHomeworkform homeworkForm){
+//
+//        long activityId = activityService.createHomework(homeworkForm,courseId,roleId,userId);
+//        return SimpleResponse.ok(activityId);
+//    }
+//
+//    @ApiOperation(value = "创建考试",response = Long.class)
+//    @RequestMapping(value = "/createExam",method = RequestMethod.POST)
+//    public SimpleResponse createExam(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+//                                     @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+//                                     @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+//                                     @RequestBody AddActivityForm examform){
+//
+//        long activityId = activityService.createActivity(examform,ActivityType.Exam.getIndex(),courseId,
+//                                                            roleId,userId);
+//        return SimpleResponse.ok(activityId);
+//    }
+//
 
-    @ApiOperation(value = "创建作业",response = Long.class)
-    @RequestMapping(value = "/createHomework",method = RequestMethod.POST)
-    public SimpleResponse createHomework(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
-                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
-                                         @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
-                                         @RequestBody AddHomeworkform homeworkForm){
-
-        long activityId = activityService.createHomework(homeworkForm,courseId,roleId,userId);
-        return SimpleResponse.ok(activityId);
-    }
-
-    @ApiOperation(value = "创建考试",response = Long.class)
-    @RequestMapping(value = "/createExam",method = RequestMethod.POST)
-    public SimpleResponse createExam(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
-                                     @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
-                                     @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
-                                     @RequestBody AddActivityForm examform){
-
-        long activityId = activityService.createActivity(examform,ActivityType.Exam.getIndex(),courseId,
-                                                            roleId,userId);
-        return SimpleResponse.ok(activityId);
-    }
-
-
-    @ApiOperation(value = "创建其他",response = Long.class)
+    @ApiOperation(value = "创建活动",response = Long.class)
     @RequestMapping(value = "/createOther",method = RequestMethod.POST)
     public SimpleResponse createOther(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
@@ -105,18 +105,18 @@ public class ActivityController {
         return SimpleResponse.ok(activityId);
     }
 
-
-    @ApiOperation(value = "创建项目活动",response = Long.class)
-    @RequestMapping(value = "/createTeamActivity",method = RequestMethod.POST)
-    public SimpleResponse createTeamActivity(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
-                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
-                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
-                                      @RequestBody AddActivityForm form){
-
-        long activityId = activityService.createActivity(form,ActivityType.Project.getIndex(),courseId,
-                roleId,userId);
-        return SimpleResponse.ok(activityId);
-    }
-
+//
+//    @ApiOperation(value = "创建项目活动",response = Long.class)
+//    @RequestMapping(value = "/createTeamActivity",method = RequestMethod.POST)
+//    public SimpleResponse createTeamActivity(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+//                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+//                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+//                                      @RequestBody AddActivityForm form){
+//
+//        long activityId = activityService.createActivity(form,ActivityType.Project.getIndex(),courseId,
+//                roleId,userId);
+//        return SimpleResponse.ok(activityId);
+//    }
+//
 
 }

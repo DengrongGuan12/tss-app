@@ -12,7 +12,7 @@ public interface IActivityService {
 
     long createActivity(AddActivityForm form,int type,long courseId,long roleId,long userId);
 
-    long createHomework(AddHomeworkform form,long courseId,long roleId,long userId);
+    //long createHomework(AddHomeworkform form,long courseId,long roleId,long userId);
 
     Activity getActivity(long activityId);
 

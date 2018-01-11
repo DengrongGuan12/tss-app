@@ -74,6 +74,12 @@ public class ActivityService implements IActivityService{
     public long createActivity(AddActivityForm form, int type, long courseId, long roleId, long userId) {
 
         long id = 0;
+
+        if(form.getType() == ActivityType.Homework.getIndex()){
+            createHomework(form,courseId,roleId,userId);
+            return id;
+
+        }
         CreateAnnouncementForm caf = new CreateAnnouncementForm();
         caf.setAffairId(courseId);caf.setTitle(form.getTitle());
         caf.setContent(form.getContent());caf.setRoleId(roleId);
@@ -95,8 +101,7 @@ public class ActivityService implements IActivityService{
         return id;
     }
 
-    @Override
-    public long createHomework(AddHomeworkform form, long courseId, long roleId, long userId) {
+    private long createHomework(AddActivityForm form, long courseId, long roleId, long userId) {
         //判断是什么类型的作业，如果是发布给小组的作业需要做特殊处理
         //调用superID创建发布接口
         //塞进自己的数据库里
@@ -119,7 +124,7 @@ public class ActivityService implements IActivityService{
         return 0;
     }
 
-    private long insertHomework(AddHomeworkform form, long affairId, long roleId, long userId,int homeworkType, long parentId){
+    private long insertHomework(AddActivityForm form, long affairId, long roleId, long userId,int homeworkType, long parentId){
         long homeworkId;
         CreateAnnouncementForm caf = new CreateAnnouncementForm();
         caf.setAffairId(affairId);
@@ -139,7 +144,8 @@ public class ActivityService implements IActivityService{
             activityDao.saveActivity(entity);
 
         } catch (Exception e) {
-            throw new ErrorCodeException(ResponseCode.CREATE_ACTIVITY_FAILURE, "创建小组作业失败");
+            logger.error("创建小组作业失败 {}",e);
+            throw new ErrorCodeException(ResponseCode.CREATE_ACTIVITY_FAILURE, "创建作业失败");
         }
 
         return homeworkId;
