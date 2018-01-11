@@ -4,8 +4,6 @@ import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.tss.constant.ActivityType;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.forms.AddActivityForm;
-import cn.superid.tss.forms.AddHomeworkform;
-import cn.superid.tss.forms.AddTeachingForm;
 import cn.superid.tss.service.IActivityService;
 import cn.superid.tss.vo.Activity;
 import io.swagger.annotations.ApiOperation;
@@ -100,7 +98,7 @@ public class ActivityController {
                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                      @RequestBody AddActivityForm form){
 
-        long activityId = activityService.createActivity(form,ActivityType.other.getIndex(),courseId,
+        long activityId = activityService.createActivity(form,courseId,
                 roleId,userId);
         return SimpleResponse.ok(activityId);
     }

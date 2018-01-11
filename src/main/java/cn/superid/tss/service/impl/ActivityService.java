@@ -71,7 +71,7 @@ public class ActivityService implements IActivityService{
     }
 
     @Override
-    public long createActivity(AddActivityForm form, int type, long courseId, long roleId, long userId) {
+    public long createActivity(AddActivityForm form, long courseId, long roleId, long userId) {
 
         long id = 0;
 
@@ -92,7 +92,7 @@ public class ActivityService implements IActivityService{
                 fileService.uploadAttachments(attachments,id,courseId,roleId,userId);
             }
 
-            ActivityInfoEntity entity = new ActivityInfoEntity(id,type,-100,null,-100);
+            ActivityInfoEntity entity = new ActivityInfoEntity(id,form.getType(),-100,null,-100);
             activityDao.saveActivity(entity);
         } catch (Exception e) {
             throw new ErrorCodeException(ResponseCode.CREATE_ACTIVITY_FAILURE,"创建课程活动失败");

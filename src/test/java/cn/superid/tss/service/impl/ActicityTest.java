@@ -44,7 +44,7 @@ public class ActicityTest extends BaseTest{
     @Test
     //test pass
     public void testCreateHomework(){
-        AddHomeworkform homeworkform = new AddHomeworkform();
+        AddActivityForm homeworkform = new AddActivityForm();
         homeworkform.setTitle("第一次作业");
         homeworkform.setContent("{\"entityMap\":{},\"blocks\":[{\"key\":\"bnpcl\"," +
                 "\"text\":\"软件工程导论\",\"type\":\"header-one\"," +
@@ -65,7 +65,7 @@ public class ActicityTest extends BaseTest{
 
         homeworkform.setDeadline(deadline);
         homeworkform.setHomeworkType(HomeworkType.GROUP.getIndex());
-        activityService.createHomework(homeworkform,courseId,teacherRoleID,teacherUserID);
+        activityService.createActivity(homeworkform,ActivityType.Homework.getIndex(),courseId,teacherRoleID,teacherUserID);
 
 
     }
