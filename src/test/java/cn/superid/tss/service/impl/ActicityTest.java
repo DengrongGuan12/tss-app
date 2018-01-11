@@ -37,7 +37,7 @@ public class ActicityTest extends BaseTest{
                 " java的基础类库\",\"type\":\"header-two\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"2hchn\",\"text\":\"\",\"type\":\"header-two\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"9seun\",\"text\":\"\",\"type\":\"header-two\",\"depth\":0," +
                 "\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}]}");
         form.setAttachments(null);
-        activityService.createActivity(form, ActivityType.Teaching.getIndex(),courseId,teacherRoleID,teacherUserID);
+        activityService.createActivity(form,courseId,teacherRoleID,teacherUserID);
     }
 
 
@@ -65,7 +65,7 @@ public class ActicityTest extends BaseTest{
 
         homeworkform.setDeadline(deadline);
         homeworkform.setHomeworkType(HomeworkType.GROUP.getIndex());
-        activityService.createActivity(homeworkform,ActivityType.Homework.getIndex(),courseId,teacherRoleID,teacherUserID);
+        activityService.createActivity(homeworkform,courseId,teacherRoleID,teacherUserID);
 
 
     }
