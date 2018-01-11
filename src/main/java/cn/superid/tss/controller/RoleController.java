@@ -2,6 +2,7 @@ package cn.superid.tss.controller;
 
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
+import cn.superid.tss.constant.CommonConstant;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.constant.ResponseCode;
 import cn.superid.tss.constant.UserType;
@@ -38,12 +39,7 @@ public class RoleController {
     public SimpleResponse getCourseRoleList(@RequestParam(value = "courseId")long courseId){
         logger.info("courseid {}" ,courseId);
 
-        List<RoleGroup> groups = new LinkedList<>();
-        groups.add(RoleGroup.mockTeacherGroup());
-        groups.add(RoleGroup.mockStudentGroup());
-                //roleService.getRoleByCourseId(courseId);
-
-        return SimpleResponse.ok(groups);
+        return SimpleResponse.ok(roleService.getRoleByCourseId(courseId));
     }
 
     @ApiOperation(value = "从课程里面删除人员",response = SimpleResponse.class)
@@ -54,7 +50,7 @@ public class RoleController {
                                                 @RequestParam(value = "toDeleteRoleId")long toDeleteRoleId
                                                 ){
         long result = roleService.deleteRole(roleId,toDeleteRoleId,courseId);
-        return SimpleResponse.ok(result);
+        return SimpleResponse.ok("success");
     }
 
     @ApiOperation(value = "邀请老师",response = SimpleResponse.class)
@@ -63,9 +59,11 @@ public class RoleController {
                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                         @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                         @RequestParam(value = "allocatedUserId")long allocatedUserId){
-        long id = roleService.addMember(courseId,roleId,allocatedUserId,
+        long departmentId = userService.getDepartmentIdOfUser(allocatedUserId);
+        Role role = roleService.getRoleInAffair(departmentId, allocatedUserId);
+        long id = roleService.addMember(courseId,roleId,role.getId(),
                 UserType.TEACHER.getName(),UserType.TEACHER.getIndex());
-        return SimpleResponse.ok(id);
+        return SimpleResponse.ok("success");
     }
 
     @ApiOperation(value = "邀请助教",response = SimpleResponse.class)
@@ -83,7 +81,7 @@ public class RoleController {
         } catch (Exception e) {
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE, "邀请角色失败");
         }
-        return SimpleResponse.ok("successs");
+        return SimpleResponse.ok("success");
     }
 
     @ApiOperation(value = "通过邀请码加入课程",response = SimpleResponse.class)

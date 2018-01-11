@@ -25,7 +25,7 @@ public class RoleServiceTest extends BaseTest{
     @Autowired
     BusinessClient businessClient;
     @Test
-    //TODO 测试是否过滤了已经删掉的角色
+    //TEST PASS
     public void testGetRoleByCourseId() throws Exception {
         List<RoleGroup> roles = roleService.getRoleByCourseId(130008);
         logger.info("roleGroups {}",roles);
@@ -39,9 +39,9 @@ public class RoleServiceTest extends BaseTest{
     }
 
     @Test
-    // 400 bad request
+    // TEST PASS
     public void testAddToCourse() throws Exception {
-        roleService.addMember(920208,1022505,1022505,
+        roleService.addMember(130008,1022505,1022505,
                 UserType.STUDENT.getChName(),UserType.STUDENT.getIndex());
     }
 

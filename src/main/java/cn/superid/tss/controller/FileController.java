@@ -85,7 +85,7 @@ public class FileController {
                                          @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                          @RequestParam(value = "activityId")long activityId){
 
-        SubmitCount count = fileService.getSubmitCount(activityId);
+        SubmitCount count = fileService.getSubmitCount(activityId,courseId);
         return SimpleResponse.ok(count);
     }
 

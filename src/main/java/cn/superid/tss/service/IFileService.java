@@ -18,7 +18,7 @@ public interface IFileService {
 
     List<Submit> getSubmits(long activityId);
 
-    SubmitCount getSubmitCount(long activityId);
+    SubmitCount getSubmitCount(long activityId,long courseId);
 
 
 

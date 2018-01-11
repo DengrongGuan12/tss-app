@@ -114,7 +114,9 @@ public class RoleService implements IRoleService{
             long departmentId = userService.getDepartmentIdOfUser(userId);
             List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(departmentId, userId, StateType.NORMAL.getIndex());
             long beAllocatedRoleId = infos.get(0).getRoleId();
-            roleId = (long)businessClient.allocateNewRole(courseId, beAllocatedRoleId, beAllocatedRoleId, UserType.STUDENT.getIndex(), UserType.STUDENT.getName()).getData();
+            SimpleResponse response = businessClient.allocateNewRole(courseId, beAllocatedRoleId,
+                    beAllocatedRoleId, UserType.STUDENT.getIndex(), UserType.STUDENT.getChName());
+            roleId = Long.valueOf((Integer)response.getData());
         }catch (Exception e){
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"加入课程失败");
         }

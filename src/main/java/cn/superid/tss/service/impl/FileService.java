@@ -65,9 +65,9 @@ public class FileService implements IFileService{
     @Override
     public List<Attachment> getAttachments(long activityId) {
         List<AttachmentEntity> entities = attachmentDao.getAttachmentsByActivityId(activityId);
-        List<Attachment> attachments = Collections.emptyList();
+        List<Attachment> attachments = new ArrayList<>();
         entities.stream().forEach(item->{
-            attachments.add((Attachment) ObjectUtil.deepCopy(item,Attachment.class));
+            attachments.add(buildAttachment(item));
         });
         return attachments;
     }
@@ -124,7 +124,7 @@ public class FileService implements IFileService{
         }
 
 
-        List<Submit> submits = Collections.emptyList();
+        List<Submit> submits = new ArrayList<>();
         entities.stream().forEach(item->{
             submits.add(entity2submit(item));
         });
@@ -132,18 +132,19 @@ public class FileService implements IFileService{
     }
 
     @Override
-    public SubmitCount getSubmitCount(long activityId) {
+    public SubmitCount getSubmitCount(long activityId, long courseId) {
         SubmitCount count = new SubmitCount();
         ActivityInfoEntity entity  = activityDao.getActivityInfoById(activityId);
         //获得作业的类型
         int homeworkType = entity.getHomeworkType();
         int shouldSubmit = 0;
         if(homeworkType == HomeworkType.GROUP.getIndex()){//小组作业
-            shouldSubmit= gs.getAllGroups(activityId,false).size();
+            shouldSubmit= gs.getAllGroups(courseId,false).size();
             count.setTotal(shouldSubmit);
         }
         if(homeworkType == HomeworkType.NORMAL.getIndex()){//普通作业
-            shouldSubmit = (int) businessClient.getAffairAllRoles(activityId, StateType.NORMAL.getIndex()).stream().filter(item->item.getMold()==UserType.STUDENT.getIndex()).count();
+            shouldSubmit = (int)businessClient.getAffairAllRoles(courseId, StateType.NORMAL.getIndex()).stream().
+                    filter(item->item.getMold()==UserType.STUDENT.getIndex()).count();
             count.setTotal(shouldSubmit);
         }
 
@@ -185,5 +186,19 @@ public class FileService implements IFileService{
     private Submit entity2submit(SubmitEntity entity){
         return new Submit(entity.getId(),entity.getAttachmentUrl(),entity.getFileName(),entity.getActivityId(),entity.getRoleId(),
                 entity.getRoleTitle(),entity.getUserId(),entity.getUserName(),entity.getSubmitTime(),entity.getIsDelayed());
+    }
+
+    private Attachment buildAttachment(AttachmentEntity entity){
+        Attachment attachment = new Attachment();
+        attachment.setId(entity.getId());
+        attachment.setActivityId(entity.getActivityId());
+        attachment.setAttachmentUrl(entity.getAttachmentUrl());
+        attachment.setFileName(entity.getFileName());
+        attachment.setRoleId(entity.getRoleId());
+        attachment.setRoleTitle(entity.getRoleTitle());
+        attachment.setUserId(entity.getUserId());
+        attachment.setUserName(entity.getUserName());
+        attachment.setSubmitTime(entity.getSubmitTime());
+        return attachment;
     }
 }

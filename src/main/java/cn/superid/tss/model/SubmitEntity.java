@@ -48,6 +48,9 @@ public class SubmitEntity extends CModel{
         this.isDelayed = isDelayed;
     }
 
+    public SubmitEntity() {
+    }
+
     public long getId() {
         return id;
     }
