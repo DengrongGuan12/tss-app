@@ -5,6 +5,7 @@ import cn.superid.tss.service.IGroupService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Map;
 
 public class GroupServiceTest extends BaseTest{
@@ -24,6 +25,8 @@ public class GroupServiceTest extends BaseTest{
 
     @Test
     public void getAllGroups() throws Exception {
+        List list = groupService.getAllGroups(130008,false);
+        System.out.print(list);
     }
 
     @Test

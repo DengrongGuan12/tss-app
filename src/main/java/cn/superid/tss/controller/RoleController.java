@@ -59,6 +59,9 @@ public class RoleController {
                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                         @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                         @RequestParam(value = "allocatedUserId")long allocatedUserId){
+        if (roleService.getRoleInAffair(courseId,allocatedUserId) != null){
+            throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"重复邀请");
+        }
         long departmentId = userService.getDepartmentIdOfUser(allocatedUserId);
         Role role = roleService.getRoleInAffair(departmentId, allocatedUserId);
         long id = roleService.addMember(courseId,roleId,role.getId(),
@@ -72,7 +75,9 @@ public class RoleController {
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                       @RequestParam(value = "userId")long allocatedUserId){
-
+        if (roleService.getRoleInAffair(courseId,allocatedUserId) != null){
+            throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"重复邀请");
+        }
         try {
             long departmentId = userService.getDepartmentIdOfUser(allocatedUserId);
             Role role = roleService.getRoleInAffair(departmentId, allocatedUserId);

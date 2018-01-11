@@ -115,6 +115,9 @@ public class GroupController {
                                  @RequestParam("roleId") long invitedId) {
         //TODO 只有组长老师助教能邀请组员
         Role role = roleService.getRoleById(invitedId);
+        if (roleService.getRoleInAffair(groupId,role.getUserId()) != null){
+            throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"重复邀请");
+        }
         if (role.getRoleType() == UserType.TUTOR.getIndex() || role.getRoleType() == UserType.TEACHER.getIndex()){
             //如果邀请的是助教或老师
             roleService.addMember(groupId, roleId, invitedId, role.getTitle(), role.getRoleType());

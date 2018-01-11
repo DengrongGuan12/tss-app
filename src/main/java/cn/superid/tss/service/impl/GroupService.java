@@ -5,12 +5,14 @@ import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.AffairDTO;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
+import cn.superid.id_client.IdClient;
 import cn.superid.tss.constant.AffairType;
 import cn.superid.tss.constant.ResponseCode;
 import cn.superid.tss.constant.StateType;
 import cn.superid.tss.constant.UserType;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.service.IGroupService;
+import cn.superid.tss.service.IRoleService;
 import cn.superid.tss.vo.GroupDetail;
 import cn.superid.tss.vo.GroupSimple;
 import cn.superid.tss.vo.Role;
@@ -37,6 +39,12 @@ public class GroupService implements IGroupService {
 
     @Autowired
     BusinessClient businessClient;
+
+    @Autowired
+    IRoleService roleService;
+
+    @Autowired
+    IdClient idClient;
 
     @Override
     public Map<String, List> getGroupsOfCourse(long courseId, long userId) {
@@ -112,13 +120,15 @@ public class GroupService implements IGroupService {
 
     @Override
     public long createGroup(long userId, long roleId, long courseId, String name, String description) {
+        long groupId = idClient.nextId("business","affair");
         AffairCreateForm affairCreateForm = new AffairCreateForm();
+        affairCreateForm.setId(groupId);
         affairCreateForm.setDescription(description);
         affairCreateForm.setName(name);
         affairCreateForm.setParentAffairId(courseId);
         affairCreateForm.setUserId(userId);
         affairCreateForm.setOperationRoleId(roleId);
-        //TODO 3 获取角色详情，判断是老师，助教还是学生。
+        //TODO 3 获取角色详情，判断是老师，助教还是学生。自动把老师加入小组
         List<RoleInfoDTO> roleInfoDTOS = businessClient.fillRole(new Long[]{roleId});
         if (roleInfoDTOS == null || roleInfoDTOS.size() == 0){
             throw new ErrorCodeException(ResponseCode.PARAM_ERROR,"找不到对应的角色!");
@@ -132,14 +142,22 @@ public class GroupService implements IGroupService {
             affairCreateForm.setOwnerRoleTitle(UserType.getName(roleInfoDTO.getMold()));
         }
         affairCreateForm.setAffairMold(AffairType.GROUP.getIndex());
-        logger.info("affairCreateForm:"+JSON.toJSONString(affairCreateForm));
+//        logger.info("affairCreateForm:"+JSON.toJSONString(affairCreateForm));
         SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm);
-        logger.info("simpleResponse:"+JSON.toJSONString(simpleResponse));
+//        logger.info("simpleResponse:"+JSON.toJSONString(simpleResponse));
         if (simpleResponse.getCode() == 0){
-            return new Long((Integer) simpleResponse.getData());
+//            return new Long((Integer) simpleResponse.getData());
+            List<RoleInfoDTO> teachers = businessClient.getRolesByType(courseId, UserType.TEACHER.getIndex(), StateType.NORMAL.getIndex());
+            if (teachers != null){
+                teachers.stream().forEach(t -> {
+                    roleService.addMember(groupId, roleId, t.getRoleId(), UserType.TEACHER.getName(), UserType.TEACHER.getIndex());
+                });
+            }
         }else{
             throw new ErrorCodeException(ResponseCode.CATCH_EXCEPTION,(String) simpleResponse.getData());
         }
+        return groupId;
+
     }
 
     @Override
