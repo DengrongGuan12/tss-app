@@ -97,6 +97,7 @@ public class ActivityController {
                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                      @RequestBody AddActivityForm form){
+        logger.info("form {}",form);
 
         long activityId = activityService.createActivity(form,courseId,
                 roleId,userId);

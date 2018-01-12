@@ -69,9 +69,16 @@ public class Comment {
         return new Comment(id, role, "sdsdfsdfsdfsdfsdfsdfkjljlkjlkjiuijkjlknklajdfjl",new Date(), toRole);
     }
 
-//    public static Comment transForm(AnnouncementCommentVO commentVO){
-//        Comment comment = new Comment();
-//    }
+    public static Comment transForm(AnnouncementCommentVO commentVO){
+        Comment comment = new Comment();
+        comment.setId(commentVO.getId());
+        comment.setContent(commentVO.getContent());
+        comment.setTime(commentVO.getCreateTime());
+        comment.setRole(new Role(commentVO.getRole()));
+        comment.setToRole(new Role(commentVO.getToRole()));
+
+        return comment;
+    }
 
 
 }

@@ -50,6 +50,10 @@ public class ResponseCode {
   public static final int GET_ACTIVITIES_FAILURE = 50001;//获得课程活动列表失败
   public static final int GET_ACTIVITY_FAILURE = 50002;//无法获得活动信息
   public static final int CREATE_ACTIVITY_FAILURE = 50003;//创建课程活动失败
+  public static final int GET_COMMENTS_FAILURE = 50004;//无法获得评论列表
+  public static final int ADD_COMMENTS_FAILURE = 50005;//发表评论失败
+  public static final int DELETE_COMMENT_FAILURE = 50006;//删除评论失败
+
   // 角色 6
   public static final int DELETE_ROLE_FAILURE = 6001;//删除角色失败
   public static final int INVITE_ROLE_FAILURE = 6002;//邀请失败
