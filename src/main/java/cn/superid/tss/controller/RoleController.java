@@ -1,5 +1,6 @@
 package cn.superid.tss.controller;
 
+import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.tss.constant.CommonConstant;
@@ -9,6 +10,7 @@ import cn.superid.tss.constant.UserType;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.service.impl.RoleService;
 import cn.superid.tss.service.impl.UserService;
+import cn.superid.tss.vo.ResultVO;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,6 +33,8 @@ public class RoleController {
     RoleService roleService;
     @Autowired
     UserService userService;
+    @Autowired
+    BusinessClient businessClient;
 
     private static final Logger logger = LoggerFactory.getLogger(RoleController.class);
 
@@ -58,15 +63,23 @@ public class RoleController {
     public SimpleResponse inviteTeacher(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                         @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
-                                        @RequestParam(value = "allocatedUserId")long allocatedUserId){
-        if (roleService.getRoleInAffair(courseId,allocatedUserId) != null){
-            throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"重复邀请");
-        }
-        long departmentId = userService.getDepartmentIdOfUser(allocatedUserId);
-        Role role = roleService.getRoleInAffair(departmentId, allocatedUserId);
-        long id = roleService.addMember(courseId,roleId,role.getId(),
+                                        @RequestParam(value = "roleIds")Long[] invitedIds){
+        List<cn.superid.common.rest.dto.RoleInfoDTO> roleInfoDTOs = businessClient.getRoles(invitedIds);
+        List<ResultVO> resultVOS = new ArrayList<>();
+        List<Long> toInvitedIds = new ArrayList<>();
+        roleInfoDTOs.forEach(roleInfoDTO -> {
+            if (roleInfoDTO.getBelongAffairId() == courseId){
+                resultVOS.add(new ResultVO(ResponseCode.INVITE_ROLE_FAILURE, "重复邀请", roleInfoDTO.getId()+""));
+            }else if (roleInfoDTO.getMold() != UserType.TEACHER.getIndex()){
+                resultVOS.add(new ResultVO(ResponseCode.INVITE_ROLE_FAILURE,"不是教师",roleInfoDTO.getId()+""));
+            }else{
+                resultVOS.add(new ResultVO(ResponseCode.OK,null,roleInfoDTO.getId()+""));
+                toInvitedIds.add(roleInfoDTO.getId());
+            }
+        });
+        roleService.addMember(courseId,roleId,toInvitedIds.stream().toArray(Long[]::new),
                 UserType.TEACHER.getName(),UserType.TEACHER.getIndex());
-        return SimpleResponse.ok("success");
+        return SimpleResponse.ok(resultVOS);
     }
 
     @ApiOperation(value = "邀请助教",response = SimpleResponse.class)
@@ -74,19 +87,23 @@ public class RoleController {
     public SimpleResponse inviteTutor(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
-                                      @RequestParam(value = "userId")long allocatedUserId){
-        if (roleService.getRoleInAffair(courseId,allocatedUserId) != null){
-            throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"重复邀请");
-        }
-        try {
-            long departmentId = userService.getDepartmentIdOfUser(allocatedUserId);
-            Role role = roleService.getRoleInAffair(departmentId, allocatedUserId);
-            long id = roleService.addMember(courseId, roleId, role.getId(),
-                    UserType.TUTOR.getName(), UserType.TUTOR.getIndex());
-        } catch (Exception e) {
-            throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE, "邀请角色失败");
-        }
-        return SimpleResponse.ok("success");
+                                      @RequestParam(value = "roleIds")Long[] invitedIds){
+        List<cn.superid.common.rest.dto.RoleInfoDTO> roleInfoDTOs = businessClient.getRoles(invitedIds);
+        List<ResultVO> resultVOS = new ArrayList<>();
+        List<Long> toInvitedIds = new ArrayList<>();
+        roleInfoDTOs.forEach(roleInfoDTO -> {
+            if (roleInfoDTO.getBelongAffairId() == courseId){
+                resultVOS.add(new ResultVO(ResponseCode.INVITE_ROLE_FAILURE, "重复邀请", roleInfoDTO.getId()+""));
+            }else if (roleInfoDTO.getMold() != UserType.STUDENT.getIndex()){
+                resultVOS.add(new ResultVO(ResponseCode.INVITE_ROLE_FAILURE,"不是学生",roleInfoDTO.getId()+""));
+            }else{
+                resultVOS.add(new ResultVO(ResponseCode.OK,null,roleInfoDTO.getId()+""));
+                toInvitedIds.add(roleInfoDTO.getId());
+            }
+        });
+        roleService.addMember(courseId,roleId,toInvitedIds.stream().toArray(Long[]::new),
+                UserType.TUTOR.getName(),UserType.TUTOR.getIndex());
+        return SimpleResponse.ok(resultVOS);
     }
 
     @ApiOperation(value = "通过邀请码加入课程",response = SimpleResponse.class)

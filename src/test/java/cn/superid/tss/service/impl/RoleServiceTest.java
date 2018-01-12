@@ -41,7 +41,7 @@ public class RoleServiceTest extends BaseTest{
     @Test
     // TEST PASS
     public void testAddToCourse() throws Exception {
-        roleService.addMember(130008,1022505,1022505,
+        roleService.addMember(130008,1022505,new Long[]{1022505L},
                 UserType.STUDENT.getChName(),UserType.STUDENT.getIndex());
     }
 

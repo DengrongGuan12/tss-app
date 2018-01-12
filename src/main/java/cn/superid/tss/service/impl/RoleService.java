@@ -25,10 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.relation.RoleInfo;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,12 +54,11 @@ public class RoleService implements IRoleService{
         //将role按角色整理
         Map<Integer,List<RoleInfoDTO>> group = roles.stream().collect(Collectors.groupingBy(RoleInfoDTO::getMold));
         for(Map.Entry<Integer,List<RoleInfoDTO>> entry: group.entrySet()){
-            String roleType = UserType.getName(entry.getKey());
             List<Role> roleList = new ArrayList<>();
             entry.getValue().stream().forEach(item->{
                 roleList.add(roleTransform(item));
             });
-            groups.add(new RoleGroup(roleType, roleList));
+            groups.add(new RoleGroup(entry.getKey(), roleList));
         }
 
         return groups;
@@ -87,18 +83,18 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public long addMember(long courseId, long operatorRoleId, long beAllocatedRoleId, String roleTitle, int roleType){
-        long roleId;
+    public List<Long> addMember(long courseId, long operatorRoleId, Long[] beAllocatedRoleId, String roleTitle, int roleType){
+        List<Long> roleIds;
         try {
 
             SimpleResponse response = businessClient.allocateNewRole(courseId, operatorRoleId,
                     beAllocatedRoleId, roleType, roleTitle);
-            roleId = Long.valueOf((Integer)response.getData());
+            roleIds = (List<Long>) response.getData();
         }catch (Exception e){
             logger.error("add member fail:",e);
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"邀请角色失败");
         }
-        return roleId;
+        return roleIds;
     }
 
 
@@ -115,7 +111,7 @@ public class RoleService implements IRoleService{
             List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(departmentId, userId, StateType.NORMAL.getIndex());
             long beAllocatedRoleId = infos.get(0).getRoleId();
             SimpleResponse response = businessClient.allocateNewRole(courseId, beAllocatedRoleId,
-                    beAllocatedRoleId, UserType.STUDENT.getIndex(), UserType.STUDENT.getChName());
+                    new Long[]{beAllocatedRoleId}, UserType.STUDENT.getIndex(), UserType.STUDENT.getChName());
             roleId = Long.valueOf((Integer)response.getData());
         }catch (Exception e){
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"加入课程失败");
@@ -160,9 +156,12 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public Role getRoleById(long roleId) {
-        List<RoleInfoDTO> roleInfoDTOS = businessClient.fillRole(new Long[]{roleId});
-        return roleTransform(roleInfoDTOS.get(0));
+    public List<Role> getRolesByIds(Long[] roleIds) {
+        List<RoleInfoDTO> roleInfoDTOS = businessClient.fillRole(roleIds);
+        if (roleInfoDTOS != null){
+            return roleInfoDTOS.stream().map(roleInfoDTO -> roleTransform(roleInfoDTO)).collect(Collectors.toList());
+        }
+        return null;
     }
 
 

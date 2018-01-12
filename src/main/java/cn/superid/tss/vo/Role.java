@@ -48,6 +48,7 @@ public class Role {
         this.realName = roleInfoDTO.getUsername();
         this.avatar = roleInfoDTO.getAvatar();
         this.gender = roleInfoDTO.getGender();
+        this.roleType = roleInfoDTO.getMold();
     }
 
     public long getUserId() {

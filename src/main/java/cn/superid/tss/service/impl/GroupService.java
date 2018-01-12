@@ -107,11 +107,11 @@ public class GroupService implements IGroupService {
         List<RoleInfoDTO> leaderInfoDTOS = businessClient.getRolesByType(groupId, UserType.LEADER.getIndex(), StateType.NORMAL.getIndex());
         List<RoleInfoDTO> memberInfoDTOS = businessClient.getRolesByType(groupId, UserType.MEMBER.getIndex(), StateType.NORMAL.getIndex());
         List<RoleInfoDTO> tutorInfoDTOS = businessClient.getRolesByType(groupId, UserType.TUTOR.getIndex(), StateType.NORMAL.getIndex());
-        roleGroups.add(new RoleGroup(UserType.LEADER.getName(),
+        roleGroups.add(new RoleGroup(UserType.LEADER.getIndex(),
                 leaderInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList())));
-        roleGroups.add(new RoleGroup(UserType.MEMBER.getName(),
+        roleGroups.add(new RoleGroup(UserType.MEMBER.getIndex(),
                 memberInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList())));
-        roleGroups.add(new RoleGroup(UserType.TUTOR.getName(),
+        roleGroups.add(new RoleGroup(UserType.TUTOR.getIndex(),
                 tutorInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList())));
         return roleGroups;
     }
@@ -149,9 +149,10 @@ public class GroupService implements IGroupService {
 //            return new Long((Integer) simpleResponse.getData());
             List<RoleInfoDTO> teachers = businessClient.getRolesByType(courseId, UserType.TEACHER.getIndex(), StateType.NORMAL.getIndex());
             if (teachers != null){
-                teachers.stream().forEach(t -> {
-                    roleService.addMember(groupId, roleId, t.getRoleId(), UserType.TEACHER.getName(), UserType.TEACHER.getIndex());
-                });
+                Long[] roleIds = teachers.stream().filter(t -> t.getUserId() != userId).map(t -> t.getRoleId()).toArray(Long[]::new);
+                if (roleIds.length != 0){
+                    roleService.addMember(groupId, roleId, roleIds, UserType.TEACHER.getName(), UserType.TEACHER.getIndex());
+                }
             }
         }else{
             throw new ErrorCodeException(ResponseCode.CATCH_EXCEPTION,(String) simpleResponse.getData());

@@ -1,5 +1,6 @@
 package cn.superid.tss.controller;
 
+import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.tss.constant.RequestHeaders;
@@ -8,10 +9,7 @@ import cn.superid.tss.constant.UserType;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.service.IGroupService;
 import cn.superid.tss.service.IRoleService;
-import cn.superid.tss.vo.GroupDetail;
-import cn.superid.tss.vo.GroupSimple;
-import cn.superid.tss.vo.Role;
-import cn.superid.tss.vo.RoleGroup;
+import cn.superid.tss.vo.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author DengrongGuan
@@ -34,6 +33,9 @@ public class GroupController {
 
     @Autowired
     IRoleService roleService;
+
+    @Autowired
+    BusinessClient businessClient;
 
     @ApiOperation(value = "创建小组", response = SimpleResponse.class)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -112,26 +114,46 @@ public class GroupController {
     public SimpleResponse invite(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                  @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                  @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long groupId,
-                                 @RequestParam("roleId") long invitedId) {
+                                 @RequestParam(value = "roleIds") Long[] invitedIds) {
         //TODO 只有组长老师助教能邀请组员
-        Role role = roleService.getRoleById(invitedId);
-        if (roleService.getRoleInAffair(groupId,role.getUserId()) != null){
-            throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"重复邀请");
+        List<cn.superid.common.rest.dto.RoleInfoDTO> roleInfoDTOs = businessClient.getRoles(invitedIds);
+        Map<Integer, List<cn.superid.common.rest.dto.RoleInfoDTO>> moldRoleInfoListMap = new HashMap<>();
+        List<ResultVO> resultVOS = new ArrayList<>();
+        roleInfoDTOs.forEach(roleInfoDTO -> {
+            if (roleInfoDTO.getBelongAffairId() == groupId){
+                resultVOS.add(new ResultVO(ResponseCode.INVITE_ROLE_FAILURE, "重复邀请", roleInfoDTO.getId()+""));
+            }else{
+                if (moldRoleInfoListMap.containsKey(roleInfoDTO.getMold())){
+                    moldRoleInfoListMap.get(roleInfoDTO.getMold()).add(roleInfoDTO);
+                }else{
+                    List<cn.superid.common.rest.dto.RoleInfoDTO> list = new ArrayList<>();
+                    list.add(roleInfoDTO);
+                    moldRoleInfoListMap.put(roleInfoDTO.getMold(), list);
+                }
+                resultVOS.add(new ResultVO(0,null,roleInfoDTO.getId()+""));
+            }
+        });
+        if (moldRoleInfoListMap.containsKey(UserType.TEACHER.getIndex())){
+            Long[] ids = moldRoleInfoListMap.get(UserType.TEACHER.getIndex()).stream().map(r -> r.getId()).toArray(Long[]::new);
+            roleService.addMember(groupId, roleId, ids, UserType.TEACHER.getName(), UserType.TEACHER.getIndex());
         }
-        if (role.getRoleType() == UserType.TUTOR.getIndex() || role.getRoleType() == UserType.TEACHER.getIndex()){
-            //如果邀请的是助教或老师
-            roleService.addMember(groupId, roleId, invitedId, role.getTitle(), role.getRoleType());
-            return SimpleResponse.ok(null);
+        if (moldRoleInfoListMap.containsKey(UserType.TUTOR.getIndex())){
+            Long[] ids = moldRoleInfoListMap.get(UserType.TUTOR.getIndex()).stream().map(r -> r.getId()).toArray(Long[]::new);
+            roleService.addMember(groupId, roleId, ids, UserType.TUTOR.getName(), UserType.TUTOR.getIndex());
         }
-        List<RoleInfoDTO> leaders = groupService.getLeadersOfGroup(groupId);
-        String roleTitle = UserType.MEMBER.getName();
-        int roleType = UserType.MEMBER.getIndex();
-        if (leaders.size() == 0) {
-            //如果小组里还没有组长就设置该《学生》为组长
-            roleTitle = UserType.LEADER.getName();
-            roleType = UserType.LEADER.getIndex();
+        if (moldRoleInfoListMap.containsKey(UserType.STUDENT.getIndex())){
+            List<Long> ids = moldRoleInfoListMap.get(UserType.STUDENT.getIndex()).stream().map(r -> r.getId()).collect(Collectors.toList());
+            List<RoleInfoDTO> leaders = groupService.getLeadersOfGroup(groupId);
+            int i = 0;
+            if (leaders.size() == 0) {
+                //如果小组里还没有组长就设置该《学生》为组长
+                roleService.addMember(groupId, roleId, new Long[]{ids.get(0)}, UserType.LEADER.getName(), UserType.LEADER.getIndex());
+                i = 1;
+            }
+
+            roleService.addMember(groupId, roleId, null, UserType.LEADER.getName(), UserType.LEADER.getIndex());
         }
-        roleService.addMember(groupId, roleId, invitedId, roleTitle, roleType);
+
         return SimpleResponse.ok(null);
     }
 
@@ -141,10 +163,10 @@ public class GroupController {
                                    @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                    @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long groupId) {
 
-        List<RoleGroup> roleGroups = new ArrayList<>();
-        roleGroups.add(RoleGroup.mockGroupLeader());
-        roleGroups.add(RoleGroup.mockGroupMember());
-//        List<RoleGroup> roleGroups = groupService.getRolesOfGroup(groupId);
+//        List<RoleGroup> roleGroups = new ArrayList<>();
+//        roleGroups.add(RoleGroup.mockGroupLeader());
+//        roleGroups.add(RoleGroup.mockGroupMember());
+        List<RoleGroup> roleGroups = groupService.getRolesOfGroup(groupId);
         return SimpleResponse.ok(roleGroups);
     }
 
