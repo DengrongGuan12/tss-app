@@ -1,5 +1,6 @@
 package cn.superid.tss.vo;
 
+import cn.superid.tss.constant.UserType;
 import io.swagger.annotations.ApiModel;
 
 import java.util.ArrayList;
@@ -12,11 +13,11 @@ import java.util.List;
 @ApiModel
 public class RoleGroup {
 
-    private String roleType;
+    private int roleType;
 
     private List<Role> roleList;
 
-    public RoleGroup(String roleType, List<Role> roleList) {
+    public RoleGroup(int roleType, List<Role> roleList) {
         this.roleType = roleType;
         this.roleList = roleList;
     }
@@ -28,11 +29,11 @@ public class RoleGroup {
         roleList.add(role);
     }
 
-    public String getRoleType() {
+    public int getRoleType() {
         return roleType;
     }
 
-    public void setRoleType(String roleType) {
+    public void setRoleType(int roleType) {
         this.roleType = roleType;
     }
 
@@ -46,7 +47,7 @@ public class RoleGroup {
 
     public static RoleGroup mockTeacherGroup(){
 
-        RoleGroup rg = new RoleGroup("教师",null);
+        RoleGroup rg = new RoleGroup(UserType.TEACHER.getIndex(),null);
         rg.addRole(Role.MockTeacher());
         rg.addRole(Role.MockTeacher());
         rg.addRole(Role.MockTeacher());
@@ -55,7 +56,7 @@ public class RoleGroup {
     }
 
     public static RoleGroup mockStudentGroup(){
-        RoleGroup rg = new RoleGroup("学生",null);
+        RoleGroup rg = new RoleGroup(UserType.STUDENT.getIndex(),null);
         rg.addRole(Role.MockStudent());
         rg.addRole(Role.MockStudent());
         rg.addRole(Role.MockStudent());
@@ -64,7 +65,7 @@ public class RoleGroup {
     }
 
     public static RoleGroup mockGroupMember(){
-        RoleGroup rg = new RoleGroup("组员",null);
+        RoleGroup rg = new RoleGroup(UserType.MEMBER.getIndex(),null);
         rg.addRole(Role.MockStudent());
         rg.addRole(Role.MockStudent());
         rg.addRole(Role.MockStudent());
@@ -72,7 +73,7 @@ public class RoleGroup {
     }
 
     public static RoleGroup mockGroupLeader(){
-        RoleGroup rg = new RoleGroup("组长",null);
+        RoleGroup rg = new RoleGroup(UserType.LEADER.getIndex(),null);
         rg.addRole(Role.MockStudent());
         return rg;
     }

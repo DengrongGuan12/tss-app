@@ -20,7 +20,7 @@ public class CommentService implements ICommentService {
 
     @Override
     public List<Comment> getComments(long roleId, long announcementId) {
-        businessClient.getCommentList(roleId, announcementId);
+        businessClient.getCommentList(announcementId);
         return null;
     }
 }

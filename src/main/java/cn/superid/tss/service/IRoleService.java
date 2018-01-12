@@ -1,5 +1,6 @@
 package cn.superid.tss.service;
 
+import cn.superid.common.rest.dto.RoleInfoDTO;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
 
@@ -14,7 +15,7 @@ public interface IRoleService {
     /*
       将一个用户加入到一门课程中
      */
-    long addMember(long courseId, long operatorRoleId, long beAllocatedRoleId, String roleTitle, int roleType);
+    List<Long> addMember(long courseId, long operatorRoleId, Long[] beAllocatedRoleId, String roleTitle, int roleType);
 
     /*
         通过邀请码加入课程
@@ -37,6 +38,6 @@ public interface IRoleService {
      */
     Role getRoleInAffair(long affairId, long userId);
 
-    Role getRoleById(long roleId);
+    List<Role> getRolesByIds(Long[] roleId);
 
 }
