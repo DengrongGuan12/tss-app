@@ -25,7 +25,7 @@ public class CommentService implements ICommentService {
     public List<Comment> getComments(long roleId, long announcementId) {
         List<Comment> comments;
 
-        List<AnnouncementCommentVO> commentVOS = businessClient.getCommentList(roleId, announcementId);
+        List<AnnouncementCommentVO> commentVOS = businessClient.getCommentList(announcementId);
         if(CollectionUtils.isEmpty(commentVOS)){
 
         }
