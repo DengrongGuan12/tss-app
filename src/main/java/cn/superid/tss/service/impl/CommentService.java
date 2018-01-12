@@ -35,9 +35,8 @@ public class CommentService implements ICommentService {
     @Override
     public Comment addComment(long acticityId, String content, long roleId, long toRoleId) {
         businessClient.addComment(roleId,acticityId,content,toRoleId);
+        return null;
     }
 
-    private Comment transForm(){
 
-    }
 }

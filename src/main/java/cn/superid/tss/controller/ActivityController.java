@@ -92,7 +92,7 @@ public class ActivityController {
 //
 
     @ApiOperation(value = "创建活动",response = Long.class)
-    @RequestMapping(value = "/createOther",method = RequestMethod.POST)
+    @RequestMapping(value = "/create",method = RequestMethod.POST)
     public SimpleResponse createOther(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,

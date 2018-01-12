@@ -1,5 +1,6 @@
 package cn.superid.tss.vo;
 
+import cn.superid.common.rest.dto.business.AnnouncementCommentVO;
 import io.swagger.annotations.ApiModel;
 
 import java.util.Date;
@@ -19,6 +20,8 @@ public class Comment {
         this.time = time;
         this.toRole = toRole;
     }
+
+    public Comment(){}
 
     public long getId() {
         return id;
@@ -65,6 +68,10 @@ public class Comment {
         Role toRole = Role.MockTeacher();
         return new Comment(id, role, "sdsdfsdfsdfsdfsdfsdfkjljlkjlkjiuijkjlknklajdfjl",new Date(), toRole);
     }
+
+//    public static Comment transForm(AnnouncementCommentVO commentVO){
+//        Comment comment = new Comment();
+//    }
 
 
 }
