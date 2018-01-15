@@ -12,7 +12,6 @@ import cn.superid.common.rest.forms.AffairCreateForm;
 import cn.superid.common.rest.forms.AffairModifyForm;
 import cn.superid.id_client.IdClient;
 import cn.superid.msg_producer.dto.MsgGeneratorDTO;
-import cn.superid.msg_producer.enums.BusinessOperation;
 import cn.superid.msg_producer.process.ReceiverMsgProcessor;
 import cn.superid.tss.constant.*;
 import cn.superid.tss.dao.ICourseDao;
@@ -207,22 +206,22 @@ public class CourseService implements ICourseService {
         courseDao.addCourse(courseEntity);
 
         //TODO 通知该学院的所有学生
-        MsgGeneratorDTO msgGeneratorDTO = new MsgGeneratorDTO();
-        msgGeneratorDTO.setBusinessOperation(BusinessOperation.TSS_REMARK_GROUP_ACTIVITY_PUBLISH);
-        msgGeneratorDTO.setSenderRoleId(roleId);
-        msgGeneratorDTO.setAffairId(departmentId);
-        msgGeneratorDTO.setResourceType(ResourceType.ANNOUNCEMENT);
-        msgGeneratorDTO.setResourceId(1000L);
-        List<Long> receiverIds = new ArrayList<>();
-        receiverIds.add(906212L);
-        msgGeneratorDTO.setReceiverRoleIds(receiverIds);
-        JSONObject jsonObject = new JSONObject();
-        msgGeneratorDTO.setCustomParam(jsonObject);
-        CommonMessage handledMsg = receiverMsgProcessor.processMsgTemplate(msgGeneratorDTO);
-        boolean sendMsgResult = tssSource.output().send(MessageBuilder.withPayload(handledMsg).build(), 3000);   //设置超时为3s
-        if (!sendMsgResult) {
-            logger.error("send message error");
-        }
+//        MsgGeneratorDTO msgGeneratorDTO = new MsgGeneratorDTO();
+//        msgGeneratorDTO.setBusinessOperation(BusinessOperation.TSS_REMARK_GROUP_ACTIVITY_PUBLISH);
+//        msgGeneratorDTO.setSenderRoleId(roleId);
+//        msgGeneratorDTO.setAffairId(departmentId);
+//        msgGeneratorDTO.setResourceType(ResourceType.ANNOUNCEMENT);
+//        msgGeneratorDTO.setResourceId(1000L);
+//        List<Long> receiverIds = new ArrayList<>();
+//        receiverIds.add(906212L);
+//        msgGeneratorDTO.setReceiverRoleIds(receiverIds);
+//        JSONObject jsonObject = new JSONObject();
+//        msgGeneratorDTO.setCustomParam(jsonObject);
+//        CommonMessage handledMsg = receiverMsgProcessor.processMsgTemplate(msgGeneratorDTO);
+//        boolean sendMsgResult = tssSource.output().send(MessageBuilder.withPayload(handledMsg).build(), 3000);   //设置超时为3s
+//        if (!sendMsgResult) {
+//            logger.error("send message error");
+//        }
         return courseId;
     }
 
