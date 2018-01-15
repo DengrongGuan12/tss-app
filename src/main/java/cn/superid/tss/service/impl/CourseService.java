@@ -1,5 +1,7 @@
 package cn.superid.tss.service.impl;
 
+import cn.superid.common.notification.dto.CommonMessage;
+import cn.superid.common.notification.enums.ResourceType;
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.client.FileClient;
 import cn.superid.common.rest.dto.SimpleResponse;
@@ -9,6 +11,9 @@ import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
 import cn.superid.common.rest.forms.AffairModifyForm;
 import cn.superid.id_client.IdClient;
+import cn.superid.msg_producer.dto.MsgGeneratorDTO;
+import cn.superid.msg_producer.enums.BusinessOperation;
+import cn.superid.msg_producer.process.ReceiverMsgProcessor;
 import cn.superid.tss.constant.*;
 import cn.superid.tss.dao.ICourseDao;
 import cn.superid.tss.dao.IUserDao;
@@ -16,6 +21,7 @@ import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.forms.CourseForm;
 import cn.superid.tss.model.CourseEntity;
 import cn.superid.tss.model.UserEntity;
+import cn.superid.tss.msg.TssSource;
 import cn.superid.tss.service.ICourseService;
 import cn.superid.tss.service.IGroupService;
 import cn.superid.tss.util.ObjectUtil;
@@ -23,9 +29,12 @@ import cn.superid.tss.vo.CourseDetail;
 import cn.superid.tss.vo.CourseSimple;
 import cn.superid.tss.vo.GroupSimple;
 import cn.superid.tss.vo.Role;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -36,6 +45,7 @@ import java.util.stream.Collectors;
  * @create 2017-12-21 下午2:09
  **/
 @Service
+@EnableBinding(TssSource.class)
 public class CourseService implements ICourseService {
 
     @Autowired
@@ -55,6 +65,12 @@ public class CourseService implements ICourseService {
 
     @Autowired
     IUserDao userDao;
+
+    @Autowired
+    TssSource tssSource;
+
+    @Autowired
+    private ReceiverMsgProcessor receiverMsgProcessor;
 
     private static final Logger logger = LoggerFactory.getLogger(CourseService.class);
 
@@ -189,6 +205,24 @@ public class CourseService implements ICourseService {
         courseEntity.setId(courseId);
         courseEntity.setDefaultFolder(folderId);
         courseDao.addCourse(courseEntity);
+
+        //TODO 通知该学院的所有学生
+        MsgGeneratorDTO msgGeneratorDTO = new MsgGeneratorDTO();
+        msgGeneratorDTO.setBusinessOperation(BusinessOperation.TSS_REMARK_GROUP_ACTIVITY_PUBLISH);
+        msgGeneratorDTO.setSenderRoleId(roleId);
+        msgGeneratorDTO.setAffairId(departmentId);
+        msgGeneratorDTO.setResourceType(ResourceType.ANNOUNCEMENT);
+        msgGeneratorDTO.setResourceId(1000L);
+        List<Long> receiverIds = new ArrayList<>();
+        receiverIds.add(906212L);
+        msgGeneratorDTO.setReceiverRoleIds(receiverIds);
+        JSONObject jsonObject = new JSONObject();
+        msgGeneratorDTO.setCustomParam(jsonObject);
+        CommonMessage handledMsg = receiverMsgProcessor.processMsgTemplate(msgGeneratorDTO);
+        boolean sendMsgResult = tssSource.output().send(MessageBuilder.withPayload(handledMsg).build(), 3000);   //设置超时为3s
+        if (!sendMsgResult) {
+            logger.error("send message error");
+        }
         return courseId;
     }
 

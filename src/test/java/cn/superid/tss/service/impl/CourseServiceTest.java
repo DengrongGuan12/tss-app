@@ -42,6 +42,7 @@ public class CourseServiceTest extends BaseTest {
 //
 //        }
         CourseForm courseForm = CourseForm.mock();
+        courseForm.setName("操作系统");
         courseService.createCourse(courseForm, 906213, 115708, 30720);
     }
 
