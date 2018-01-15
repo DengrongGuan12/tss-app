@@ -210,11 +210,15 @@ public class CourseService implements ICourseService {
         MsgGeneratorDTO msgGeneratorDTO = new MsgGeneratorDTO();
         msgGeneratorDTO.setBusinessOperation(BusinessOperation.TSS_REMARK_GROUP_ACTIVITY_PUBLISH);
         msgGeneratorDTO.setSenderRoleId(roleId);
-        msgGeneratorDTO.setAffairId(departmentId);
-        msgGeneratorDTO.setResourceType(ResourceType.ANNOUNCEMENT);
-        msgGeneratorDTO.setResourceId(1000L);
-        List<Long> receiverIds = new ArrayList<>();
-        receiverIds.add(906212L);
+        msgGeneratorDTO.setAffairId(courseId);
+        msgGeneratorDTO.setResourceType(ResourceType.AFFAIR);
+        msgGeneratorDTO.setResourceId(courseId);
+        // 获取该学院的所有学生角色
+        List<RoleInfoDTO> roles = businessClient.getRolesByType(departmentId,UserType.STUDENT.getIndex(), StateType.NORMAL.getIndex());
+        if (roles == null){
+            logger.error("获取学院学生列表失败");
+        }
+        List<Long> receiverIds = roles.stream().map(r -> r.getRoleId()).collect(Collectors.toList());
         msgGeneratorDTO.setReceiverRoleIds(receiverIds);
         JSONObject jsonObject = new JSONObject();
         msgGeneratorDTO.setCustomParam(jsonObject);
