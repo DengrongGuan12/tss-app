@@ -4,7 +4,6 @@ package cn.superid.tss.util;
 import cn.superid.common.notification.dto.CommonMessage;
 import cn.superid.common.notification.enums.ResourceType;
 import cn.superid.msg_producer.dto.MsgGeneratorDTO;
-import cn.superid.msg_producer.enums.BusinessOperation;
 import com.alibaba.fastjson.JSONObject;
 
 /**
