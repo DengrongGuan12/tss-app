@@ -95,7 +95,8 @@ public class ActivityService implements IActivityService{
             ActivityInfoEntity entity = new ActivityInfoEntity(id,form.getType(),-100,null,-100);
             activityDao.saveActivity(entity);
         } catch (Exception e) {
-            throw new ErrorCodeException(ResponseCode.CREATE_ACTIVITY_FAILURE,"创建课程活动失败");
+            e.printStackTrace();
+            throw e;
         }
 
         return id;
@@ -145,7 +146,7 @@ public class ActivityService implements IActivityService{
 
         } catch (Exception e) {
             logger.error("创建小组作业失败 {}",e);
-            throw new ErrorCodeException(ResponseCode.CREATE_ACTIVITY_FAILURE, "创建作业失败");
+            throw e;
         }
 
         return homeworkId;
@@ -161,7 +162,8 @@ public class ActivityService implements IActivityService{
             entity = activityDao.getActivityInfoById(activityId);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorCodeException(ResponseCode.GET_ACTIVITY_FAILURE,"无法获得活动信息");
+            //throw new ErrorCodeException(ResponseCode.GET_ACTIVITY_FAILURE,"无法获得活动信息");
+            throw e;
         }
 
         return buildActivity(dto,entity);
@@ -187,7 +189,7 @@ public class ActivityService implements IActivityService{
     private Activity buildActivity(RichAnnouncementDTO dto,ActivityInfoEntity entity){
         return new Activity(dto.getId(),dto.getTitle(),dto.getThumbContent(),
                 dto.getCreatorId(),dto.getCreatorUserId(),dto.getRoleName(),dto.getUsername(),dto.getModifyTime(),
-                dto.getAvatar(),entity.getType());
+                dto.getAvatar(),entity.getDeadline(),entity.getHomeworkType(),entity.getType());
 
     }
 

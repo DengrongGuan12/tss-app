@@ -36,7 +36,7 @@ public class CommentService implements ICommentService {
 
         try {
             List<AnnouncementCommentVO> commentVOS = businessClient.getCommentList(announcementId);
-            if(CollectionUtils.isEmpty(commentVOS)){
+            if(!CollectionUtils.isEmpty(commentVOS)){
                 comments = new ArrayList<>();
                 commentVOS.stream().forEach(item->{
                     comments.add(Comment.transForm(item));
@@ -45,7 +45,8 @@ public class CommentService implements ICommentService {
             }
             return Collections.emptyList();
         } catch (Exception e) {
-            throw new ErrorCodeException(ResponseCode.GET_COMMENTS_FAILURE,"获得评论失败");
+            //hrow new ErrorCodeException(ResponseCode.GET_COMMENTS_FAILURE,"获得评论失败");
+            throw e;
         }
     }
 
@@ -58,7 +59,8 @@ public class CommentService implements ICommentService {
             }
         } catch (Exception e) {
             logger.error("add comment failure {}",e);
-            throw new ErrorCodeException(ResponseCode.ADD_COMMENTS_FAILURE,"发表评论失败");
+            //throw new ErrorCodeException(ResponseCode.ADD_COMMENTS_FAILURE,"发表评论失败");
+            throw e;
         }
         return 0;
     }
@@ -73,7 +75,8 @@ public class CommentService implements ICommentService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ErrorCodeException(ResponseCode.DELETE_COMMENT_FAILURE,"删除评论失败");
+            //throw new ErrorCodeException(ResponseCode.DELETE_COMMENT_FAILURE,"删除评论失败");
+            throw e;
         }
 
         return 0;

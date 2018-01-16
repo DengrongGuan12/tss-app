@@ -47,6 +47,7 @@ public class FileController {
                                                    @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                                    @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                                    @RequestParam(value = "activityId")long activityId,
+
                                                    @RequestBody List<AttachmentForm> forms){
 
         fileService.uploadAttachments(forms,activityId,courseId,roleId,userId);

@@ -14,6 +14,7 @@ import cn.superid.tss.forms.AttachmentForm;
 import cn.superid.tss.forms.SubmitForm;
 import cn.superid.tss.model.ActivityInfoEntity;
 import cn.superid.tss.model.AttachmentEntity;
+import cn.superid.tss.model.CourseEntity;
 import cn.superid.tss.model.SubmitEntity;
 import cn.superid.tss.service.IFileService;
 import cn.superid.tss.util.ObjectUtil;
@@ -83,14 +84,19 @@ public class FileService implements IFileService{
             try {
                 attachmentDao.batchSave(entities);
 
-                long folderId = courseDao.selectCourseById(courseId).getDefaultFolder();
+                long folderId  = 0l;
+                CourseEntity courseEntity = courseDao.selectCourseById(courseId);
+                if(null != courseEntity){
+                    folderId = courseEntity.getDefaultFolder();
+                }
+                long finalFolderId = folderId;
                 entities.stream().forEach(item->{
                     long fileId = idClient.nextId("file","file");
-                    fileClient.addFile(fileId,folderId,item.getFileName(),item.getAttachmentUrl(),item.getSize(),courseId,roleId);
+                    fileClient.addFile(fileId, finalFolderId,item.getFileName(),item.getAttachmentUrl(),item.getSize(),courseId,roleId);
                 });
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new ErrorCodeException(ResponseCode.UPLOAD_ATTACHMENT_FAILURE,"上传附件失败");
+                throw e;
             }
         }
 
