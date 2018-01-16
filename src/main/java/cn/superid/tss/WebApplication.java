@@ -2,6 +2,7 @@ package cn.superid.tss;
 
 import cn.superid.common.rest.client.EnableCommonClient;
 import cn.superid.id_client.core.EnableIdGenerator;
+import cn.superid.msg_producer.annotation.EnableMsgProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -23,6 +24,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableDiscoveryClient
 @EnableIdGenerator
 @EnableAspectJAutoProxy
+@EnableMsgProducer
 public class WebApplication {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebApplication.class);
 
