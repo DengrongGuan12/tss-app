@@ -12,6 +12,10 @@ public class JSONObjectBuilder {
         jsonObject.put(key, value);
         return this;
     }
+    public JSONObjectBuilder(){}
+    public JSONObjectBuilder(JSONObject jsonObject){
+        this.jsonObject = jsonObject;
+    }
 
     public JSONObject getJsonObject() {
         return jsonObject;

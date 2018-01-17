@@ -14,6 +14,7 @@ import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.msg.MsgComponent;
 import cn.superid.tss.service.ICommentService;
 import cn.superid.tss.util.JSONObjectBuilder;
+import cn.superid.tss.vo.Activity;
 import cn.superid.tss.vo.Comment;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
@@ -69,6 +70,11 @@ public class CommentService implements ICommentService {
             CommonMessage commonMessage = null;
             JSONObject jsonObject = new JSONObjectBuilder().put("content",content).getJsonObject();
             if (toRoleId == 0){
+                AnnouncementDetailDTO announcementDetailDTO = businessClient.getAnnouncementDetails(activityId);
+                jsonObject = new JSONObjectBuilder(jsonObject)
+                        .put("announcementTitle",announcementDetailDTO.getTitle())
+                        .put("announcementType", ActivityType.getName(announcementDetailDTO.getType()))
+                        .getJsonObject();
                 // 根据事务类型确定发送的人
                 List<Long> receiverIds = new ArrayList<>();
                 AffairDetailDTO affairDetailDTO = businessClient.getAffairDetail(affairId);
@@ -76,7 +82,6 @@ public class CommentService implements ICommentService {
                     List<RoleInfoDTO> roleInfoDTOS = businessClient.getAffairAllRoles(affairId, StateType.NORMAL.getIndex());
                     receiverIds = roleInfoDTOS.stream().filter(roleInfoDTO -> roleInfoDTO.getMold() == UserType.MEMBER.getIndex() && roleInfoDTO.getRoleId() != roleId).map(RoleInfoDTO::getRoleId).collect(Collectors.toList());
                 }else{
-                    AnnouncementDetailDTO announcementDetailDTO = businessClient.getAnnouncementDetails(activityId);
                     receiverIds.add(announcementDetailDTO.getCreatorId());
                 }
                 commonMessage = msgComponent.genCommonMsg(affairId, roleId, receiverIds, MsgType.COMMENT, ResourceType.ANNOUNCEMENT, activityId, MsgTemplateType.TSS_COMMENT_ANNOUNCEMENT, jsonObject);
