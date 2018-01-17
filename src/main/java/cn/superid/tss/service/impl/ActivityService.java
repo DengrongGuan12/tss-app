@@ -81,21 +81,23 @@ public class ActivityService implements IActivityService{
     @Override
     public long createActivity(AddActivityForm form, long courseId, long roleId, long userId) {
 
-        long id = 0;
+        long id = idClient.nextId("business", "announcement");
 
         if(form.getType() == ActivityType.Homework.getIndex()){
             createHomework(form,courseId,roleId,userId);
             return id;
 
         }
+
         CreateAnnouncementForm caf = new CreateAnnouncementForm();
         caf.setAffairId(courseId);caf.setTitle(form.getTitle());
         caf.setContent(form.getContent());caf.setRoleId(roleId);
-        caf.setUseId(userId);
+        caf.setUseId(userId);caf.setId(id);
         try {
             //TODO ResourceType待定 resourceId 待生成
-            CommonMessage commonMessage = genCommonMsg(courseId, roleId, OperationType.PUBLISH.getName(), ActivityType.getName(form.getType()), form.getTitle(), ResourceType.ANNOUNCEMENT, 0);
-            SimpleResponse response = client.createAnnouncement(caf, commonMessage);
+            CommonMessage commonMessage = genCommonMsg(courseId, roleId, OperationType.PUBLISH.getName(), ActivityType.getName(form.getType()), form.getTitle(), ResourceType.ANNOUNCEMENT, id);
+            caf.setCommonMessage(commonMessage);
+            SimpleResponse response = client.createAnnouncement(caf);
             id = Long.valueOf((Integer)response.getData());
             List<AttachmentForm> attachments = form.getAttachments();
             if(!CollectionUtils.isEmpty(attachments)){
@@ -149,7 +151,8 @@ public class ActivityService implements IActivityService{
             if (!sendMsg){
                 commonMessage.setOptional("nosend");
             }
-            SimpleResponse response = client.createAnnouncement(caf, commonMessage);
+            caf.setCommonMessage(commonMessage);
+            SimpleResponse response = client.createAnnouncement(caf);
             homeworkId = Long.valueOf((Integer)response.getData());
             List<AttachmentForm> attachments = form.getAttachments();
             if(!CollectionUtils.isEmpty(attachments)){

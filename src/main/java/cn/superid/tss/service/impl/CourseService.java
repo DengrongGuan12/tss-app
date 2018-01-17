@@ -200,7 +200,8 @@ public class CourseService implements ICourseService {
         affairCreateForm.setOperationRoleId(roleId);
         affairCreateForm.setOwnerRoleTitle(UserType.DEAN.getName());
         affairCreateForm.setOwnerRoleMold(UserType.DEAN.getIndex());
-        SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm, commonMessage);
+        affairCreateForm.setCommonMessage(commonMessage);
+        SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm);
         if (simpleResponse.getCode() != 0){
             throw new ErrorCodeException(simpleResponse.getCode(),simpleResponse.getException());
         }

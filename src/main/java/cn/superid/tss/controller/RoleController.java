@@ -169,6 +169,18 @@ public class RoleController {
         return SimpleResponse.ok(null);
     }
 
+    @ApiOperation(value = "学生申请加入课程或小组", response = SimpleResponse.class)
+    @RequestMapping(value = "/applyJoin", method = RequestMethod.GET)
+    public SimpleResponse applyJoin(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                     @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+                                     @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long affairId,
+                                     @RequestParam(value = "reason")String reason,
+                                     @RequestParam(value = "applyId")long applyId,
+                                     @RequestParam(value = "affairType")int affairType){
+        roleService.applyJoin(applyId, roleId, AffairType.getType(affairType), reason);
+        return SimpleResponse.ok(null);
+    }
+
 
 
 }

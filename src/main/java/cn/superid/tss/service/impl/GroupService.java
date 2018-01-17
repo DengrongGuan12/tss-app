@@ -150,7 +150,7 @@ public class GroupService implements IGroupService {
         }
         affairCreateForm.setAffairMold(AffairType.GROUP.getIndex());
 //        logger.info("affairCreateForm:"+JSON.toJSONString(affairCreateForm));
-        SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm,null);
+        SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm);
 //        logger.info("simpleResponse:"+JSON.toJSONString(simpleResponse));
         if (simpleResponse.getCode() == 0){
 //            return new Long((Integer) simpleResponse.getData());

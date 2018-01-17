@@ -57,4 +57,6 @@ public interface IRoleService {
 
     void rejectJoin(long affairId, long roleId, AffairType affairType, long rejectedId, String reason);
 
+    void applyJoin(long affairId, long roleId, AffairType affairType, String reason);
+
 }

@@ -221,6 +221,25 @@ public class RoleService implements IRoleService{
         msgComponent.sendMsg(commonMessage);
     }
 
+    @Override
+    public void applyJoin(long affairId, long roleId, AffairType affairType, String reason) {
+        MsgType msgType = MsgType.COURSE;
+        List<Long> receiverIds;
+        if (affairType == AffairType.GROUP){
+            msgType = MsgType.GROUP;
+            List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(affairId, UserType.LEADER.getIndex(), StateType.NORMAL.getIndex());
+            receiverIds = roleInfoDTOS.stream().map(RoleInfoDTO::getRoleId).collect(Collectors.toList());
+        }else{
+            List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(affairId, UserType.LEADER.getIndex(), StateType.NORMAL.getIndex());
+            receiverIds = roleInfoDTOS.stream().map(RoleInfoDTO::getRoleId).collect(Collectors.toList());
+        }
+
+        JSONObject jsonObject = new JSONObjectBuilder().put("affairType",affairType.getChName()).put("reason", reason).getJsonObject();
+        //TODO 3
+        CommonMessage commonMessage = msgComponent.genCommonMsg(affairId, roleId, receiverIds, msgType, ResourceType.AFFAIR, affairId, MsgTemplateType.TSS_APPLY_JOIN, jsonObject);
+        msgComponent.sendMsg(commonMessage);
+    }
+
 
     private Role roleTransform(RoleInfoDTO dto){
         if(null == dto){
