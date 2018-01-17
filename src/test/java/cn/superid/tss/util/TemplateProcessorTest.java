@@ -50,6 +50,7 @@ TemplateProcessorTest {
         receiverIds.add(906212L);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("remark","还行阿迪是会计法开始的风景");
+        jsonObject.put("announcementId",123);
         MsgGeneratorDTO msgGeneratorDTO = new MsgGeneratorDTO.Builder(
                 130007L, 1131604L, receiverIds, MsgType.INVITATION,
                 ResourceType.ANNOUNCEMENT, 1000L, "TSS_REMARK_GROUP_ACTIVITY_PUBLISH").customParam(jsonObject).build();

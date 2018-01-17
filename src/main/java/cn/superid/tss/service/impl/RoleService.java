@@ -1,19 +1,25 @@
 package cn.superid.tss.service.impl;
 
+import cn.superid.common.notification.dto.CommonMessage;
+import cn.superid.common.notification.enums.MsgType;
+import cn.superid.common.notification.enums.ResourceType;
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
-import cn.superid.tss.constant.ResponseCode;
-import cn.superid.tss.constant.StateType;
-import cn.superid.tss.constant.UserType;
+import cn.superid.tss.constant.*;
 import cn.superid.tss.dao.ICourseDao;
 import cn.superid.tss.dao.IUserDao;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.model.UserEntity;
+import cn.superid.tss.msg.MsgComponent;
+import cn.superid.tss.msg.TssSource;
 import cn.superid.tss.service.IRoleService;
 import cn.superid.tss.service.IUserService;
+import cn.superid.tss.util.JSONObjectBuilder;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hmef.attribute.MAPIAttribute;
 import org.exemodel.orm.ExecutableModel;
@@ -40,6 +46,9 @@ public class RoleService implements IRoleService{
     @Autowired
     ICourseDao courseDao;
 
+    @Autowired
+    MsgComponent msgComponent;
+
     private static final Logger logger = LoggerFactory.getLogger(RoleService.class);
 
     @Override
@@ -65,11 +74,17 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public int deleteRole(long operateId, long roleId, long courseId) {
+    public int deleteRole(long operateId, long roleId, long affairId, AffairType affairType, boolean active) {
 
         boolean result;
         try{
-            SimpleResponse response = businessClient.deleteRole(operateId,roleId);
+            CommonMessage commonMessage = null;
+            if (!active){
+                //TODO 3 TEST
+                JSONObject jsonObject = new JSONObjectBuilder().put("affairType", affairType.getChName()).getJsonObject();
+                commonMessage = msgComponent.genCommonMsg(affairId, operateId, Arrays.asList(new Long[]{roleId}), getMsgTypeByAffairType(affairType), ResourceType.AFFAIR, affairId, MsgTemplateType.TSS_DELETE_ROLE,jsonObject);
+            }
+            SimpleResponse response = businessClient.deleteRole(operateId,roleId, commonMessage);
             result = response.getCode() == 0 ? true : false;
         }catch (Exception e){
             logger.error(e.getMessage());
@@ -83,18 +98,28 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public List<Long> addMember(long courseId, long operatorRoleId, Long[] beAllocatedRoleId, String roleTitle, int roleType){
+    public List<Long> addMember(long courseId, long operatorRoleId, Long[] beAllocatedRoleId, String roleTitle, int roleType, AffairType affairType){
         List<Long> roleIds;
         try {
-
+            //TODO 3 TEST
+            JSONObject jsonObject = new JSONObjectBuilder().put("affairType", affairType.getChName()).put("roleTitle", roleTitle).getJsonObject();
+            CommonMessage commonMessage = msgComponent.genCommonMsg(courseId, operatorRoleId, Arrays.asList(beAllocatedRoleId), getMsgTypeByAffairType(affairType), ResourceType.AFFAIR, courseId, MsgTemplateType.TSS_ADD_MEMBER, jsonObject);
             SimpleResponse response = businessClient.allocateNewRole(courseId, operatorRoleId,
-                    beAllocatedRoleId, roleType, roleTitle);
+                    beAllocatedRoleId, roleType, roleTitle, commonMessage);
             roleIds = (List<Long>) response.getData();
         }catch (Exception e){
             logger.error("add member fail:",e);
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"邀请角色失败");
         }
         return roleIds;
+    }
+
+    private MsgType getMsgTypeByAffairType(AffairType affairType){
+        MsgType msgType = MsgType.GROUP;
+        if (affairType == AffairType.COURSE){
+            msgType = MsgType.COURSE;
+        }
+        return msgType;
     }
 
 
@@ -111,7 +136,7 @@ public class RoleService implements IRoleService{
             List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(departmentId, userId, StateType.NORMAL.getIndex());
             long beAllocatedRoleId = infos.get(0).getRoleId();
             SimpleResponse response = businessClient.allocateNewRole(courseId, beAllocatedRoleId,
-                    new Long[]{beAllocatedRoleId}, UserType.STUDENT.getIndex(), UserType.STUDENT.getChName());
+                    new Long[]{beAllocatedRoleId}, UserType.STUDENT.getIndex(), UserType.STUDENT.getChName(),null);
             roleId = Long.valueOf((Integer)response.getData());
         }catch (Exception e){
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"加入课程失败");
@@ -162,6 +187,38 @@ public class RoleService implements IRoleService{
             return roleInfoDTOS.stream().map(roleInfoDTO -> roleTransform(roleInfoDTO)).collect(Collectors.toList());
         }
         return null;
+    }
+
+    @Override
+    public List<Long> getRoleIdsInAffairWithType(long affairId, UserType type) {
+        List<RoleInfoDTO> roles = businessClient.getRolesByType(affairId,type.getIndex(), StateType.NORMAL.getIndex());
+        if (roles == null){
+            throw new ErrorCodeException(ResponseCode.NP_EXCEPTION, "获取角色列表失败");
+        }
+        List<Long> receiverIds = roles.stream().map(RoleInfoDTO::getRoleId).collect(Collectors.toList());
+        return receiverIds;
+    }
+
+    @Override
+    public List<Long> getRoleIdsInAffair(long affairId) {
+        List<RoleInfoDTO> roles = businessClient.getAffairAllRoles(affairId, StateType.NORMAL.getIndex());
+        if (roles == null){
+            throw new ErrorCodeException(ResponseCode.NP_EXCEPTION, "获取角色列表失败");
+        }
+        List<Long> receiverIds = roles.stream().map(RoleInfoDTO::getRoleId).collect(Collectors.toList());
+        return receiverIds;
+    }
+
+    @Override
+    public void rejectJoin(long affairId, long roleId, AffairType affairType, long rejectedId, String reason) {
+        MsgType msgType = MsgType.COURSE;
+        if (affairType == AffairType.GROUP){
+            msgType = MsgType.GROUP;
+        }
+        JSONObject jsonObject = new JSONObjectBuilder().put("affairType",affairType.getChName()).put("reason", reason).getJsonObject();
+        //TODO 3
+        CommonMessage commonMessage = msgComponent.genCommonMsg(affairId, roleId, Arrays.asList(new Long[]{rejectedId}), msgType, ResourceType.AFFAIR, affairId, MsgTemplateType.TSS_REJECT_JOIN, jsonObject);
+        msgComponent.sendMsg(commonMessage);
     }
 
 

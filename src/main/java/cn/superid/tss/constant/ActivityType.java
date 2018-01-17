@@ -18,6 +18,15 @@ public enum ActivityType {
         this.index = index;
     }
 
+    public static String getName(int index) {
+        for (ActivityType c : ActivityType.values()) {
+            if (c.index == index) {
+                return c.name;
+            }
+        }
+        return null;
+    }
+
     public String getName(){
         return this.name;
     }

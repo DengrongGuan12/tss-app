@@ -1,23 +1,26 @@
 package cn.superid.tss.service.impl;
 
+import cn.superid.common.notification.dto.CommonMessage;
+import cn.superid.common.notification.enums.MsgType;
+import cn.superid.common.notification.enums.ResourceType;
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.AffairDTO;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
 import cn.superid.id_client.IdClient;
-import cn.superid.tss.constant.AffairType;
-import cn.superid.tss.constant.ResponseCode;
-import cn.superid.tss.constant.StateType;
-import cn.superid.tss.constant.UserType;
+import cn.superid.tss.constant.*;
 import cn.superid.tss.exception.ErrorCodeException;
+import cn.superid.tss.msg.MsgComponent;
 import cn.superid.tss.service.IGroupService;
 import cn.superid.tss.service.IRoleService;
+import cn.superid.tss.util.JSONObjectBuilder;
 import cn.superid.tss.vo.GroupDetail;
 import cn.superid.tss.vo.GroupSimple;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.RoleGroup;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +48,10 @@ public class GroupService implements IGroupService {
 
     @Autowired
     IdClient idClient;
+
+    @Autowired
+    MsgComponent msgComponent;
+
 
     @Override
     public Map<String, List> getGroupsOfCourse(long courseId, long userId) {
@@ -143,7 +150,7 @@ public class GroupService implements IGroupService {
         }
         affairCreateForm.setAffairMold(AffairType.GROUP.getIndex());
 //        logger.info("affairCreateForm:"+JSON.toJSONString(affairCreateForm));
-        SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm);
+        SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm,null);
 //        logger.info("simpleResponse:"+JSON.toJSONString(simpleResponse));
         if (simpleResponse.getCode() == 0){
 //            return new Long((Integer) simpleResponse.getData());
@@ -151,7 +158,7 @@ public class GroupService implements IGroupService {
             if (teachers != null){
                 Long[] roleIds = teachers.stream().filter(t -> t.getUserId() != userId).map(t -> t.getRoleId()).toArray(Long[]::new);
                 if (roleIds.length != 0){
-                    roleService.addMember(groupId, roleId, roleIds, UserType.TEACHER.getName(), UserType.TEACHER.getIndex());
+                    roleService.addMember(groupId, roleId, roleIds, UserType.TEACHER.getName(), UserType.TEACHER.getIndex(), AffairType.GROUP);
                 }
             }
         }else{
@@ -163,8 +170,11 @@ public class GroupService implements IGroupService {
 
     @Override
     public void deleteGroup(long roleId, long groupId) {
-        //TODO 3 删除事务
-        businessClient.disableAffair(roleId, groupId);
+        //TODO 3
+        List<Long> receiverIds = roleService.getRoleIdsInAffair(groupId);
+        JSONObject jsonObject = new JSONObjectBuilder().put("affairType",AffairType.GROUP.getChName()).getJsonObject();
+        CommonMessage commonMessage = msgComponent.genCommonMsg(groupId, roleId, receiverIds, MsgType.GROUP, ResourceType.AFFAIR, groupId, MsgTemplateType.TSS_DELETE_AFFAIR, jsonObject);
+        businessClient.disableAffair(roleId, groupId, commonMessage);
 
     }
 

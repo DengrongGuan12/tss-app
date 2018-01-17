@@ -1,25 +1,27 @@
 package cn.superid.tss.service.impl;
 
+import cn.superid.common.notification.dto.CommonMessage;
+import cn.superid.common.notification.enums.MsgType;
+import cn.superid.common.notification.enums.ResourceType;
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.AnnouncementDetailDTO;
 import cn.superid.common.rest.dto.business.CreateAnnouncementForm;
 import cn.superid.common.rest.dto.business.RichAnnouncementDTO;
 import cn.superid.id_client.IdClient;
-import cn.superid.tss.constant.ActivityType;
-import cn.superid.tss.constant.HomeworkType;
-import cn.superid.tss.constant.ResponseCode;
-import cn.superid.tss.constant.StateType;
-import cn.superid.tss.exception.ErrorCodeException;
+import cn.superid.tss.constant.*;
 import cn.superid.tss.forms.AddActivityForm;
-import cn.superid.tss.forms.AddHomeworkform;
 import cn.superid.tss.forms.AttachmentForm;
 import cn.superid.tss.model.ActivityInfoEntity;
 import cn.superid.tss.dao.IActivityDao;
+import cn.superid.tss.msg.MsgComponent;
 import cn.superid.tss.service.IActivityService;
 import cn.superid.tss.service.IFileService;
+import cn.superid.tss.service.IRoleService;
+import cn.superid.tss.util.JSONObjectBuilder;
 import cn.superid.tss.vo.Activity;
 import cn.superid.tss.vo.GroupSimple;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,12 @@ public class ActivityService implements IActivityService{
 
     @Autowired
     GroupService groupService;
+
+    @Autowired
+    IRoleService roleService;
+
+    @Autowired
+    MsgComponent msgComponent;
 
     private static final Logger logger = LoggerFactory.getLogger(ActivityService.class);
 
@@ -85,7 +93,9 @@ public class ActivityService implements IActivityService{
         caf.setContent(form.getContent());caf.setRoleId(roleId);
         caf.setUseId(userId);
         try {
-            SimpleResponse response = client.createAnnouncement(caf);
+            //TODO ResourceType待定 resourceId 待生成
+            CommonMessage commonMessage = genCommonMsg(courseId, roleId, OperationType.PUBLISH.getName(), ActivityType.getName(form.getType()), form.getTitle(), ResourceType.ANNOUNCEMENT, 0);
+            SimpleResponse response = client.createAnnouncement(caf, commonMessage);
             id = Long.valueOf((Integer)response.getData());
             List<AttachmentForm> attachments = form.getAttachments();
             if(!CollectionUtils.isEmpty(attachments)){
@@ -108,24 +118,24 @@ public class ActivityService implements IActivityService{
         //塞进自己的数据库里
         int homeworkType = form.getHomeworkType();
         if (homeworkType == HomeworkType.NORMAL.getIndex()) {//普通作业
-            long homeworkID = insertHomework(form, courseId, roleId, userId, HomeworkType.NORMAL.getIndex(), -100);
+            long homeworkID = insertHomework(form, courseId, roleId, userId, HomeworkType.NORMAL.getIndex(), -100, true);
         }
 
         if (homeworkType == HomeworkType.GROUP.getIndex()) {//小组作业
-            long parentId = insertHomework(form, courseId, roleId, userId, HomeworkType.GROUP.getIndex(), -100);
+            long parentId = insertHomework(form, courseId, roleId, userId, HomeworkType.GROUP.getIndex(), -100, true);
 
             //分发给小组
             List<? extends GroupSimple> groups = groupService.getAllGroups(courseId, false);
             for (GroupSimple item : groups) {
                 long groupId = item.getId();
-                insertHomework(form, groupId, roleId, userId, HomeworkType.GROUP.getIndex(), parentId);
+                insertHomework(form, groupId, roleId, userId, HomeworkType.GROUP.getIndex(), parentId, false);
             }
         }
 
         return 0;
     }
 
-    private long insertHomework(AddActivityForm form, long affairId, long roleId, long userId,int homeworkType, long parentId){
+    private long insertHomework(AddActivityForm form, long affairId, long roleId, long userId,int homeworkType, long parentId, boolean sendMsg){
         long homeworkId;
         CreateAnnouncementForm caf = new CreateAnnouncementForm();
         caf.setAffairId(affairId);
@@ -134,7 +144,12 @@ public class ActivityService implements IActivityService{
         caf.setRoleId(roleId);
         caf.setUseId(userId);
         try {
-            SimpleResponse response = client.createAnnouncement(caf);
+            //TODO ResourceType待定 resourceId 待生成
+            CommonMessage commonMessage = genCommonMsg(affairId, roleId, OperationType.PUBLISH.getName(), HomeworkType.getName(homeworkType), form.getTitle(), ResourceType.ANNOUNCEMENT, 0);
+            if (!sendMsg){
+                commonMessage.setOptional("nosend");
+            }
+            SimpleResponse response = client.createAnnouncement(caf, commonMessage);
             homeworkId = Long.valueOf((Integer)response.getData());
             List<AttachmentForm> attachments = form.getAttachments();
             if(!CollectionUtils.isEmpty(attachments)){
@@ -150,6 +165,13 @@ public class ActivityService implements IActivityService{
         }
 
         return homeworkId;
+    }
+
+    private CommonMessage genCommonMsg(long affairId, long roleId, String operation, String announcementType, String name, ResourceType resourceType, long resourceId){
+        List<Long> receiverIds = roleService.getRoleIdsInAffairWithType(affairId, UserType.STUDENT);
+        JSONObject jsonObject = new JSONObjectBuilder().put("operation", operation).put("announcementType",announcementType).put("name",name).getJsonObject();
+        CommonMessage commonMessage = msgComponent.genCommonMsg(affairId, roleId, receiverIds, MsgType.COURSE, resourceType, resourceId, MsgTemplateType.TSS_ANNOUNCEMENT_PUBLISH, jsonObject);
+        return commonMessage;
     }
 
     @Override

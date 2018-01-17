@@ -51,9 +51,9 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    public long addComment(long acticityId, String content, long roleId, long toRoleId) {
+    public long addComment(long activityId, String content, long roleId, long toRoleId) {
         try {
-            SimpleResponse response = businessClient.addComment(roleId,acticityId,content,toRoleId);
+            SimpleResponse response = businessClient.addComment(roleId,activityId,content,toRoleId,null);
             if(!(response.getCode() == CommonConstant.SUCCESS_CODE)){
                 throw new ErrorCodeException(ResponseCode.ADD_COMMENTS_FAILURE,"发表评论失败");
             }

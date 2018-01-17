@@ -4,6 +4,7 @@ package cn.superid.tss.service.impl;
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.tss.BaseTest;
+import cn.superid.tss.constant.AffairType;
 import cn.superid.tss.constant.ResponseCode;
 import cn.superid.tss.constant.UserType;
 import cn.superid.tss.exception.ErrorCodeException;
@@ -35,14 +36,14 @@ public class RoleServiceTest extends BaseTest{
     @Test
     //test PASS
     public void testDeleteRole() throws Exception {
-        roleService.deleteRole(1022203,1022203,130008);
+        roleService.deleteRole(1022203,1022203,130008, AffairType.COURSE, true);
     }
 
     @Test
     // TEST PASS
     public void testAddToCourse() throws Exception {
         roleService.addMember(130008,1022505,new Long[]{1022505L},
-                UserType.STUDENT.getChName(),UserType.STUDENT.getIndex());
+                UserType.STUDENT.getChName(),UserType.STUDENT.getIndex(), AffairType.COURSE);
     }
 
     @Test

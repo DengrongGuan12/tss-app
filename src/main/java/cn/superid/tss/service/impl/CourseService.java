@@ -1,6 +1,7 @@
 package cn.superid.tss.service.impl;
 
 import cn.superid.common.notification.dto.CommonMessage;
+import cn.superid.common.notification.enums.MsgType;
 import cn.superid.common.notification.enums.ResourceType;
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.client.FileClient;
@@ -11,8 +12,6 @@ import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
 import cn.superid.common.rest.forms.AffairModifyForm;
 import cn.superid.id_client.IdClient;
-import cn.superid.msg_producer.dto.MsgGeneratorDTO;
-import cn.superid.msg_producer.process.ReceiverMsgProcessor;
 import cn.superid.tss.constant.*;
 import cn.superid.tss.dao.ICourseDao;
 import cn.superid.tss.dao.IUserDao;
@@ -20,9 +19,12 @@ import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.forms.CourseForm;
 import cn.superid.tss.model.CourseEntity;
 import cn.superid.tss.model.UserEntity;
+import cn.superid.tss.msg.MsgComponent;
 import cn.superid.tss.msg.TssSource;
 import cn.superid.tss.service.ICourseService;
 import cn.superid.tss.service.IGroupService;
+import cn.superid.tss.service.IRoleService;
+import cn.superid.tss.util.JSONObjectBuilder;
 import cn.superid.tss.util.ObjectUtil;
 import cn.superid.tss.vo.CourseDetail;
 import cn.superid.tss.vo.CourseSimple;
@@ -33,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -66,10 +67,10 @@ public class CourseService implements ICourseService {
     IUserDao userDao;
 
     @Autowired
-    TssSource tssSource;
+    MsgComponent msgComponent;
 
     @Autowired
-    private ReceiverMsgProcessor receiverMsgProcessor;
+    IRoleService roleService;
 
     private static final Logger logger = LoggerFactory.getLogger(CourseService.class);
 
@@ -181,8 +182,14 @@ public class CourseService implements ICourseService {
 
     @Override
     public long createCourse(CourseForm courseForm, long roleId, long departmentId, long userId) {
-        //TODO 3 创建事务,调用出错了该怎么中止流程并捕获异常？
         long courseId = idClient.nextId("business","affair");
+        //TODO 3 通知
+        // 获取该学院的所有学生角色
+        List<Long> receiverIds = roleService.getRoleIdsInAffairWithType(departmentId, UserType.STUDENT);
+        JSONObject jsonObject = new JSONObjectBuilder().put("course", courseForm.getName()).getJsonObject();
+        //TODO 2 MsgType（课程）, ResourceType（课程） 前端定链接
+        CommonMessage commonMessage = msgComponent.genCommonMsg(courseId, roleId, receiverIds, MsgType.COURSE, ResourceType.COURSE, courseId, MsgTemplateType.TSS_COURSE_PUBLISH, jsonObject);
+        //TODO 3 创建事务,调用出错了该怎么中止流程并捕获异常？
         AffairCreateForm affairCreateForm = new AffairCreateForm();
         affairCreateForm.setId(courseId);
         affairCreateForm.setName(courseForm.getName());
@@ -193,7 +200,7 @@ public class CourseService implements ICourseService {
         affairCreateForm.setOperationRoleId(roleId);
         affairCreateForm.setOwnerRoleTitle(UserType.DEAN.getName());
         affairCreateForm.setOwnerRoleMold(UserType.DEAN.getIndex());
-        SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm);
+        SimpleResponse simpleResponse = businessClient.createAffair(affairCreateForm, commonMessage);
         if (simpleResponse.getCode() != 0){
             throw new ErrorCodeException(simpleResponse.getCode(),simpleResponse.getException());
         }
@@ -241,6 +248,11 @@ public class CourseService implements ICourseService {
 //        boolean sendMsgResult = tssSource.output().send(MessageBuilder.withPayload(handledMsg).build(), 3000);   //设置超时为3s
 //        if (!sendMsgResult) {
 //            logger.error("send message error");
+//        }
+//        System.out.println(handledMsg.getContent());
+//        boolean sendMsgResult = tssSource.output().send(org.springframework.integration.support.MessageBuilder.withPayload(handledMsg).build(), 3000);   //设置超时为3s
+//        if (!sendMsgResult) {
+//            System.out.println("send message error");
 //        }
         return courseId;
     }

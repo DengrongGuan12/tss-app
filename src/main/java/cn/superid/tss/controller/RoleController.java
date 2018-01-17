@@ -3,10 +3,7 @@ package cn.superid.tss.controller;
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
-import cn.superid.tss.constant.CommonConstant;
-import cn.superid.tss.constant.RequestHeaders;
-import cn.superid.tss.constant.ResponseCode;
-import cn.superid.tss.constant.UserType;
+import cn.superid.tss.constant.*;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.service.impl.RoleService;
 import cn.superid.tss.service.impl.UserService;
@@ -47,14 +44,15 @@ public class RoleController {
         return SimpleResponse.ok(roleService.getRoleByCourseId(courseId));
     }
 
-    @ApiOperation(value = "从课程里面删除人员",response = SimpleResponse.class)
+    @ApiOperation(value = "从课程/小组里面删除人员",response = SimpleResponse.class)
     @RequestMapping(value = "/deleteRole",method = RequestMethod.POST)
     public SimpleResponse deleteRoleFromCourse(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                                @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
-                                               @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
-                                                @RequestParam(value = "toDeleteRoleId")long toDeleteRoleId
+                                               @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long affairId,
+                                                @RequestParam(value = "toDeleteRoleId")long toDeleteRoleId,
+                                               @RequestParam(value = "affairType")int affairType
                                                 ){
-        long result = roleService.deleteRole(roleId,toDeleteRoleId,courseId);
+        long result = roleService.deleteRole(roleId,toDeleteRoleId,affairId,AffairType.getType(affairType),false);
         return SimpleResponse.ok("success");
     }
 
@@ -68,7 +66,7 @@ public class RoleController {
         List<ResultVO> resultVOS = new ArrayList<>();
         List<Long> toInvitedIds = new ArrayList<>();
         roleInfoDTOs.forEach(roleInfoDTO -> {
-            if (roleInfoDTO.getBelongAffairId() == courseId){
+            if (roleService.getRoleInAffair(courseId, roleInfoDTO.getUserId()) != null){
                 resultVOS.add(new ResultVO(ResponseCode.INVITE_ROLE_FAILURE, "重复邀请", roleInfoDTO.getId()+""));
             }else if (roleInfoDTO.getMold() != UserType.TEACHER.getIndex()){
                 resultVOS.add(new ResultVO(ResponseCode.INVITE_ROLE_FAILURE,"不是教师",roleInfoDTO.getId()+""));
@@ -78,7 +76,7 @@ public class RoleController {
             }
         });
         roleService.addMember(courseId,roleId,toInvitedIds.stream().toArray(Long[]::new),
-                UserType.TEACHER.getName(),UserType.TEACHER.getIndex());
+                UserType.TEACHER.getName(),UserType.TEACHER.getIndex(), AffairType.COURSE);
         return SimpleResponse.ok(resultVOS);
     }
 
@@ -92,7 +90,7 @@ public class RoleController {
         List<ResultVO> resultVOS = new ArrayList<>();
         List<Long> toInvitedIds = new ArrayList<>();
         roleInfoDTOs.forEach(roleInfoDTO -> {
-            if (roleInfoDTO.getBelongAffairId() == courseId){
+            if (roleService.getRoleInAffair(courseId, roleInfoDTO.getUserId()) != null){
                 resultVOS.add(new ResultVO(ResponseCode.INVITE_ROLE_FAILURE, "重复邀请", roleInfoDTO.getId()+""));
             }else if (roleInfoDTO.getMold() != UserType.STUDENT.getIndex()){
                 resultVOS.add(new ResultVO(ResponseCode.INVITE_ROLE_FAILURE,"不是学生",roleInfoDTO.getId()+""));
@@ -102,7 +100,31 @@ public class RoleController {
             }
         });
         roleService.addMember(courseId,roleId,toInvitedIds.stream().toArray(Long[]::new),
-                UserType.TUTOR.getName(),UserType.TUTOR.getIndex());
+                UserType.TUTOR.getName(),UserType.TUTOR.getIndex(), AffairType.COURSE);
+        return SimpleResponse.ok(resultVOS);
+    }
+
+    @ApiOperation(value = "邀请学生（批准学生进入课程）",response = SimpleResponse.class)
+    @RequestMapping(value = "/inviteStudent",method = RequestMethod.POST)
+    public SimpleResponse inviteStudent(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+                                      @RequestParam(value = "roleIds")Long[] invitedIds){
+        List<cn.superid.common.rest.dto.RoleInfoDTO> roleInfoDTOs = businessClient.getRoles(invitedIds);
+        List<ResultVO> resultVOS = new ArrayList<>();
+        List<Long> toInvitedIds = new ArrayList<>();
+        roleInfoDTOs.forEach(roleInfoDTO -> {
+            if (roleService.getRoleInAffair(courseId, roleInfoDTO.getUserId()) != null){
+                resultVOS.add(new ResultVO(ResponseCode.INVITE_ROLE_FAILURE, "重复邀请", roleInfoDTO.getId()+""));
+            }else if (roleInfoDTO.getMold() != UserType.STUDENT.getIndex()){
+                resultVOS.add(new ResultVO(ResponseCode.INVITE_ROLE_FAILURE,"不是学生",roleInfoDTO.getId()+""));
+            }else{
+                resultVOS.add(new ResultVO(ResponseCode.OK,null,roleInfoDTO.getId()+""));
+                toInvitedIds.add(roleInfoDTO.getId());
+            }
+        });
+        roleService.addMember(courseId,roleId,toInvitedIds.stream().toArray(Long[]::new),
+                UserType.STUDENT.getName(),UserType.STUDENT.getIndex(), AffairType.COURSE);
         return SimpleResponse.ok(resultVOS);
     }
 
@@ -124,7 +146,7 @@ public class RoleController {
                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId){
 
-        roleService.deleteRole(roleId,roleId,courseId);
+        roleService.deleteRole(roleId,roleId,courseId, AffairType.COURSE, true);
         return SimpleResponse.ok(null);
     }
 
@@ -134,5 +156,19 @@ public class RoleController {
                                           @RequestParam(value = "affairId")long affairId){
         return SimpleResponse.ok(roleService.getRoleInAffair(affairId,userId));
     }
+
+    @ApiOperation(value = "拒绝学生加入课程或小组", response = SimpleResponse.class)
+    @RequestMapping(value = "/rejectJoin", method = RequestMethod.GET)
+    public SimpleResponse rejectJoin(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                     @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+                                     @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long affairId,
+                                     @RequestParam(value = "roleId")long rejectedId,
+                                     @RequestParam(value = "reason")String reason,
+                                     @RequestParam(value = "affairType")int affairType){
+        roleService.rejectJoin(affairId, roleId, AffairType.getType(affairType), rejectedId, reason);
+        return SimpleResponse.ok(null);
+    }
+
+
 
 }

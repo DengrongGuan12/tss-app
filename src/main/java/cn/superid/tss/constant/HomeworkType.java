@@ -12,6 +12,14 @@ public enum  HomeworkType {
         this.index = index;
         this.name = name;
     }
+    public static String getName(int index) {
+        for (HomeworkType c : HomeworkType.values()) {
+            if (c.index == index) {
+                return c.name;
+            }
+        }
+        return null;
+    }
 
     public String getName(){
         return this.name;
