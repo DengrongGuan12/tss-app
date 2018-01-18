@@ -480,6 +480,12 @@
             <version>${common.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.blueskykong</groupId>
+            <artifactId>auth-starter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
 

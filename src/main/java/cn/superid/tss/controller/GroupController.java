@@ -40,6 +40,7 @@ public class GroupController {
 
     @ApiOperation(value = "创建小组", response = SimpleResponse.class)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
+
     public SimpleResponse createGroup(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,

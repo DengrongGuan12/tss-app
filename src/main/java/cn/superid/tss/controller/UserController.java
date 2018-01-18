@@ -1,11 +1,13 @@
 package cn.superid.tss.controller;
 
 import cn.superid.common.rest.dto.SimpleResponse;
+import cn.superid.common.utils.auth.PermissionConstants;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.service.IRoleService;
 import cn.superid.tss.service.IUserService;
 import cn.superid.tss.vo.Role;
 import cn.superid.tss.vo.UserInfo;
+import com.blueskykong.auth.starter.annotation.PreAuth;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +32,9 @@ public class UserController {
     }
     @ApiOperation(value = "教务员获取本学院的所有老师", response = Role.class)
     @RequestMapping(value = "/getTeachersOfDepartment", method = RequestMethod.GET)
+    @PreAuth(PermissionConstants.CREATE_ROLE)
     public SimpleResponse getTeachersOfDepartment(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId){
-        //TODO 教务员权限
+
         long departmentId = userService.getDepartmentIdOfUser(userId);
         return SimpleResponse.ok(roleService.getTeachersOfDepartment(departmentId));
     }

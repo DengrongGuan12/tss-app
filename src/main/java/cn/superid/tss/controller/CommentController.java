@@ -2,9 +2,11 @@ package cn.superid.tss.controller;
 
 
 import cn.superid.common.rest.dto.SimpleResponse;
+import cn.superid.common.utils.auth.PermissionConstants;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.service.ICommentService;
 import cn.superid.tss.vo.Comment;
+import com.blueskykong.auth.starter.annotation.PreAuth;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,7 @@ public class CommentController {
 
     @ApiOperation(value = "获取活动下的评论", response = Comment.class)
     @RequestMapping(value = "/getComments", method = RequestMethod.GET)
+    @PreAuth(value = PermissionConstants.ENTER_PUBLISH_STORE)
     public SimpleResponse getComments(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,

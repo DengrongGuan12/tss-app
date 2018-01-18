@@ -2,6 +2,7 @@ package cn.superid.tss.controller;
 
 
 import cn.superid.common.rest.dto.SimpleResponse;
+import cn.superid.common.utils.auth.PermissionConstants;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.forms.AttachmentForm;
 import cn.superid.tss.forms.SubmitForm;
@@ -9,6 +10,7 @@ import cn.superid.tss.service.IFileService;
 import cn.superid.tss.vo.Attachment;
 import cn.superid.tss.vo.Submit;
 import cn.superid.tss.vo.SubmitCount;
+import com.blueskykong.auth.starter.annotation.PreAuth;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,7 @@ public class FileController {
 
     @ApiOperation(value = "获得活动中的附件",response = Attachment.class)
     @RequestMapping(value = "/getAttachments",method = RequestMethod.GET)
+    @PreAuth(value = PermissionConstants.ENTER_PUBLISH_STORE)
     public SimpleResponse getAttachments(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                          @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                          @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
@@ -40,7 +43,7 @@ public class FileController {
         List<Attachment> attachments = fileService.getAttachments(activityId);
         return SimpleResponse.ok(attachments);
     }
-
+    //todo 权限
     @ApiOperation(value = "课程活动中上传附件",response = Long.class)
     @RequestMapping(value = "/uploadAttachment",method = RequestMethod.POST)
     public SimpleResponse uploadActivityAttachment(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
@@ -54,7 +57,7 @@ public class FileController {
         return SimpleResponse.ok("success");
 
     }
-
+    //TODO PERMISSION
     @ApiOperation(value = "上传作业",response = Long.class)
     @RequestMapping(value = "/submitHomework",method = RequestMethod.POST)
     public SimpleResponse submitHomework(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
@@ -66,7 +69,7 @@ public class FileController {
         return SimpleResponse.ok("success");
     }
 
-
+    //TODO PERMISSION
     @ApiOperation(value = "获得作业提交",response = Submit.class)
     @RequestMapping(value = "/getHomeworkSubmits",method = RequestMethod.GET)
     public SimpleResponse getHomeworkSubmits(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
@@ -78,7 +81,7 @@ public class FileController {
         List<Submit> submits = fileService.getSubmits(activityId);
         return SimpleResponse.ok(submits);
     }
-
+    //todo permission
     @ApiOperation(value = "获得作业提交统计",response = SubmitCount.class)
     @RequestMapping(value = "/getSubmitCount",method = RequestMethod.GET)
     public SimpleResponse getSubmitCount(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,

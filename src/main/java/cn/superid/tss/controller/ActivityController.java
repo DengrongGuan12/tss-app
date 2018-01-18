@@ -1,11 +1,13 @@
 package cn.superid.tss.controller;
 
 import cn.superid.common.rest.dto.SimpleResponse;
+import cn.superid.common.utils.auth.PermissionConstants;
 import cn.superid.tss.constant.ActivityType;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.forms.AddActivityForm;
 import cn.superid.tss.service.IActivityService;
 import cn.superid.tss.vo.Activity;
+import com.blueskykong.auth.starter.annotation.PreAuth;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ public class ActivityController {
 
     @ApiOperation(value = "获得课程活动列表",response = Activity.class)
     @RequestMapping(value = "/getActivities",method = RequestMethod.GET)
+    @PreAuth(value = PermissionConstants.ENTER_PUBLISH_STORE)
     public SimpleResponse getAllActivities(@RequestParam(value = "courseId") long courseId){
         logger.info("/getActivities","courseId=",courseId);
         List<Activity> activities = activityService.getAllActivites(courseId);
@@ -37,6 +40,7 @@ public class ActivityController {
 
     @ApiOperation(value = "获得活动详情",response = Activity.class)
     @RequestMapping(value = "/getActivityDetail",method = RequestMethod.GET)
+    @PreAuth(value = PermissionConstants.ENTER_PUBLISH_STORE)
     public SimpleResponse getActivity(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
@@ -93,7 +97,8 @@ public class ActivityController {
 
     @ApiOperation(value = "创建活动",response = Long.class)
     @RequestMapping(value = "/create",method = RequestMethod.POST)
-    public SimpleResponse createOther(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+    @PreAuth(value = PermissionConstants.CREATE_PUBLISH)
+    public SimpleResponse createActivity(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
                                      @RequestBody AddActivityForm form
