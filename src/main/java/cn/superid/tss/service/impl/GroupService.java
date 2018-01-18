@@ -6,6 +6,7 @@ import cn.superid.common.notification.enums.ResourceType;
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.AffairDTO;
+import cn.superid.common.rest.dto.business.AffairWithRoleDTO;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
 import cn.superid.id_client.IdClient;
@@ -67,7 +68,7 @@ public class GroupService implements IGroupService {
 
     public List<? extends GroupSimple> getMyGroups(long courseId, long userId, boolean detailed){
         //TODO 3 获取我的小组
-        List<AffairDTO> myAffairs = businessClient.getMyChildrenAffair(userId, courseId, AffairType.GROUP.getIndex(), 0, detailed);
+        List<AffairWithRoleDTO> myAffairs = businessClient.getMyChildrenAffair(userId, courseId, AffairType.GROUP.getIndex(), 0, detailed);
         List<GroupSimple> myGroups = myAffairs.stream().map(affairDTO -> {
             if (detailed){
                 //TODO 3 获取小组所有角色

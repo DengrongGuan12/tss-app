@@ -8,6 +8,7 @@ import cn.superid.common.rest.client.FileClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.AffairDTO;
 import cn.superid.common.rest.dto.business.AffairDetailDTO;
+import cn.superid.common.rest.dto.business.AffairWithRoleDTO;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
 import cn.superid.common.rest.forms.AffairModifyForm;
@@ -77,17 +78,30 @@ public class CourseService implements ICourseService {
     @Override
     public Map<String, Map> getUserCourses(long userId) {
         UserEntity userEntity = userDao.getUserEntity(userId);
-        List<AffairDTO> affairDTOS = businessClient.getMyChildrenAffair(userId, userEntity.getDepartmentId(), AffairType.COURSE.getIndex(), StateType.NORMAL.getIndex(), false);
+        List<AffairWithRoleDTO> affairDTOS = businessClient.getMyChildrenAffair(userId, userEntity.getDepartmentId(), AffairType.COURSE.getIndex(), StateType.NORMAL.getIndex(), false);
         return parseAffairsToCourses(affairDTOS,true,userId);
     }
 
     @Override
     public Map<String, Map> getCoursesOfDepartment(long departmentId) {
         List<AffairDTO> affairDTOS = businessClient.getChildrenAffairByType(departmentId,AffairType.COURSE.getIndex(),StateType.NORMAL.getIndex(), false);
-        return parseAffairsToCourses(affairDTOS,false);
+        List<AffairWithRoleDTO> affairWithRoleDTOS = affairDTOS.stream().map(r -> transferAffairDTO(r)).collect(Collectors.toList());
+        return parseAffairsToCourses(affairWithRoleDTOS,false);
     }
 
-    private Map<String, Map> parseAffairsToCourses(List<AffairDTO> affairDTOS, boolean needGroup, long ... userId){
+    private AffairWithRoleDTO transferAffairDTO(AffairDTO affairDTO){
+        AffairWithRoleDTO affairWithRoleDTO = new AffairWithRoleDTO();
+        affairWithRoleDTO.setRoleInfoVO(null);
+        affairWithRoleDTO.setAllianceId(affairDTO.getAllianceId());
+        affairWithRoleDTO.setDescription(affairDTO.getDescription());
+        affairWithRoleDTO.setId(affairDTO.getId());
+        affairWithRoleDTO.setLogoUrl(affairDTO.getDescription());
+        affairWithRoleDTO.setMold(affairDTO.getMold());
+        affairWithRoleDTO.setName(affairDTO.getName());
+        return affairWithRoleDTO;
+    }
+
+    private Map<String, Map> parseAffairsToCourses(List<AffairWithRoleDTO> affairDTOS, boolean needGroup, long ... userId){
         Map<String, Map> result = new TreeMap<>((String o1, String o2) -> {
             if (o1.equals(o2)) {
                 return 0;
@@ -96,11 +110,11 @@ public class CourseService implements ICourseService {
             String[] o2s = o2.split(" ");
             return Integer.parseInt(o1s[0]) * 10 + SeasonType.getIndex(o1s[1]) > Integer.parseInt(o2s[0]) * 10 + SeasonType.getIndex(o2s[1]) ? -1 : 1;
         });
-        Map<Long, AffairDTO> affairIdMap = affairDTOS.stream().collect(Collectors.toMap(AffairDTO::getId, a -> a, (k1, k2) -> k1));
+        Map<Long, AffairWithRoleDTO> affairIdMap = affairDTOS.stream().collect(Collectors.toMap(AffairWithRoleDTO::getId, a -> a, (k1, k2) -> k1));
         Long[] affairIds = affairDTOS.stream().map(affairDTO -> affairDTO.getId()).toArray(Long[]::new);
         List<CourseEntity> courseEntities = courseDao.selectCoursesByIds(affairIds);
         courseEntities.stream().forEach(courseEntity -> {
-            AffairDTO affairDTO = affairIdMap.get(courseEntity.getId());
+            AffairWithRoleDTO affairDTO = affairIdMap.get(courseEntity.getId());
             RoleInfoDTO roleInfoDTO = affairDTO.getRoleInfoVO();
             String term = courseEntity.getYear() + " " + SeasonType.getName(courseEntity.getSeason());
             String grade = GradeType.getName(courseEntity.getGrade());
