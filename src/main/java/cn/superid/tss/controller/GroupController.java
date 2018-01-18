@@ -3,15 +3,21 @@ package cn.superid.tss.controller;
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
+import cn.superid.common.utils.auth.PermissionConstants;
 import cn.superid.tss.constant.AffairType;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.constant.ResponseCode;
 import cn.superid.tss.constant.UserType;
 import cn.superid.tss.exception.ErrorCodeException;
+import cn.superid.tss.forms.AddActivityForm;
+import cn.superid.tss.service.IActivityService;
 import cn.superid.tss.service.IGroupService;
 import cn.superid.tss.service.IRoleService;
 import cn.superid.tss.vo.*;
+import com.blueskykong.auth.starter.annotation.PreAuth;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +35,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/group")
 public class GroupController {
 
+    Logger logger = LoggerFactory.getLogger(GroupController.class);
+
     @Autowired
     IGroupService groupService;
 
@@ -37,6 +45,9 @@ public class GroupController {
 
     @Autowired
     BusinessClient businessClient;
+
+    @Autowired
+    IActivityService activityService;
 
     @ApiOperation(value = "创建小组", response = SimpleResponse.class)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -170,6 +181,21 @@ public class GroupController {
 //        roleGroups.add(RoleGroup.mockGroupMember());
         List<RoleGroup> roleGroups = groupService.getRolesOfGroup(groupId);
         return SimpleResponse.ok(roleGroups);
+    }
+
+    @ApiOperation(value = "创建活动",response = Long.class)
+    @RequestMapping(value = "/createActivity",method = RequestMethod.POST)
+    @PreAuth(value = PermissionConstants.CREATE_PUBLISH)
+    public SimpleResponse createActivity(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
+                                         @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long groupId,
+                                         @RequestBody AddActivityForm form
+    ){
+        logger.info("form {}",form);
+
+        long activityId = activityService.createActivity(form,groupId,
+                roleId,userId);
+        return SimpleResponse.ok("success");
     }
 
 
