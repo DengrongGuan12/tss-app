@@ -148,11 +148,11 @@ public class GroupController {
         });
         if (moldRoleInfoListMap.containsKey(UserType.TEACHER.getIndex())){
             Long[] ids = moldRoleInfoListMap.get(UserType.TEACHER.getIndex()).stream().map(r -> r.getId()).toArray(Long[]::new);
-            roleService.addMember(groupId, roleId, ids, UserType.TEACHER.getName(), UserType.TEACHER.getIndex(), AffairType.GROUP);
+            roleService.addMember(groupId, roleId, ids, UserType.TEACHER, AffairType.GROUP);
         }
         if (moldRoleInfoListMap.containsKey(UserType.TUTOR.getIndex())){
             Long[] ids = moldRoleInfoListMap.get(UserType.TUTOR.getIndex()).stream().map(r -> r.getId()).toArray(Long[]::new);
-            roleService.addMember(groupId, roleId, ids, UserType.TUTOR.getName(), UserType.TUTOR.getIndex(), AffairType.GROUP);
+            roleService.addMember(groupId, roleId, ids, UserType.TUTOR, AffairType.GROUP);
         }
         if (moldRoleInfoListMap.containsKey(UserType.STUDENT.getIndex())){
             List<Long> ids = moldRoleInfoListMap.get(UserType.STUDENT.getIndex()).stream().map(r -> r.getId()).collect(Collectors.toList());
@@ -160,11 +160,13 @@ public class GroupController {
             int i = 0;
             if (leaders.size() == 0) {
                 //如果小组里还没有组长就设置该《学生》为组长
-                roleService.addMember(groupId, roleId, new Long[]{ids.get(0)}, UserType.LEADER.getName(), UserType.LEADER.getIndex(), AffairType.GROUP);
+                roleService.addMember(groupId, roleId, new Long[]{ids.get(0)}, UserType.LEADER, AffairType.GROUP);
                 i = 1;
             }
-
-            roleService.addMember(groupId, roleId, null, UserType.LEADER.getName(), UserType.LEADER.getIndex(), AffairType.GROUP);
+            List<Long> subIdList = ids.subList(i,ids.size());
+            if (subIdList.size() > 0){
+                roleService.addMember(groupId, roleId, (Long[]) subIdList.toArray(), UserType.LEADER, AffairType.GROUP);
+            }
         }
 
         return SimpleResponse.ok(resultVOS);
