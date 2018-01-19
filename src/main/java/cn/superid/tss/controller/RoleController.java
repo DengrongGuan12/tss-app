@@ -41,7 +41,9 @@ public class RoleController {
 
     @ApiOperation(value = "课程人员页面获得所有成员", response = RoleGroup.class)
     @RequestMapping(value = "/getCourseRole",method = RequestMethod.GET)
+
     //@PreAuth(value = PermissionConstants.ENTER_ROLE_STORE)
+
     public SimpleResponse getCourseRoleList(@RequestParam(value = "courseId")long courseId){
         logger.info("courseid {}" ,courseId);
 
@@ -82,7 +84,7 @@ public class RoleController {
             }
         });
         roleService.addMember(courseId,roleId,toInvitedIds.stream().toArray(Long[]::new),
-                UserType.TEACHER.getName(),UserType.TEACHER.getIndex(), AffairType.COURSE);
+                UserType.TEACHER, AffairType.COURSE);
         return SimpleResponse.ok(resultVOS);
     }
 
@@ -107,7 +109,7 @@ public class RoleController {
             }
         });
         roleService.addMember(courseId,roleId,toInvitedIds.stream().toArray(Long[]::new),
-                UserType.TUTOR.getName(),UserType.TUTOR.getIndex(), AffairType.COURSE);
+                UserType.TUTOR, AffairType.COURSE);
         return SimpleResponse.ok(resultVOS);
     }
 
@@ -132,7 +134,7 @@ public class RoleController {
             }
         });
         roleService.addMember(courseId,roleId,toInvitedIds.stream().toArray(Long[]::new),
-                UserType.STUDENT.getName(),UserType.STUDENT.getIndex(), AffairType.COURSE);
+                UserType.STUDENT, AffairType.COURSE);
         return SimpleResponse.ok(resultVOS);
     }
 

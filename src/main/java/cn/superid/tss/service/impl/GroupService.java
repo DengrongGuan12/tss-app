@@ -159,7 +159,7 @@ public class GroupService implements IGroupService {
             if (teachers != null){
                 Long[] roleIds = teachers.stream().filter(t -> t.getUserId() != userId).map(t -> t.getRoleId()).toArray(Long[]::new);
                 if (roleIds.length != 0){
-                    roleService.addMember(groupId, roleId, roleIds, UserType.TEACHER.getName(), UserType.TEACHER.getIndex(), AffairType.GROUP);
+                    roleService.addMember(groupId, roleId, roleIds, UserType.TEACHER, AffairType.GROUP);
                 }
             }
         }else{

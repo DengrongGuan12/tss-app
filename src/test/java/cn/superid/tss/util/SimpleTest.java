@@ -11,7 +11,7 @@ public class SimpleTest {
     public static void main(String[] args) {
         List<Long> longs = new ArrayList<>();
         longs.add(1L);
-        longs.subList(1,1);
+        System.out.println(longs.subList(1,1).size());
 
     }
 }

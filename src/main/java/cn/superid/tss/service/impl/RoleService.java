@@ -98,14 +98,14 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public List<Long> addMember(long courseId, long operatorRoleId, Long[] beAllocatedRoleId, String roleTitle, int roleType, AffairType affairType){
+    public List<Long> addMember(long courseId, long operatorRoleId, Long[] beAllocatedRoleId, UserType userType, AffairType affairType){
         List<Long> roleIds;
         try {
             //TODO 3 TEST
-            JSONObject jsonObject = new JSONObjectBuilder().put("affairType", affairType.getChName()).put("roleTitle", roleTitle).getJsonObject();
+            JSONObject jsonObject = new JSONObjectBuilder().put("affairType", affairType.getChName()).put("roleTitle", userType.getChName()).getJsonObject();
             CommonMessage commonMessage = msgComponent.genCommonMsg(courseId, operatorRoleId, Arrays.asList(beAllocatedRoleId), getMsgTypeByAffairType(affairType), ResourceType.AFFAIR, courseId, MsgTemplateType.TSS_ADD_MEMBER, jsonObject);
             SimpleResponse response = businessClient.allocateNewRole(courseId, operatorRoleId,
-                    beAllocatedRoleId, roleType, roleTitle, commonMessage);
+                    beAllocatedRoleId, userType.getIndex(), userType.getChName(), commonMessage);
             roleIds = (List<Long>) response.getData();
         }catch (Exception e){
             logger.error("add member fail:",e);

@@ -42,7 +42,7 @@ public class CourseServiceTest extends BaseTest {
 //
 //        }
         CourseForm courseForm = CourseForm.mock();
-        courseForm.setName("软件体系结构");
+        courseForm.setName("敏捷开发");
         courseService.createCourse(courseForm, 906213, 115708, 30720);
     }
 

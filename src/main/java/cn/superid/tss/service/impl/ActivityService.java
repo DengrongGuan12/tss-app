@@ -94,7 +94,7 @@ public class ActivityService implements IActivityService{
         caf.setContent(form.getContent());caf.setRoleId(roleId);
         caf.setUseId(userId);caf.setId(id);
         try {
-            //TODO ResourceType待定 resourceId 待生成
+            //TODO ResourceType待定
             CommonMessage commonMessage = genCommonMsg(courseId, roleId, OperationType.PUBLISH.getName(), ActivityType.getName(form.getType()), form.getTitle(), ResourceType.ANNOUNCEMENT, id);
             caf.setCommonMessage(commonMessage);
             SimpleResponse response = client.createAnnouncement(caf);
