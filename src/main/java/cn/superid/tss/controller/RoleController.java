@@ -4,6 +4,7 @@ import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.utils.auth.PermissionConstants;
+import cn.superid.common.utils.auth.ResourceTypeEnum;
 import cn.superid.tss.constant.*;
 import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.service.impl.RoleService;
@@ -40,7 +41,7 @@ public class RoleController {
 
     @ApiOperation(value = "课程人员页面获得所有成员", response = RoleGroup.class)
     @RequestMapping(value = "/getCourseRole",method = RequestMethod.GET)
-    @PreAuth(value = PermissionConstants.ENTER_ROLE_STORE)
+    //@PreAuth(value = PermissionConstants.ENTER_ROLE_STORE)
     public SimpleResponse getCourseRoleList(@RequestParam(value = "courseId")long courseId){
         logger.info("courseid {}" ,courseId);
 

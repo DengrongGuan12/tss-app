@@ -3,6 +3,7 @@ package cn.superid.tss.controller;
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
+import cn.superid.common.utils.auth.PermissionConstants;
 import cn.superid.tss.constant.AffairType;
 import cn.superid.tss.constant.RequestHeaders;
 import cn.superid.tss.constant.ResponseCode;
@@ -11,6 +12,7 @@ import cn.superid.tss.exception.ErrorCodeException;
 import cn.superid.tss.service.IGroupService;
 import cn.superid.tss.service.IRoleService;
 import cn.superid.tss.vo.*;
+import com.blueskykong.auth.starter.annotation.PreAuth;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -161,6 +163,7 @@ public class GroupController {
 
     @ApiOperation(value = "获取小组所有成员(组长，组员，助教，老师)", response = RoleGroup.class)
     @RequestMapping(value = "/getRoles", method = RequestMethod.GET)
+    @PreAuth(value = PermissionConstants.ENTER_ROLE_STORE)
     public SimpleResponse getRoles(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                    @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                    @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long groupId) {

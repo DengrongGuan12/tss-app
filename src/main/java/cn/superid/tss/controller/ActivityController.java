@@ -44,6 +44,7 @@ public class ActivityController {
     public SimpleResponse getActivity(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
+
                                       @RequestParam(value = "activityId")long activityId){
         Activity activity =  activityService.getActivity(activityId);
         return SimpleResponse.ok(activity);
