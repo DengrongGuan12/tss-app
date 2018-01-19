@@ -133,7 +133,7 @@ public class GroupController {
         Map<Integer, List<cn.superid.common.rest.dto.RoleInfoDTO>> moldRoleInfoListMap = new HashMap<>();
         List<ResultVO> resultVOS = new ArrayList<>();
         roleInfoDTOs.forEach(roleInfoDTO -> {
-            if (roleInfoDTO.getBelongAffairId() == groupId){
+            if (roleService.getRoleInAffair(groupId, roleInfoDTO.getUserId()) != null){
                 resultVOS.add(new ResultVO(ResponseCode.INVITE_ROLE_FAILURE, "重复邀请", roleInfoDTO.getId()+""));
             }else{
                 if (moldRoleInfoListMap.containsKey(roleInfoDTO.getMold())){
@@ -167,7 +167,7 @@ public class GroupController {
             roleService.addMember(groupId, roleId, null, UserType.LEADER.getName(), UserType.LEADER.getIndex(), AffairType.GROUP);
         }
 
-        return SimpleResponse.ok(null);
+        return SimpleResponse.ok(resultVOS);
     }
 
     @ApiOperation(value = "获取小组所有成员(组长，组员，助教，老师)", response = RoleGroup.class)
