@@ -26,7 +26,7 @@ public class CommentController {
 
     @ApiOperation(value = "获取活动下的评论", response = Comment.class)
     @RequestMapping(value = "/getComments", method = RequestMethod.GET)
-    @PreAuth(value = PermissionConstants.ENTER_PUBLISH_STORE)
+//    @PreAuth(value = PermissionConstants.ENTER_PUBLISH_STORE)
     public SimpleResponse getComments(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,

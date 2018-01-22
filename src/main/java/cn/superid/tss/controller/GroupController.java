@@ -111,17 +111,6 @@ public class GroupController {
         return SimpleResponse.exception(new ErrorCodeException(403,"无操作权限"));
     }
 
-    @ApiOperation(value = "申请加入小组", response = SimpleResponse.class)
-    @RequestMapping(value = "/applyToJoin", method = RequestMethod.POST)
-    public SimpleResponse applyToJoin(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
-                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
-                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
-                                      @RequestParam(value = "reason") String reason,
-                                      @RequestParam(value = "groupId") long groupId) {
-        //TODO 1
-        return SimpleResponse.ok(null);
-    }
-
     @ApiOperation(value = "邀请组员", response = SimpleResponse.class)
     @RequestMapping(value = "/invite", method = RequestMethod.POST)
     public SimpleResponse invite(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
@@ -165,7 +154,9 @@ public class GroupController {
             }
             List<Long> subIdList = ids.subList(i,ids.size());
             if (subIdList.size() > 0){
-                roleService.addMember(groupId, roleId, (Long[]) subIdList.toArray(), UserType.LEADER, AffairType.GROUP);
+                Long[] subIds = new Long[subIdList.size()];
+                subIdList.toArray(subIds);
+                roleService.addMember(groupId, roleId, subIds, UserType.MEMBER, AffairType.GROUP);
             }
         }
 
@@ -174,7 +165,7 @@ public class GroupController {
 
     @ApiOperation(value = "获取小组所有成员(组长，组员，助教，老师)", response = RoleGroup.class)
     @RequestMapping(value = "/getRoles", method = RequestMethod.GET)
-    @PreAuth(value = PermissionConstants.ENTER_ROLE_STORE)
+//    @PreAuth(value = PermissionConstants.ENTER_ROLE_STORE)
     public SimpleResponse getRoles(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                    @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                    @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long groupId) {

@@ -11,7 +11,9 @@ import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.common.rest.forms.AffairCreateForm;
 import cn.superid.id_client.IdClient;
 import cn.superid.tss.constant.*;
+import cn.superid.tss.dao.IUserDao;
 import cn.superid.tss.exception.ErrorCodeException;
+import cn.superid.tss.model.UserEntity;
 import cn.superid.tss.msg.MsgComponent;
 import cn.superid.tss.service.IGroupService;
 import cn.superid.tss.service.IRoleService;
@@ -49,6 +51,9 @@ public class GroupService implements IGroupService {
 
     @Autowired
     IdClient idClient;
+
+    @Autowired
+    IUserDao userDao;
 
     @Autowired
     MsgComponent msgComponent;
@@ -115,12 +120,19 @@ public class GroupService implements IGroupService {
         List<RoleInfoDTO> leaderInfoDTOS = businessClient.getRolesByType(groupId, UserType.LEADER.getIndex(), StateType.NORMAL.getIndex());
         List<RoleInfoDTO> memberInfoDTOS = businessClient.getRolesByType(groupId, UserType.MEMBER.getIndex(), StateType.NORMAL.getIndex());
         List<RoleInfoDTO> tutorInfoDTOS = businessClient.getRolesByType(groupId, UserType.TUTOR.getIndex(), StateType.NORMAL.getIndex());
+        List<Long> allIds = leaderInfoDTOS.stream().map(RoleInfoDTO::getUserId).collect(Collectors.toList());
+        allIds.addAll(memberInfoDTOS.stream().map(RoleInfoDTO::getUserId).collect(Collectors.toList()));
+        allIds.addAll(tutorInfoDTOS.stream().map(RoleInfoDTO::getUserId).collect(Collectors.toList()));
+        Long[] userIds = new Long[allIds.size()];
+        allIds.toArray(userIds);
+        List<UserEntity> userEntities = userDao.selectUsersByIds(userIds,"number","id");
+        Map<Long,String> map = userEntities.stream().collect(Collectors.toMap(UserEntity::getId, UserEntity::getNumber, (k1,k2) -> k1));
         roleGroups.add(new RoleGroup(UserType.LEADER.getIndex(),
-                leaderInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList())));
+                leaderInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO,map.get(roleInfoDTO.getUserId()))).collect(Collectors.toList())));
         roleGroups.add(new RoleGroup(UserType.MEMBER.getIndex(),
-                memberInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList())));
+                memberInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO,map.get(roleInfoDTO.getUserId()))).collect(Collectors.toList())));
         roleGroups.add(new RoleGroup(UserType.TUTOR.getIndex(),
-                tutorInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO)).collect(Collectors.toList())));
+                tutorInfoDTOS.stream().map(roleInfoDTO -> new Role(roleInfoDTO,map.get(roleInfoDTO.getUserId()))).collect(Collectors.toList())));
         return roleGroups;
     }
 

@@ -233,7 +233,9 @@ public class RoleService implements IRoleService{
             List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(affairId, UserType.LEADER.getIndex(), StateType.NORMAL.getIndex());
             receiverIds = roleInfoDTOS.stream().map(RoleInfoDTO::getRoleId).collect(Collectors.toList());
         }
-
+        if (receiverIds.size() == 0){
+            return;
+        }
         JSONObject jsonObject = new JSONObjectBuilder().put("affairType",affairType.getChName()).put("reason", reason).getJsonObject();
         //TODO 3
         CommonMessage commonMessage = msgComponent.genCommonMsg(affairId, roleId, receiverIds, msgType, ResourceType.AFFAIR, affairId, MsgTemplateType.TSS_APPLY_JOIN, jsonObject);

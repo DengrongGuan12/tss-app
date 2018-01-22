@@ -51,6 +51,17 @@ public class Role {
         this.roleType = roleInfoDTO.getMold();
     }
 
+    public Role(RoleInfoDTO roleInfoDTO, String number){
+        this.id = roleInfoDTO.getRoleId();
+        this.userId = roleInfoDTO.getUserId();
+        this.title = roleInfoDTO.getRoleTitle();
+        this.realName = roleInfoDTO.getUsername();
+        this.avatar = roleInfoDTO.getAvatar();
+        this.gender = roleInfoDTO.getGender();
+        this.roleType = roleInfoDTO.getMold();
+        this.number = number;
+    }
+
     public long getUserId() {
         return userId;
     }

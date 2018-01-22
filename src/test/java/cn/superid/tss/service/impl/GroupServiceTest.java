@@ -1,5 +1,6 @@
 package cn.superid.tss.service.impl;
 
+import cn.superid.common.rest.dto.business.RoleInfoDTO;
 import cn.superid.tss.BaseTest;
 import cn.superid.tss.service.IGroupService;
 import org.junit.Test;
@@ -47,6 +48,12 @@ public class GroupServiceTest extends BaseTest{
     @Test
     public void deleteGroup(){
         groupService.deleteGroup(1131206,340506);
+    }
+
+    @Test
+    public void getLeadersOfGroup(){
+        List<RoleInfoDTO> roleInfoDTOS = groupService.getLeadersOfGroup(341303);
+        System.out.println(roleInfoDTOS);
     }
 
 }
