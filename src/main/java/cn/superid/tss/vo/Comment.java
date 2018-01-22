@@ -75,8 +75,9 @@ public class Comment {
         comment.setContent(commentVO.getContent());
         comment.setTime(commentVO.getCreateTime());
         comment.setRole(new Role(commentVO.getRole()));
-        comment.setToRole(new Role(commentVO.getToRole()));
-
+        if (commentVO.getToRole() != null){
+            comment.setToRole(new Role(commentVO.getToRole()));
+        }
         return comment;
     }
 
