@@ -144,7 +144,9 @@ public class RoleController {
                                            @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                            @RequestParam(value = "code") String code,
                                            @RequestParam(value = "courseId")long courseId){
-
+        if (roleService.getRoleInAffair(courseId, userId) != null){
+            throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"已经在该课程里了");
+        }
         long allocatedRoleId = roleService.joinCourseByCode(userId,courseId,code);
 
         return SimpleResponse.ok(allocatedRoleId);

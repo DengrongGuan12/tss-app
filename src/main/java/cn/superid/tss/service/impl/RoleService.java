@@ -78,7 +78,7 @@ public class RoleService implements IRoleService{
 
         boolean result;
         try{
-            CommonMessage commonMessage = null;
+            CommonMessage commonMessage = new CommonMessage();
             if (!active){
                 //TODO 3 TEST
                 JSONObject jsonObject = new JSONObjectBuilder().put("affairType", affairType.getChName()).getJsonObject();
@@ -87,7 +87,7 @@ public class RoleService implements IRoleService{
             SimpleResponse response = businessClient.deleteRole(operateId,roleId, commonMessage);
             result = response.getCode() == 0 ? true : false;
         }catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("delete role error:",e);
             throw new ErrorCodeException(ResponseCode.DELETE_ROLE_FAILURE,"删除角色失败");
         }
 
@@ -136,9 +136,11 @@ public class RoleService implements IRoleService{
             List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(departmentId, userId, StateType.NORMAL.getIndex());
             long beAllocatedRoleId = infos.get(0).getRoleId();
             SimpleResponse response = businessClient.allocateNewRole(courseId, beAllocatedRoleId,
-                    new Long[]{beAllocatedRoleId}, UserType.STUDENT.getIndex(), UserType.STUDENT.getChName(),null);
-            roleId = Long.valueOf((Integer)response.getData());
+                    new Long[]{beAllocatedRoleId}, UserType.STUDENT.getIndex(), UserType.STUDENT.getChName(),new CommonMessage());
+            List<Integer> data = (List<Integer>)response.getData();
+            roleId = Long.valueOf(data.get(0));
         }catch (Exception e){
+            logger.error("joinCourseByCode error!",e);
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"加入课程失败");
         }
         return roleId;
@@ -157,6 +159,7 @@ public class RoleService implements IRoleService{
                 });
             }
         } catch (Exception e) {
+            logger.error("getTeachersOfDepartment error:",e);
             throw new ErrorCodeException(ResponseCode.TEACHERLIST_FAILURE,"获取教师列表失败");
         }
 

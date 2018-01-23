@@ -29,7 +29,7 @@ public class CourseServiceTest extends BaseTest {
 
     @Test
     public void testGetUserCourses() throws Exception {
-       Map map = courseService.getUserCourses(30720L);
+       Map map = courseService.getUserCourses(20203L);
        System.out.println(map);
     }
 

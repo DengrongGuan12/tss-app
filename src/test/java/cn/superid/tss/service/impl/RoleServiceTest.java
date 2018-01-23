@@ -36,7 +36,8 @@ public class RoleServiceTest extends BaseTest{
     @Test
     //test PASS
     public void testDeleteRole() throws Exception {
-        roleService.deleteRole(1022203,1022203,130008, AffairType.COURSE, true);
+//        roleService.deleteRole(1022203,1022203,130008, AffairType.COURSE, true);
+        roleService.deleteRole(1131605,1131605,130006, AffairType.COURSE, true);
     }
 
     @Test
@@ -48,14 +49,19 @@ public class RoleServiceTest extends BaseTest{
 //        roleService.addMember(115708,906213,new Long[]{901304L},
 //                UserType.STUDENT.getChName(),UserType.STUDENT.getIndex(), AffairType.DEPARTMENT);
 
-        roleService.addMember(345803,1137248,new Long[]{1131604L},
+        roleService.addMember(345803,906213,new Long[]{1131604L},
                 UserType.MEMBER, AffairType.GROUP);
+    }
+
+    @Test
+    public void addToDepartment(){
+        roleService.addMember(115708, 906213, new Long[]{829703L}, UserType.STUDENT, AffairType.DEPARTMENT);
     }
 
     @Test
     //400 bad request
     public void testJoinCourseByCode() throws Exception {
-        roleService.joinCourseByCode(31011,130008,"123gdf43");
+        roleService.joinCourseByCode(20203,130003,"201501");
     }
 
     @Test
@@ -68,7 +74,7 @@ public class RoleServiceTest extends BaseTest{
     @Test
     //test pass
     public void testGetRoleInAffair(){
-        Role r = roleService.getRoleInAffair(130008,30104);
+        Role r = roleService.getRoleInAffair(130006,20203);
     }
 
     @Test
