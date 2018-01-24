@@ -52,7 +52,7 @@ public class RoleController {
 
     @ApiOperation(value = "从课程/小组里面删除人员",response = SimpleResponse.class)
     @RequestMapping(value = "/deleteRole",method = RequestMethod.POST)
-    @PreAuth(value = PermissionConstants.DELETE_ROLE)
+//    @PreAuth(value = PermissionConstants.DELETE_ROLE)
     public SimpleResponse deleteRoleFromCourse(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                                @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                                @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long affairId,
@@ -65,7 +65,7 @@ public class RoleController {
 
     @ApiOperation(value = "邀请老师",response = SimpleResponse.class)
     @RequestMapping(value = "/inviteTeacher",method = RequestMethod.POST)
-    @PreAuth(value = PermissionConstants.CREATE_ROLE)
+//    @PreAuth(value = PermissionConstants.CREATE_ROLE)
     public SimpleResponse inviteTeacher(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                         @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                         @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
@@ -90,7 +90,7 @@ public class RoleController {
 
     @ApiOperation(value = "邀请助教",response = SimpleResponse.class)
     @RequestMapping(value = "/inviteTutor",method = RequestMethod.POST)
-    @PreAuth(value = PermissionConstants.CREATE_ROLE)
+//    @PreAuth(value = PermissionConstants.CREATE_ROLE)
     public SimpleResponse inviteTutor(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
@@ -115,7 +115,7 @@ public class RoleController {
 
     @ApiOperation(value = "邀请学生（批准学生进入课程）",response = SimpleResponse.class)
     @RequestMapping(value = "/inviteStudent",method = RequestMethod.POST)
-    @PreAuth(value = PermissionConstants.CREATE_ROLE)
+//    @PreAuth(value = PermissionConstants.CREATE_ROLE)
     public SimpleResponse inviteStudent(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                       @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                       @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
@@ -171,7 +171,7 @@ public class RoleController {
 
     @ApiOperation(value = "拒绝学生加入课程或小组", response = SimpleResponse.class)
     @RequestMapping(value = "/rejectJoin", method = RequestMethod.GET)
-    @PreAuth(value = PermissionConstants.CREATE_ROLE)
+//    @PreAuth(value = PermissionConstants.CREATE_ROLE)
     public SimpleResponse rejectJoin(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                      @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                      @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long affairId,

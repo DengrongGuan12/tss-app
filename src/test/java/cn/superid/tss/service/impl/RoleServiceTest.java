@@ -37,7 +37,7 @@ public class RoleServiceTest extends BaseTest{
     //test PASS
     public void testDeleteRole() throws Exception {
 //        roleService.deleteRole(1022203,1022203,130008, AffairType.COURSE, true);
-        roleService.deleteRole(1131605,1131605,130006, AffairType.COURSE, true);
+        roleService.deleteRole(1252722,1252722,130008, AffairType.COURSE, true);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class RoleServiceTest extends BaseTest{
     @Test
     //400 bad request
     public void testJoinCourseByCode() throws Exception {
-        roleService.joinCourseByCode(20203,130003,"201501");
+        roleService.joinCourseByCode(20203,130008,"20180121");
     }
 
     @Test
@@ -69,6 +69,11 @@ public class RoleServiceTest extends BaseTest{
     public void testGetTeachersOfDepartment() throws Exception {
         roleService.getTeachersOfDepartment(115708);
 
+    }
+
+    @Test
+    public void getStudentsOfDepartment(){
+        roleService.getStudentsOfDepartment(115708, 2014, 0);
     }
 
     @Test

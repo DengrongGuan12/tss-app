@@ -47,7 +47,7 @@ spring:
         scheme: http
         prefer-agent-address: false
         register-health-check: true
-        tags: master
+#        tags: master
         #health-check-path: ping -c1 google.com >/dev/null
         #enabled: false
         #fail-fast: true

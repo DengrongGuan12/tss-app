@@ -32,12 +32,23 @@ public class UserController {
     }
     @ApiOperation(value = "教务员获取本学院的所有老师", response = Role.class)
     @RequestMapping(value = "/getTeachersOfDepartment", method = RequestMethod.GET)
-    @PreAuth(PermissionConstants.CREATE_ROLE)
+//    @PreAuth(PermissionConstants.CREATE_ROLE)
     public SimpleResponse getTeachersOfDepartment(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId){
 
         long departmentId = userService.getDepartmentIdOfUser(userId);
         return SimpleResponse.ok(roleService.getTeachersOfDepartment(departmentId));
     }
+    @ApiOperation(value = "获取本学院某年级的所有学生", response = Role.class)
+    @RequestMapping(value = "/getStudentsOfDepartmentWithGrade", method = RequestMethod.GET)
+//    @PreAuth(PermissionConstants.CREATE_ROLE)
+    public SimpleResponse getStudentsOfDepartmentWithGrade(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
+                                                           @RequestParam("grade") String grade){
+
+        long departmentId = userService.getDepartmentIdOfUser(userId);
+        int[] yearDegree = userService.calYearDegreeByGrade(grade);
+        return SimpleResponse.ok(roleService.getStudentsOfDepartment(departmentId, yearDegree[0], yearDegree[1]));
+    }
+
 
 
 }

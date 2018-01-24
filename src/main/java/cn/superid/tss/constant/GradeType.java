@@ -33,5 +33,13 @@ public enum GradeType {
     public int getIndex(){
         return this.index;
     }
+    public static GradeType getGradeTypeByName(String name){
+        for (GradeType c : GradeType.values()) {
+            if (c.name.equals(name)) {
+                return c;
+            }
+        }
+        return null;
+    }
 
 }

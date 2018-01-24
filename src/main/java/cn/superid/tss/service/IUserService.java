@@ -12,4 +12,5 @@ import java.util.List;
 public interface IUserService {
     UserInfo getUserInfo(long userId);
     long getDepartmentIdOfUser(long userId);
+    int[] calYearDegreeByGrade(String grade);
 }
