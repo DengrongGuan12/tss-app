@@ -17,4 +17,10 @@ public class UserServiceTest extends BaseTest{
         System.out.println(userInfo.getAvatar());
     }
 
+    @Test
+    public void calYearDegreeByGrade(){
+        int[] result = userService.calYearDegreeByGrade("研二");
+        System.out.println(result[0] +" "+ result[1]);
+    }
+
 }

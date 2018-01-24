@@ -4,6 +4,7 @@ import cn.superid.common.rest.client.UserClient;
 import cn.superid.common.rest.dto.UserInfoDTO;
 import cn.superid.common.utils.BitMapUtil;
 import cn.superid.tss.constant.DegreeType;
+import cn.superid.tss.constant.GradeType;
 import cn.superid.tss.constant.ResponseCode;
 import cn.superid.tss.constant.UserType;
 import cn.superid.tss.dao.IUserDao;
@@ -18,6 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author DengrongGuan
@@ -60,6 +64,22 @@ public class UserService implements IUserService{
             throw new ErrorCodeException(ResponseCode.USER_NOT_EXIST,"用户不存在");
         }
         return userEntity.getDepartmentId();
+    }
+
+    @Override
+    public int[] calYearDegreeByGrade(String grade) {
+        int[] result = new int[2];
+        GradeType gradeType = GradeType.getGradeTypeByName(grade);
+        // 减去6个月 - gradeType.index
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.add(Calendar.MONTH,-6);//日期加3个月
+        result[0] = rightNow.get(Calendar.YEAR) - (gradeType.getIndex() >= GradeType.MASTER1.getIndex() ? gradeType.getIndex() - GradeType.MASTER1.getIndex():gradeType.getIndex());
+        if (gradeType.getIndex() >= GradeType.MASTER1.getIndex()){
+            result[1] = DegreeType.MASTER.getIndex();
+        }else {
+            result[1] = DegreeType.BACHELOR.getIndex();
+        }
+        return result;
     }
 
 }

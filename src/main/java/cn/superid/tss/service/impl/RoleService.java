@@ -5,8 +5,11 @@ import cn.superid.common.notification.enums.MsgType;
 import cn.superid.common.notification.enums.ResourceType;
 import cn.superid.common.rest.client.AuthClient;
 import cn.superid.common.rest.client.BusinessClient;
+import cn.superid.common.rest.client.UserClient;
 import cn.superid.common.rest.dto.SimpleResponse;
+import cn.superid.common.rest.dto.UserInfoDTO;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
+import cn.superid.common.rest.forms.UserListForm;
 import cn.superid.tss.constant.*;
 import cn.superid.tss.dao.ICourseDao;
 import cn.superid.tss.dao.IUserDao;
@@ -45,6 +48,9 @@ public class RoleService implements IRoleService{
     IUserService userService;
 
     @Autowired
+    IUserDao userDao;
+
+    @Autowired
     ICourseDao courseDao;
 
     @Autowired
@@ -52,6 +58,8 @@ public class RoleService implements IRoleService{
 
     @Autowired
     AuthClient authClient;
+    @Autowired
+    UserClient userClient;
 
     private static final Logger logger = LoggerFactory.getLogger(RoleService.class);
 
@@ -82,7 +90,7 @@ public class RoleService implements IRoleService{
 
         boolean result;
         try{
-            CommonMessage commonMessage = null;
+            CommonMessage commonMessage = new CommonMessage();
             if (!active){
                 //TODO 3 TEST
                 JSONObject jsonObject = new JSONObjectBuilder().put("affairType", affairType.getChName()).getJsonObject();
@@ -91,7 +99,7 @@ public class RoleService implements IRoleService{
             SimpleResponse response = businessClient.deleteRole(operateId,roleId, commonMessage);
             result = response.getCode() == 0 ? true : false;
         }catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("delete role error:",e);
             throw new ErrorCodeException(ResponseCode.DELETE_ROLE_FAILURE,"删除角色失败");
         }
 
@@ -140,9 +148,11 @@ public class RoleService implements IRoleService{
             List<RoleInfoDTO> infos = businessClient.getAffairRoleByUserId(departmentId, userId, StateType.NORMAL.getIndex());
             long beAllocatedRoleId = infos.get(0).getRoleId();
             SimpleResponse response = businessClient.allocateNewRole(courseId, beAllocatedRoleId,
-                    new Long[]{beAllocatedRoleId}, UserType.STUDENT.getIndex(), UserType.STUDENT.getChName(),null);
-            roleId = Long.valueOf((Integer)response.getData());
+                    new Long[]{beAllocatedRoleId}, UserType.STUDENT.getIndex(), UserType.STUDENT.getChName(),new CommonMessage());
+            List<Integer> data = (List<Integer>)response.getData();
+            roleId = Long.valueOf(data.get(0));
         }catch (Exception e){
+            logger.error("joinCourseByCode error!",e);
             throw new ErrorCodeException(ResponseCode.INVITE_ROLE_FAILURE,"加入课程失败");
         }
         return roleId;
@@ -161,9 +171,27 @@ public class RoleService implements IRoleService{
                 });
             }
         } catch (Exception e) {
+            logger.error("getTeachersOfDepartment error:",e);
             throw new ErrorCodeException(ResponseCode.TEACHERLIST_FAILURE,"获取教师列表失败");
         }
 
+        return roles;
+    }
+
+    @Override
+    public List<Role> getStudentsOfDepartment(long departmentId, int year, int degree) {
+        Map<String,Object> conditions = new HashMap<>();
+        conditions.put("departmentId", departmentId);
+        conditions.put("year", year);
+        conditions.put("degree", degree);
+        conditions.put("type", UserType.STUDENT.getIndex());
+        List<UserEntity> userEntities = userDao.getUsersWithConditions(conditions, "id", "number");
+        Map<Long, UserEntity> userIdEntityMap = userEntities.stream().collect(Collectors.toMap(UserEntity::getId, a->a, (k1,k2)->k2));
+        List<RoleInfoDTO> roleInfoDTOS = businessClient.getRolesByType(departmentId, UserType.STUDENT.getIndex(), StateType.NORMAL.getIndex());
+        List<Role> roles = roleInfoDTOS.stream()
+                .filter(r -> userIdEntityMap.keySet().contains(r.getUserId()))
+                .map(roleInfoDTO -> new Role(roleInfoDTO,userIdEntityMap.get(roleInfoDTO.getUserId()).getNumber()))
+                .collect(Collectors.toList());
         return roles;
     }
 

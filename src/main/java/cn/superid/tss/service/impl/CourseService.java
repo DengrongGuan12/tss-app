@@ -79,6 +79,7 @@ public class CourseService implements ICourseService {
     public Map<String, Map> getUserCourses(long userId) {
         UserEntity userEntity = userDao.getUserEntity(userId);
         List<AffairWithRoleDTO> affairDTOS = businessClient.getMyChildrenAffair(userId, userEntity.getDepartmentId(), AffairType.COURSE.getIndex(), StateType.NORMAL.getIndex(), false);
+
         return parseAffairsToCourses(affairDTOS,true,userId);
     }
 

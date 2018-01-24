@@ -20,4 +20,7 @@ public enum DegreeType {
         }
         return null;
     }
+    public int getIndex(){
+        return this.index;
+    }
 }

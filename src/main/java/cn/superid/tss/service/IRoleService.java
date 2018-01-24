@@ -41,6 +41,8 @@ public interface IRoleService {
 
     List<Role> getTeachersOfDepartment(long departmentId);
 
+    List<Role> getStudentsOfDepartment(long departmentId, int year, int degree);
+
     /**
      * 获取用户在事务中的角色，没有则返回null
      * @param affairId

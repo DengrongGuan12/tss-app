@@ -6,6 +6,7 @@ import cn.superid.tss.util.DStatement;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author DengrongGuan
@@ -28,5 +29,11 @@ public class UserDao implements IUserDao{
     @Override
     public List<UserEntity> selectUsersByIds(Long[] ids, String... fields) {
         return DStatement.build(UserEntity.class).in("id", ids).selectList(fields);
+    }
+
+    public List<UserEntity> getUsersWithConditions(Map<String, Object> conditions, String... fields){
+        DStatement statement = DStatement.build(UserEntity.class);
+        conditions.entrySet().stream().forEach(stringObjectEntry -> statement.eq(stringObjectEntry.getKey(),stringObjectEntry.getValue()));
+        return statement.selectList(fields);
     }
 }

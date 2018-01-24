@@ -18,4 +18,6 @@ public interface IUserDao {
 
     List<UserEntity> selectUsersByIds(Long[] ids, String ...fields);
 
+    List<UserEntity> getUsersWithConditions(Map<String, Object> conditions, String... fields);
+
 }

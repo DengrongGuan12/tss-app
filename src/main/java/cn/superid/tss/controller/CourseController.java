@@ -151,7 +151,7 @@ public class CourseController {
 
     @ApiOperation(value = "创建课程", response = SimpleResponse.class)
     @RequestMapping(value = "/createCourse", method = RequestMethod.POST)
-    @PreAuth(value = PermissionConstants.CREATE_AFFAIR)
+//    @PreAuth(value = PermissionConstants.CREATE_AFFAIR)
     public SimpleResponse createCourse(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                        @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                        @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long departmentId,
@@ -162,7 +162,7 @@ public class CourseController {
 
     @ApiOperation(value = "修改课程", response = SimpleResponse.class, notes = "所有值都必传，不管有没有改变")
     @RequestMapping(value = "/modifyCourse", method = RequestMethod.POST)
-    @PreAuth(value = PermissionConstants.SET_AFFAIR_INFO)
+//    @PreAuth(value = PermissionConstants.SET_AFFAIR_INFO)
     public SimpleResponse modifyCourse(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                        @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                        @RequestBody CourseForm course) {
@@ -172,7 +172,7 @@ public class CourseController {
 
     @ApiOperation(value = "设置课程邀请码", response = SimpleResponse.class, notes = "id, inviteCode 必传")
     @RequestMapping(value = "/setInviteCode", method = RequestMethod.POST)
-    @PreAuth(value = PermissionConstants.SHARE_AFFAIR)
+//    @PreAuth(value = PermissionConstants.SHARE_AFFAIR)
     public SimpleResponse setInviteCode(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                         @RequestParam long id,
                                         @RequestParam String inviteCode) {
