@@ -3,6 +3,7 @@ package cn.superid.tss.service.impl;
 import cn.superid.common.notification.dto.CommonMessage;
 import cn.superid.common.notification.enums.MsgType;
 import cn.superid.common.notification.enums.ResourceType;
+import cn.superid.common.rest.client.AuthClient;
 import cn.superid.common.rest.client.BusinessClient;
 import cn.superid.common.rest.dto.SimpleResponse;
 import cn.superid.common.rest.dto.business.RoleInfoDTO;
@@ -48,6 +49,9 @@ public class RoleService implements IRoleService{
 
     @Autowired
     MsgComponent msgComponent;
+
+    @Autowired
+    AuthClient authClient;
 
     private static final Logger logger = LoggerFactory.getLogger(RoleService.class);
 

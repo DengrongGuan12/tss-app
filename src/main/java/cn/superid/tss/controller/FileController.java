@@ -43,9 +43,10 @@ public class FileController {
         List<Attachment> attachments = fileService.getAttachments(activityId);
         return SimpleResponse.ok(attachments);
     }
-    //todo 权限
+
     @ApiOperation(value = "课程活动中上传附件",response = Long.class)
     @RequestMapping(value = "/uploadAttachment",method = RequestMethod.POST)
+    @PreAuth(value = PermissionConstants.CREATE_PUBLISH)
     public SimpleResponse uploadActivityAttachment(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                                    @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                                    @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,
@@ -81,9 +82,10 @@ public class FileController {
         List<Submit> submits = fileService.getSubmits(activityId);
         return SimpleResponse.ok(submits);
     }
-    //todo permission
+
     @ApiOperation(value = "获得作业提交统计",response = SubmitCount.class)
     @RequestMapping(value = "/getSubmitCount",method = RequestMethod.GET)
+    @PreAuth(value = PermissionConstants.CREATE_PUBLISH)
     public SimpleResponse getSubmitCount(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                          @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                          @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long courseId,

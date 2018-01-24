@@ -41,9 +41,7 @@ public class RoleController {
 
     @ApiOperation(value = "课程人员页面获得所有成员", response = RoleGroup.class)
     @RequestMapping(value = "/getCourseRole",method = RequestMethod.GET)
-
     //@PreAuth(value = PermissionConstants.ENTER_ROLE_STORE)
-
     public SimpleResponse getCourseRoleList(@RequestParam(value = "courseId")long courseId){
         logger.info("courseid {}" ,courseId);
 
@@ -52,7 +50,7 @@ public class RoleController {
 
     @ApiOperation(value = "从课程/小组里面删除人员",response = SimpleResponse.class)
     @RequestMapping(value = "/deleteRole",method = RequestMethod.POST)
-    @PreAuth(value = PermissionConstants.DELETE_ROLE)
+    @PreAuth(value = PermissionConstants.CREATE_ROLE)
     public SimpleResponse deleteRoleFromCourse(@RequestHeader(RequestHeaders.USER_ID_HEADER) long userId,
                                                @RequestHeader(RequestHeaders.ROLE_ID_HEADER) long roleId,
                                                @RequestHeader(RequestHeaders.AFFAIR_ID_HEADER) long affairId,
